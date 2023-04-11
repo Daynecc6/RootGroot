@@ -1,6 +1,6 @@
-import React from 'react';
-import { Box, Typography } from '@mui/material';
-import logo from '../../assets/logo.svg';
+import React from "react";
+import { Box, Typography } from "@mui/material";
+import logo from "../../../assets/logo.svg";
 
 const Landing = () => {
   return (
@@ -14,7 +14,11 @@ const Landing = () => {
       bgcolor="primary.main"
       color="white"
     >
-      <img src={logo} alt="My Logo" style={{ maxWidth: '35%', maxHeight: '35%' }} />
+      <img
+        src={logo}
+        alt="My Logo"
+        style={{ maxWidth: "35%", maxHeight: "35%" }}
+      />
       <Typography variant="h5">My tagline goes here</Typography>
     </Box>
   );
