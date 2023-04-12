@@ -1,13 +1,20 @@
-// src/components/LoginForm.js
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "../redux/authActions";
-import { Button, TextField, Container, Box, Typography } from "@mui/material";
+import {
+  Button,
+  TextField,
+  Container,
+  Box,
+  Typography,
+  Alert,
+} from "@mui/material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -15,12 +22,16 @@ const LoginForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const token = dispatch(login(username, password));
+      const token = await dispatch(login(username, password));
       localStorage.setItem("token", token);
       dispatch({ type: "LOGIN", payload: token });
-      navigate("/");
+
+      if (token) {
+        navigate("/"); // Move this inside the if condition
+      }
     } catch (error) {
       console.error("Login failed:", error.message);
+      setErrorMessage("Login failed: Invalid credentials");
     }
   };
 
@@ -30,6 +41,11 @@ const LoginForm = () => {
         <Typography variant="h4">Login</Typography>
       </Box>
       <form onSubmit={handleSubmit}>
+        {errorMessage && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {errorMessage}
+          </Alert>
+        )}
         <TextField
           fullWidth
           margin="normal"

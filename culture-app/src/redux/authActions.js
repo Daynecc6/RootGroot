@@ -13,7 +13,8 @@ export const login = (username, password) => async (dispatch) => {
       const data = await response.json();
       return data;
     } else {
-      throw new Error("Invalid credentials");
+      const errorData = await response.json();
+      throw new Error(errorData.error);
     }
   };
 
@@ -23,6 +24,7 @@ export const login = (username, password) => async (dispatch) => {
     dispatch({ type: "LOGIN", payload: token });
   } catch (error) {
     console.error("Login failed:", error.message);
+    throw error; // Propagate the error to the LoginForm component
   }
 };
 
