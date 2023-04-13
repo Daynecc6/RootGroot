@@ -10,6 +10,7 @@ import {
   Alert,
 } from "@mui/material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
+import RegisterForm from "./RegisterForm";
 
 const LoginForm = () => {
   const [username, setUsername] = useState("");
@@ -27,7 +28,8 @@ const LoginForm = () => {
       dispatch({ type: "LOGIN", payload: token });
 
       if (token) {
-        navigate("/"); // Move this inside the if condition
+        navigate("/home"); // Move this inside the if condition and change to /home
+        console.log("here");
       }
     } catch (error) {
       console.error("Login failed:", error.message);
@@ -35,6 +37,8 @@ const LoginForm = () => {
     }
   };
 
+  // LoginForm.js
+  // ...
   return (
     <Container maxWidth="xs">
       <Box sx={{ mt: 8, mb: 4 }}>
@@ -63,14 +67,18 @@ const LoginForm = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <Box sx={{ mt: 4 }}>
-          <Button fullWidth type="submit" variant="contained">
+        <Box sx={{ mt: 4, mb: 20, display: "flex", justifyContent: "center" }}>
+          <Button sx={{ mr: 2 }} type="submit" variant="contained">
             Login
+          </Button>
+          <Button component={RouterLink} to="/register" variant="outlined">
+            Register
           </Button>
         </Box>
       </form>
     </Container>
   );
+  // ...
 };
 
 export default LoginForm;

@@ -65,3 +65,48 @@ const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+app.post("/api/register", async (req, res) => {
+  console.log("Registration request received:", req.body);
+
+  const { email, username, password } = req.body;
+
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+
+    // Check if the email or username already exists
+    const [rows] = await connection.execute(
+      "SELECT * FROM users WHERE email = ? OR username = ?",
+      [email, username]
+    );
+
+    if (rows.length > 0) {
+      connection.end();
+      console.log("Email or username already in use:", email, username);
+      return res
+        .status(400)
+        .json({ error: "Email or username already in use" });
+    }
+
+    // Hash the password and insert the new user
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await connection.execute(
+      "INSERT INTO users (email, username, password) VALUES (?, ?, ?)",
+      [email, username, hashedPassword]
+    );
+    connection.end();
+
+    // Automatically log the user in and send a token
+    const token = jwt.sign({ userId: email }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    console.log("User registered, sending token:", token);
+    res.json({ token });
+  } catch (error) {
+    console.error("Error connecting to the database:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while accessing the database." });
+  }
+});

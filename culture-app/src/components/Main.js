@@ -10,19 +10,19 @@ import {
 
 import Header from "./sections/Header";
 import Footer from "./sections/Footer";
-import Content from "./sections/Content";
-import AboutApp from "./sections/area/AboutApp";
-import AboutUs from "./sections/area/AboutUs";
+
 import Landing from "./sections/area/Landing";
+
 import MainContent from "./sections/Content";
 import LoginForm from "./LoginForm";
+import RegisterForm from "./RegisterForm";
 
 const ProtectedRoute = ({ token, children, fallback }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!token) {
-      navigate("/");
+      navigate("/login");
     }
   }, [token, navigate]);
 
@@ -36,17 +36,17 @@ const Main = () => {
     <Router>
       <Header />
       <Routes>
+        <Route path="/" element={<Landing />} />
         <Route
-          path="/"
+          path="/home" //this will change once the user logins still need to update
           element={
-            <ProtectedRoute token={token} fallback={<MainContent />}>
+            <ProtectedRoute token={token} fallback={<Landing />}>
               <MainContent />
             </ProtectedRoute>
           }
         />
-        <Route path="/about" element={<AboutUs />} />
-        <Route path="/app" element={<AboutApp />} />
         <Route path="/login" element={<LoginForm />} />
+        <Route path="/register" element={<RegisterForm />} />
       </Routes>
       <Footer />
     </Router>
