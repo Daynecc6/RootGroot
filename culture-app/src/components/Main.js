@@ -16,6 +16,7 @@ import MainContent from "./sections/Content";
 import LoginForm from "./LoginForm";
 
 import RegisterForm from "./RegisterForm";
+import WorldMap from "./WorldMap";
 
 const ProtectedRoute = ({ token, children, fallback }) => {
   const navigate = useNavigate();
@@ -47,6 +48,7 @@ const Main = () => {
         />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/register" element={<RegisterForm />} />
+        <Route path="/worldmap" element={<WorldMap />} />
       </Routes>
       <Footer />
     </Router>

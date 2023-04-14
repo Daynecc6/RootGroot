@@ -12,9 +12,10 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { Link } from "react-router-dom";
 
 const NavBar = () => {
-  const navLinks = ["Home", "About", "Contact"];
+  const navLinks = ["Home", "About", "Contact", "WorldMap"];
   const [drawerOpen, setDrawerOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -38,14 +39,19 @@ const NavBar = () => {
           </IconButton>
         ) : (
           navLinks.map((link) => (
-            <Typography
+            <Link
               key={link}
-              variant="subtitle1"
-              component="div"
-              sx={{ marginRight: 2 }}
+              to={`/${link.toLowerCase()}`}
+              style={{ textDecoration: "none", color: "inherit" }}
             >
-              {link}
-            </Typography>
+              <Typography
+                variant="subtitle1"
+                component="div"
+                sx={{ marginRight: 2 }}
+              >
+                {link}
+              </Typography>
+            </Link>
           ))
         )}
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
@@ -54,8 +60,14 @@ const NavBar = () => {
       </Toolbar>
       <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
         <List>
-          {["Home", "About", "Contact"].map((text) => (
-            <ListItem button key={text} onClick={toggleDrawer(false)}>
+          {["Home", "About", "Contact", "WorldMap"].map((text) => (
+            <ListItem
+              button
+              key={text}
+              onClick={toggleDrawer(false)}
+              component={Link}
+              to={`/${text.toLowerCase()}`}
+            >
               <ListItemText primary={text} />
             </ListItem>
           ))}
