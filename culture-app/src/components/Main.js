@@ -12,9 +12,9 @@ import Header from "./sections/Header";
 import Footer from "./sections/Footer";
 
 import Landing from "./sections/area/Landing";
-
 import MainContent from "./sections/Content";
 import LoginForm from "./LoginForm";
+
 import RegisterForm from "./RegisterForm";
 
 const ProtectedRoute = ({ token, children, fallback }) => {

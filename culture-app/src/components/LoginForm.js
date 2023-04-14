@@ -22,6 +22,7 @@ const LoginForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       const token = await dispatch(login(username, password));
       localStorage.setItem("token", token);

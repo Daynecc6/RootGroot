@@ -24,6 +24,7 @@ app.post("/api/login", async (req, res) => {
   console.log("Login request received:", req.body);
 
   const { username, password } = req.body;
+  console.log(username);
 
   // Connect to the database and fetch the user
   try {
@@ -69,7 +70,66 @@ app.listen(PORT, () => {
 app.post("/api/register", async (req, res) => {
   console.log("Registration request received:", req.body);
 
-  const { email, username, password } = req.body;
+  const {
+    email,
+    username,
+    password,
+    first_name,
+    last_name,
+    preferred_name,
+    age,
+    gender,
+    languages_spoke,
+    birth_country,
+    countries_worked,
+    countries_lived,
+    countries_studied,
+    countries_volunteered,
+    countries_traveled,
+    countries_bucket,
+  } = req.body.formData;
+
+  // Check for null values
+  if (
+    email === null ||
+    username === null ||
+    password === null ||
+    first_name === null ||
+    last_name === null ||
+    preferred_name === null ||
+    age === null ||
+    gender === null ||
+    languages_spoke === null ||
+    birth_country === null ||
+    countries_worked === null ||
+    countries_lived === null ||
+    countries_studied === null ||
+    countries_volunteered === null ||
+    countries_traveled === null ||
+    countries_bucket === null
+  ) {
+    console.log("Null value found in form data");
+    return res.status(400).json({ error: "Form data contains a null value" });
+  }
+
+  console.log("Executing query with individual variables:", {
+    email,
+    username,
+    password,
+    first_name,
+    last_name,
+    preferred_name,
+    age,
+    gender,
+    languages_spoke,
+    birth_country,
+    countries_worked,
+    countries_lived,
+    countries_studied,
+    countries_volunteered,
+    countries_traveled,
+    countries_bucket,
+  });
 
   try {
     const connection = await mysql.createConnection(dbConfig);
@@ -91,8 +151,25 @@ app.post("/api/register", async (req, res) => {
     // Hash the password and insert the new user
     const hashedPassword = await bcrypt.hash(password, 10);
     await connection.execute(
-      "INSERT INTO users (email, username, password) VALUES (?, ?, ?)",
-      [email, username, hashedPassword]
+      "INSERT INTO users (email, username, first_name, last_name, preferred_name, gender, languages_spoke, birth_country, countries_worked, countries_lived, countries_studied, countries_volunteered, countries_traveled, countries_bucket, password, age) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      [
+        email,
+        username,
+        first_name,
+        last_name,
+        preferred_name,
+        gender,
+        languages_spoke,
+        birth_country,
+        countries_worked,
+        countries_lived,
+        countries_studied,
+        countries_volunteered,
+        countries_traveled,
+        countries_bucket,
+        hashedPassword,
+        age,
+      ]
     );
     connection.end();
 

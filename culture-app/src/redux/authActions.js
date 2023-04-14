@@ -35,15 +35,15 @@ export const logout = () => (dispatch) => {
 };
 
 // src/redux/authActions.js
-export const register = (email, username, password) => async (dispatch) => {
+export const register = (formData) => async (dispatch) => {
   // Call your actual register API here
-  const registerUser = async (email, username, password) => {
+  const registerUser = async (formData) => {
     const response = await fetch("http://localhost:3001/api/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email, username, password }),
+      body: JSON.stringify({ formData }),
     });
 
     if (response.ok) {
@@ -56,9 +56,10 @@ export const register = (email, username, password) => async (dispatch) => {
   };
 
   try {
-    const { token } = await registerUser(email, username, password);
+    const { token } = await registerUser(formData);
     localStorage.setItem("token", token);
     dispatch({ type: "LOGIN", payload: token });
+    return token;
   } catch (error) {
     console.error("Registration failed:", error.message);
     throw error;
