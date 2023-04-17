@@ -14,8 +14,8 @@ import Footer from "./sections/Footer";
 import Landing from "./sections/area/Landing";
 import MainContent from "./sections/Content";
 import LoginForm from "./LoginForm";
-
 import RegisterForm from "./RegisterForm";
+import PurposePage from "./PurposePage";
 import WorldMap from "./WorldMap";
 
 const ProtectedRoute = ({ token, children, fallback }) => {
@@ -49,6 +49,7 @@ const Main = () => {
         <Route path="/login" element={<LoginForm />} />
         <Route path="/register" element={<RegisterForm />} />
         <Route path="/worldmap" element={<WorldMap />} />
+        <Route path="/purpose" element={<PurposePage />} />
       </Routes>
       <Footer />
     </Router>
