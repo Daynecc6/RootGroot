@@ -29,7 +29,7 @@ const RegisterForm = () => {
     preferred_name: "",
     age: "",
     gender: "",
-    languages_spoke: "",
+    languages_spoke: [],
     birth_country: "",
     countries_worked: "",
     countries_lived: "",
@@ -39,8 +39,35 @@ const RegisterForm = () => {
     countries_bucket: "",
   });
   const [errorMessage, setErrorMessage] = useState("");
+  const [inputError, setInputError] = useState({});
 
   const handleNextClick = async () => {
+    if (step === 1) {
+      const requiredFields = [
+        "email",
+        "username",
+        "password",
+        "verify_password",
+      ];
+      const errors = {};
+      let hasError = false;
+
+      for (const field of requiredFields) {
+        if (!formData[field]) {
+          const fieldName = field.replace(/_/g, " ");
+          errors[field] = `${
+            fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
+          } is required`;
+          hasError = true;
+        }
+      }
+
+      if (hasError) {
+        setInputError(errors);
+        return;
+      }
+    }
+
     if (step === 1) {
       const { email, username } = formData;
       const result = await checkEmailUsername(email, username);
@@ -50,6 +77,33 @@ const RegisterForm = () => {
         return;
       } else {
         setErrorMessage(""); //clear the error message
+      }
+    }
+
+    if (step == 2) {
+      const requiredFields = [
+        "first_name",
+        "last_name",
+        "preferred_name",
+        "age",
+        "gender",
+      ];
+      const errors = {};
+      let hasError = false;
+
+      for (const field of requiredFields) {
+        if (!formData[field]) {
+          const fieldName = field.replace(/_/g, " ");
+          errors[field] = `${
+            fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
+          } is required`;
+          hasError = true;
+        }
+      }
+
+      if (hasError) {
+        setInputError(errors);
+        return;
       }
     }
     setStep(step + 1);
@@ -76,9 +130,31 @@ const RegisterForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Check if passwords match
-    if (formData.password !== formData.verify_password) {
-      setErrorMessage("Passwords do not match");
+    const requiredFields = [
+      "languages_spoke",
+      "birth_country",
+      "countries_worked",
+      "countries_lived",
+      "countries_studied",
+      "countries_volunteered",
+      "countries_traveled",
+      "countries_bucket",
+    ];
+    const errors = {};
+    let hasError = false;
+
+    for (const field of requiredFields) {
+      if (!formData[field]) {
+        const fieldName = field.replace(/_/g, " ");
+        errors[field] = `${
+          fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
+        } is required`;
+        hasError = true;
+      }
+    }
+
+    if (hasError) {
+      setInputError(errors);
       return;
     }
 
@@ -135,6 +211,7 @@ const RegisterForm = () => {
             handleInputChange={handleInputChange}
             handlePasswordBlur={handlePasswordBlur}
             formData={formData}
+            errors={inputError}
           />
         );
 
@@ -145,6 +222,7 @@ const RegisterForm = () => {
             handleBack={handleBackClick}
             handleInputChange={handleInputChange}
             formData={formData}
+            errors={inputError}
           />
         );
       case 3:
@@ -154,6 +232,7 @@ const RegisterForm = () => {
             handleBack={handleBackClick}
             handleInputChange={handleInputChange}
             formData={formData}
+            errors={inputError}
           />
         );
       default:
