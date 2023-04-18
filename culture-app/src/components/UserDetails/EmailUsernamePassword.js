@@ -1,6 +1,11 @@
 import { TextField, Button, Box } from "@mui/material";
 
-const EmailUsernamePassword = ({ handleNext, handleInputChange, formData }) => {
+const EmailUsernamePassword = ({
+  handleNext,
+  handleInputChange,
+  handlePasswordBlur,
+  formData,
+}) => {
   return (
     <>
       <TextField
@@ -27,6 +32,7 @@ const EmailUsernamePassword = ({ handleNext, handleInputChange, formData }) => {
         type="password"
         value={formData.password}
         onChange={handleInputChange}
+        onBlur={handlePasswordBlur}
       />
       <TextField
         fullWidth
@@ -36,6 +42,7 @@ const EmailUsernamePassword = ({ handleNext, handleInputChange, formData }) => {
         type="password"
         value={formData.verify_password}
         onChange={handleInputChange}
+        onBlur={handlePasswordBlur}
       />
       <Box sx={{ mt: 2 }}>
         <Button fullWidth variant="contained" onClick={handleNext}>

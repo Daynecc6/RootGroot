@@ -1,7 +1,7 @@
 import React from "react";
-import { TextField, Button } from "@mui/material";
+import { TextField, Button, Box } from "@mui/material";
 
-const Countries = ({ handleNext, handleInputChange, formData }) => {
+const Countries = ({ handleBack, handleInputChange, formData }) => {
   return (
     <>
       <TextField
@@ -76,9 +76,33 @@ const Countries = ({ handleNext, handleInputChange, formData }) => {
         value={formData.countries_bucket}
         onChange={handleInputChange}
       />
-      <Button type="submit" fullWidth variant="contained">
-        Done
-      </Button>
+      <Box
+        sx={{
+          mt: 2,
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Button
+          onClick={handleBack}
+          variant="contained"
+          sx={{ width: "120px", height: "40px" }}
+        >
+          Back
+        </Button>
+
+        <Box sx={{ width: "16px" }} />
+
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{ width: "120px", height: "40px" }}
+        >
+          Done
+        </Button>
+      </Box>
     </>
   );
 };

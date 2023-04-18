@@ -1,7 +1,7 @@
 import React from "react";
-import { TextField, Button } from "@mui/material";
+import { TextField, Button, Box } from "@mui/material";
 
-const UserName = ({ handleNext, handleInputChange, formData }) => {
+const UserName = ({ handleNext, handleInputChange, formData, handleBack }) => {
   return (
     <>
       <TextField
@@ -49,9 +49,33 @@ const UserName = ({ handleNext, handleInputChange, formData }) => {
         value={formData.gender}
         onChange={handleInputChange}
       />
-      <Button onClick={handleNext} fullWidth variant="contained">
-        Next
-      </Button>
+      <Box
+        sx={{
+          mt: 2,
+          mx: 3,
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+        }}
+      >
+        <Button
+          onClick={handleBack}
+          fullWidth
+          variant="contained"
+          sx={{ width: "120px", height: "40px" }}
+        >
+          Back
+        </Button>
+        <Box sx={{ width: "16px" }} />
+        <Button
+          onClick={handleNext}
+          fullWidth
+          variant="contained"
+          sx={{ width: "120px", height: "40px" }}
+        >
+          Next
+        </Button>
+      </Box>
     </>
   );
 };

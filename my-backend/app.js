@@ -62,9 +62,30 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.post("/api/check-email-username", async (req, res) => {
+  const { email, username } = req.body;
+
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    const [rows] = await connection.execute(
+      "SELECT * FROM users WHERE email = ? OR username = ?",
+      [email, username]
+    );
+    connection.end();
+
+    if (rows.length > 0) {
+      return res
+        .status(400)
+        .json({ error: "Email or username already in use" });
+    }
+
+    res.json({ message: "Email and username are available" });
+  } catch (error) {
+    console.error("Error connecting to the database:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while accessing the database." });
+  }
 });
 
 app.post("/api/register", async (req, res) => {
@@ -112,41 +133,8 @@ app.post("/api/register", async (req, res) => {
     return res.status(400).json({ error: "Form data contains a null value" });
   }
 
-  console.log("Executing query with individual variables:", {
-    email,
-    username,
-    password,
-    first_name,
-    last_name,
-    preferred_name,
-    age,
-    gender,
-    languages_spoke,
-    birth_country,
-    countries_worked,
-    countries_lived,
-    countries_studied,
-    countries_volunteered,
-    countries_traveled,
-    countries_bucket,
-  });
-
   try {
     const connection = await mysql.createConnection(dbConfig);
-
-    // Check if the email or username already exists
-    const [rows] = await connection.execute(
-      "SELECT * FROM users WHERE email = ? OR username = ?",
-      [email, username]
-    );
-
-    if (rows.length > 0) {
-      connection.end();
-      console.log("Email or username already in use:", email, username);
-      return res
-        .status(400)
-        .json({ error: "Email or username already in use" });
-    }
 
     // Hash the password and insert the new user
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -186,4 +174,9 @@ app.post("/api/register", async (req, res) => {
       .status(500)
       .json({ error: "An error occurred while accessing the database." });
   }
+});
+
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
