@@ -31,12 +31,12 @@ const RegisterForm = () => {
     gender: "",
     languages_spoke: [],
     birth_country: "",
-    countries_worked: "",
-    countries_lived: "",
-    countries_studied: "",
-    countries_volunteered: "",
-    countries_traveled: "",
-    countries_bucket: "",
+    countries_worked: [],
+    countries_lived: [],
+    countries_studied: [],
+    countries_volunteered: [],
+    countries_traveled: [],
+    countries_bucket: [],
   });
   const [errorMessage, setErrorMessage] = useState("");
   const [inputError, setInputError] = useState({});

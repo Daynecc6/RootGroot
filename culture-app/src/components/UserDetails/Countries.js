@@ -12,6 +12,7 @@ import {
 import ISO6391 from "iso-639-1";
 import countries from "i18n-iso-countries";
 import english from "i18n-iso-countries/langs/en.json";
+import { useState } from "react";
 
 countries.registerLocale(english);
 
@@ -19,8 +20,53 @@ const Countries = ({ handleBack, handleInputChange, formData, errors }) => {
   const countryList = Object.values(countries.getNames("en")).map((name) => ({
     name,
   }));
+
+  const [showLanguagesSpoke, setLanguagesSpoke] = useState(false);
+
   return (
     <>
+      <FormControl
+        fullWidth
+        error={!!errors.birth_country}
+        variant="outlined"
+        margin="normal"
+      >
+        <InputLabel id="birth-country-label">Birth Country</InputLabel>
+        <Select
+          labelId="birth-country-label"
+          label="Birth Country"
+          name="birth_country"
+          value={formData.birth_country}
+          onChange={handleInputChange}
+          MenuProps={{
+            PaperProps: {
+              style: {
+                maxHeight: 300, // Change this value to adjust the dropdown height
+              },
+            },
+          }}
+        >
+          {countryList
+            .sort((a, b) => {
+              const aSelected = formData.birth_country === a.name;
+              const bSelected = formData.birth_country === b.name;
+
+              if (aSelected && !bSelected) return -1;
+              if (!aSelected && bSelected) return 1;
+
+              return a.name.localeCompare(b.name);
+            })
+            .map((country) => (
+              <MenuItem key={country.name} value={country.name}>
+                {country.name}
+              </MenuItem>
+            ))}
+        </Select>
+        {errors.birth_country && (
+          <FormHelperText>{errors.birth_country}</FormHelperText>
+        )}
+      </FormControl>
+
       <FormControl
         fullWidth
         error={!!errors.languages_spoke}
@@ -66,16 +112,18 @@ const Countries = ({ handleBack, handleInputChange, formData, errors }) => {
 
       <FormControl
         fullWidth
-        error={!!errors.birth_country}
+        error={!!errors.countries_worked}
         variant="outlined"
         margin="normal"
       >
-        <InputLabel id="birth-country-label">Birth Country</InputLabel>
+        <InputLabel id="countries-worked-label">
+          Countries you have worked in
+        </InputLabel>
         <Select
-          labelId="birth-country-label"
-          label="Birth Country"
-          name="birth_country"
-          value={formData.birth_country}
+          labelId="countries-worked-label"
+          label="Countries you have worked in"
+          name="countries_worked"
+          value={formData.countries_worked}
           onChange={handleInputChange}
           MenuProps={{
             PaperProps: {
@@ -84,11 +132,13 @@ const Countries = ({ handleBack, handleInputChange, formData, errors }) => {
               },
             },
           }}
+          multiple // Allows multiple selections
         >
+          <MenuItem value="N/A">N/A</MenuItem>
           {countryList
             .sort((a, b) => {
-              const aSelected = formData.birth_country === a.name;
-              const bSelected = formData.birth_country === b.name;
+              const aSelected = formData.countries_worked.includes(a.name);
+              const bSelected = formData.countries_worked.includes(b.name);
 
               if (aSelected && !bSelected) return -1;
               if (!aSelected && bSelected) return 1;
@@ -101,96 +151,232 @@ const Countries = ({ handleBack, handleInputChange, formData, errors }) => {
               </MenuItem>
             ))}
         </Select>
-        {errors.birth_country && (
-          <FormHelperText>{errors.birth_country}</FormHelperText>
-        )}
-      </FormControl>
-
-      <FormControl fullWidth error={!!errors.countries_worked}>
-        <TextField
-          fullWidth
-          margin="normal"
-          variant="outlined"
-          label="Countries you have worked in."
-          name="countries_worked"
-          value={formData.countries_worked}
-          onChange={handleInputChange}
-        />
         {errors.countries_worked && (
           <FormHelperText>{errors.countries_worked}</FormHelperText>
         )}
       </FormControl>
 
-      <FormControl fullWidth error={!!errors.countries_lived}>
-        <TextField
-          fullWidth
-          margin="normal"
-          variant="outlined"
-          label="Countries lived in."
+      <FormControl
+        fullWidth
+        error={!!errors.countries_lived}
+        variant="outlined"
+        margin="normal"
+      >
+        <InputLabel id="countries-lived-label">Countries lived in</InputLabel>
+        <Select
+          labelId="countries-lived-label"
+          label="Countries lived in"
           name="countries_lived"
           value={formData.countries_lived}
           onChange={handleInputChange}
-        />
+          MenuProps={{
+            PaperProps: {
+              style: {
+                maxHeight: 300, // Change this value to adjust the dropdown height
+              },
+            },
+          }}
+          multiple // Allows multiple selections
+        >
+          {countryList
+            .sort((a, b) => {
+              const aSelected = formData.countries_lived.includes(a.name);
+              const bSelected = formData.countries_lived.includes(b.name);
+
+              if (aSelected && !bSelected) return -1;
+              if (!aSelected && bSelected) return 1;
+
+              return a.name.localeCompare(b.name);
+            })
+            .map((country) => (
+              <MenuItem key={country.name} value={country.name}>
+                {country.name}
+              </MenuItem>
+            ))}
+        </Select>
         {errors.countries_lived && (
           <FormHelperText>{errors.countries_lived}</FormHelperText>
         )}
       </FormControl>
 
-      <FormControl fullWidth error={!!errors.countries_studied}>
-        <TextField
-          fullWidth
-          margin="normal"
-          variant="outlined"
-          label="Countries you have studied in."
+      <FormControl
+        fullWidth
+        error={!!errors.countries_studied}
+        variant="outlined"
+        margin="normal"
+      >
+        <InputLabel id="countries-studied-label">
+          Countries you have studied in
+        </InputLabel>
+        <Select
+          labelId="countries-studied-label"
+          label="Countries you have studied in"
           name="countries_studied"
           value={formData.countries_studied}
           onChange={handleInputChange}
-        />
+          MenuProps={{
+            PaperProps: {
+              style: {
+                maxHeight: 300, // Change this value to adjust the dropdown height
+              },
+            },
+          }}
+          multiple // Allows multiple selections
+        >
+          {countryList
+            .sort((a, b) => {
+              const aSelected = formData.countries_studied.includes(a.name);
+              const bSelected = formData.countries_studied.includes(b.name);
+
+              if (aSelected && !bSelected) return -1;
+              if (!aSelected && bSelected) return 1;
+
+              return a.name.localeCompare(b.name);
+            })
+            .map((country) => (
+              <MenuItem key={country.name} value={country.name}>
+                {country.name}
+              </MenuItem>
+            ))}
+        </Select>
         {errors.countries_studied && (
           <FormHelperText>{errors.countries_studied}</FormHelperText>
         )}
       </FormControl>
 
-      <FormControl fullWidth error={!!errors.countries_volunteered}>
-        <TextField
-          fullWidth
-          margin="normal"
-          variant="outlined"
-          label="Countries you have volunteered in."
+      <FormControl
+        fullWidth
+        error={!!errors.countries_volunteered}
+        variant="outlined"
+        margin="normal"
+      >
+        <InputLabel id="countries-volunteered-label">
+          Countries you have volunteered in
+        </InputLabel>
+        <Select
+          labelId="countries-volunteered-label"
+          label="Countries you have volunteered in"
           name="countries_volunteered"
           value={formData.countries_volunteered}
           onChange={handleInputChange}
-        />
+          MenuProps={{
+            PaperProps: {
+              style: {
+                maxHeight: 300, // Change this value to adjust the dropdown height
+              },
+            },
+          }}
+          multiple // Allows multiple selections
+        >
+          <MenuItem value="N/A">N/A</MenuItem>
+          {countryList
+            .sort((a, b) => {
+              const aSelected = formData.countries_volunteered.includes(a.name);
+              const bSelected = formData.countries_volunteered.includes(b.name);
+
+              if (aSelected && !bSelected) return -1;
+              if (!aSelected && bSelected) return 1;
+
+              return a.name.localeCompare(b.name);
+            })
+            .map((country) => (
+              <MenuItem key={country.name} value={country.name}>
+                {country.name}
+              </MenuItem>
+            ))}
+        </Select>
         {errors.countries_volunteered && (
           <FormHelperText>{errors.countries_volunteered}</FormHelperText>
         )}
       </FormControl>
 
-      <FormControl fullWidth error={!!errors.countries_traveled}>
-        <TextField
-          fullWidth
-          margin="normal"
-          variant="outlined"
-          label="Countries you have traveled to."
+      <FormControl
+        fullWidth
+        error={!!errors.countries_traveled}
+        variant="outlined"
+        margin="normal"
+      >
+        <InputLabel id="countries-traveled-label">
+          Countries you have traveled to
+        </InputLabel>
+        <Select
+          labelId="countries-traveled-label"
+          label="Countries you have traveled to"
           name="countries_traveled"
           value={formData.countries_traveled}
           onChange={handleInputChange}
-        />
+          MenuProps={{
+            PaperProps: {
+              style: {
+                maxHeight: 300, // Change this value to adjust the dropdown height
+              },
+            },
+          }}
+          multiple // Allows multiple selections
+        >
+          <MenuItem value="N/A">N/A</MenuItem>
+          {countryList
+            .sort((a, b) => {
+              const aSelected = formData.countries_traveled.includes(a.name);
+              const bSelected = formData.countries_traveled.includes(b.name);
+
+              if (aSelected && !bSelected) return -1;
+              if (!aSelected && bSelected) return 1;
+
+              return a.name.localeCompare(b.name);
+            })
+            .map((country) => (
+              <MenuItem key={country.name} value={country.name}>
+                {country.name}
+              </MenuItem>
+            ))}
+        </Select>
         {errors.countries_traveled && (
           <FormHelperText>{errors.countries_traveled}</FormHelperText>
         )}
       </FormControl>
 
-      <FormControl fullWidth error={!!errors.countries_bucket}>
-        <TextField
-          fullWidth
-          margin="normal"
-          variant="outlined"
-          label="Countries on your bucket list."
+      <FormControl
+        fullWidth
+        error={!!errors.countries_bucket}
+        variant="outlined"
+        margin="normal"
+      >
+        <InputLabel id="countries-bucket-label">
+          Countries on your bucket list
+        </InputLabel>
+        <Select
+          labelId="countries-bucket-label"
+          label="Countries on your bucket list"
           name="countries_bucket"
           value={formData.countries_bucket}
           onChange={handleInputChange}
-        />
+          MenuProps={{
+            PaperProps: {
+              style: {
+                maxHeight: 300, // Change this value to adjust the dropdown height
+              },
+            },
+          }}
+          multiple // Allows multiple selections
+        >
+          <MenuItem value="N/A">N/A</MenuItem>
+          {countryList
+            .sort((a, b) => {
+              const aSelected = formData.countries_bucket.includes(a.name);
+              const bSelected = formData.countries_bucket.includes(b.name);
+
+              if (aSelected && !bSelected) return -1;
+              if (!aSelected && bSelected) return 1;
+
+              return a.name.localeCompare(b.name);
+            })
+            .map((country) => (
+              <MenuItem key={country.name} value={country.name}>
+                {country.name}
+              </MenuItem>
+            ))}
+        </Select>
         {errors.countries_bucket && (
           <FormHelperText>{errors.countries_bucket}</FormHelperText>
         )}
