@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -8,11 +8,15 @@ import {
   List,
   ListItem,
   ListItemText,
+  Button,
+  Box,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { logout } from "../redux/authActions";
 
 const NavBar = () => {
   const navLinks = ["Home", "About", "Contact", "WorldMap"];
@@ -20,8 +24,24 @@ const NavBar = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
+  const storeToken = useSelector((state) => state.auth.token);
+  const [token, setToken] = useState(storeToken);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setToken(storeToken);
+  }, [storeToken]);
+
   const toggleDrawer = (open) => (event) => {
     setDrawerOpen(open);
+  };
+
+  const handleLogout = () => {
+    if (token) {
+      dispatch(logout());
+      navigate("/");
+    }
   };
 
   return (
@@ -54,13 +74,28 @@ const NavBar = () => {
             </Link>
           ))
         )}
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          My App
-        </Typography>
+        <Box sx={{ flexGrow: 1 }} />
+        <div>
+          {token ? (
+            <Button color="inherit" onClick={handleLogout}>
+              Logout
+            </Button>
+          ) : (
+            <>
+              <Button component={Link} to="/login" color="inherit">
+                Login
+              </Button>
+              <Button component={Link} to="/register" color="inherit">
+                Register
+              </Button>
+            </>
+          )}
+        </div>
       </Toolbar>
+
       <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
         <List>
-          {["Home", "About", "Contact", "WorldMap"].map((text) => (
+          {navLinks.map((text) => (
             <ListItem
               button
               key={text}

@@ -12,7 +12,7 @@ import {
 import ISO6391 from "iso-639-1";
 import countries from "i18n-iso-countries";
 import english from "i18n-iso-countries/langs/en.json";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 countries.registerLocale(english);
 
@@ -20,8 +20,6 @@ const Countries = ({ handleBack, handleInputChange, formData, errors }) => {
   const countryList = Object.values(countries.getNames("en")).map((name) => ({
     name,
   }));
-
-  const [showLanguagesSpoke, setLanguagesSpoke] = useState(false);
 
   return (
     <>

@@ -118,6 +118,7 @@ const RegisterForm = () => {
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setErrorMessage(""); //clear the error message
+
     if (e.target.name === "password" || e.target.name === "verify_password") {
       if (formData.password !== formData.verify_password) {
         setErrorMessage("Passwords do not match");

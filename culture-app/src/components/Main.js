@@ -8,9 +8,8 @@ import {
   useNavigate,
 } from "react-router-dom";
 
-import Header from "./sections/Header";
 import Footer from "./sections/Footer";
-
+import NavBar from "./Navbar";
 import Landing from "./sections/area/Landing";
 import MainContent from "./sections/Content";
 import LoginForm from "./LoginForm";
@@ -23,7 +22,7 @@ const ProtectedRoute = ({ token, children, fallback }) => {
 
   useEffect(() => {
     if (!token) {
-      navigate("/login");
+      navigate("/home");
     }
   }, [token, navigate]);
 
@@ -35,20 +34,19 @@ const Main = () => {
 
   return (
     <Router>
-      <Header />
+      <NavBar />
       <Routes>
-        <Route path="/" element={<Landing />} />
+        <Route path="/home" element={<MainContent />} />
+        <Route path="/login" element={<LoginForm />} />
+        <Route path="/register" element={<RegisterForm />} />
         <Route
-          path="/home" //this will change once the user logins still need to update
+          path="/worldmap"
           element={
-            <ProtectedRoute token={token} fallback={<Landing />}>
-              <MainContent />
+            <ProtectedRoute token={token} fallback={<MainContent />}>
+              <WorldMap />
             </ProtectedRoute>
           }
         />
-        <Route path="/login" element={<LoginForm />} />
-        <Route path="/register" element={<RegisterForm />} />
-        <Route path="/worldmap" element={<WorldMap />} />
         <Route path="/purpose" element={<PurposePage />} />
       </Routes>
       <Footer />
