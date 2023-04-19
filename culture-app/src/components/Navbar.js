@@ -40,7 +40,7 @@ const NavBar = () => {
   const handleLogout = () => {
     if (token) {
       dispatch(logout());
-      navigate("/");
+      navigate("/home");
     }
   };
 
