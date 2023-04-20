@@ -10,7 +10,7 @@ import {
 
 import Footer from "./sections/Footer";
 import NavBar from "./Navbar";
-import Landing from "./sections/area/Landing";
+import UserProfile from "./UserProfile";
 import MainContent from "./sections/Content";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
@@ -40,7 +40,7 @@ const Main = () => {
         <Route path="/login" element={<LoginForm />} />
         <Route path="/register" element={<RegisterForm />} />
         <Route
-          path="/worldmap"
+          path="/world map"
           element={
             <ProtectedRoute token={token} fallback={<MainContent />}>
               <WorldMap />
@@ -48,6 +48,7 @@ const Main = () => {
           }
         />
         <Route path="/purpose" element={<PurposePage />} />
+        <Route path="/user-profile" element={<UserProfile />} />
       </Routes>
       <Footer />
     </Router>

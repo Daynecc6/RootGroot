@@ -19,7 +19,7 @@ const Landing = () => {
         alt="My Logo"
         style={{ maxWidth: "35%", maxHeight: "35%" }}
       />
-      <Typography variant="h5">My tagline goes here</Typography>
+      <Typography variant="h5">The Shapers of the Cultures</Typography>
     </Box>
   );
 };

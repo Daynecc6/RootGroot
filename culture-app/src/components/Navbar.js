@@ -19,7 +19,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { logout } from "../redux/authActions";
 
 const NavBar = () => {
-  const navLinks = ["Home", "About", "Contact", "WorldMap"];
+  const navLinks = ["Home", "About", "Contact", "World Map", "User-Profile"];
   const [drawerOpen, setDrawerOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
