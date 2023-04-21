@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Tabs, Tab, Box, Typography, Paper, Grid } from "@mui/material";
 
 const UserProfile = () => {
   const [userProfile, setUserProfile] = useState(null);
@@ -30,28 +31,118 @@ const UserProfile = () => {
     fetchUserProfile();
   }, []);
 
+  const [selectedTab, setSelectedTab] = useState(0);
+
+  const handleChange = (event, newValue) => {
+    setSelectedTab(newValue);
+  };
+
+  const TabPanel = (props) => {
+    const { children, value, index, ...other } = props;
+
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`scrollable-auto-tabpanel-${index}`}
+        aria-labelledby={`scrollable-auto-tab-${index}`}
+        {...other}
+      >
+        {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+      </div>
+    );
+  };
+
+  const InfoBox = ({ label, value }) => {
+    const displayValue = Array.isArray(value)
+      ? value.join("<br/>")
+      : value.startsWith("[") && value.endsWith("]")
+      ? value
+          .slice(1, -1)
+          .split(",")
+          .map((item) => item.trim().replace(/"/g, ""))
+          .join("<br/>")
+      : value;
+
+    return (
+      <Grid item xs={12} md={6}>
+        <div style={{ marginBottom: "1rem" }}>
+          <Typography variant="body1">{label}</Typography>
+          <Paper
+            sx={{
+              padding: "0.5rem",
+              marginTop: "0.5rem",
+              width: "30%",
+              textAlign: "center",
+            }}
+            elevation={1}
+          >
+            <Typography
+              variant="body2"
+              dangerouslySetInnerHTML={{ __html: displayValue }}
+            />
+          </Paper>
+        </div>
+      </Grid>
+    );
+  };
+
   if (!userProfile) {
     return <div>Loading...</div>;
   }
 
   return (
     <div>
-      <h1>User Profile</h1>
-      <p>Username: {userProfile.username}</p>
-      <p>Email: {userProfile.email}</p>
-      <p>First Name: {userProfile.first_name}</p>
-      <p>Last Name: {userProfile.last_name}</p>
-      <p>Preferred Name: {userProfile.preferred_name}</p>
-      <p>Age: {userProfile.age}</p>
-      <p>Gender: {userProfile.gender}</p>
-      <p>Languages Spoken: {userProfile.languages_spoke}</p>
-      <p>Birth Country: {userProfile.birth_country}</p>
-      <p>Countries Worked: {userProfile.countries_worked}</p>
-      <p>Countries Lived: {userProfile.countries_lived}</p>
-      <p>Countries Studied: {userProfile.countries_studied}</p>
-      <p>Countries Volunteered: {userProfile.countries_volunteered}</p>
-      <p>Countries Traveled: {userProfile.countries_traveled}</p>
-      <p>Countries Bucket List: {userProfile.countries_bucket}</p>
+      <Tabs
+        value={selectedTab}
+        onChange={handleChange}
+        indicatorColor="primary"
+        textColor="primary"
+        variant="scrollable"
+        scrollButtons="auto"
+        aria-label="scrollable auto tabs example"
+      >
+        <Tab label="Basic Information" />
+        <Tab label="Country Information" />
+      </Tabs>
+      <TabPanel value={selectedTab} index={0}>
+        <Grid container spacing={2}>
+          <InfoBox label="Username" value={userProfile.username} />
+          <InfoBox label="Email" value={userProfile.email} />
+          <InfoBox label="First Name" value={userProfile.first_name} />
+          <InfoBox label="Last Name" value={userProfile.last_name} />
+          <InfoBox label="Preferred Name" value={userProfile.preferred_name} />
+          <InfoBox label="Age" value={userProfile.age} />
+          <InfoBox label="Gender" value={userProfile.gender} />
+          <InfoBox label="Birth Country" value={userProfile.birth_country} />
+        </Grid>
+      </TabPanel>
+      <TabPanel value={selectedTab} index={1}>
+        <Grid container spacing={2}>
+          <InfoBox
+            label="Countries Worked"
+            value={userProfile.countries_worked}
+          />
+
+          <InfoBox
+            label="Countries Lived"
+            value={userProfile.countries_lived}
+          />
+
+          <InfoBox
+            label="Countries studied"
+            value={userProfile.countries_studied}
+          />
+          <InfoBox
+            label="Countries volunteered"
+            value={userProfile.countries_volunteered}
+          />
+          <InfoBox
+            label="Countries traveled"
+            value={userProfile.countries_traveled}
+          />
+        </Grid>
+      </TabPanel>
     </div>
   );
 };

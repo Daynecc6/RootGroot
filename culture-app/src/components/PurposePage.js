@@ -11,34 +11,45 @@ const PurposePage = () => {
   const icons = [
     {
       img: "https://via.placeholder.com/150",
-      text: "Icon 1",
+      text: "Let's go! - Travel",
     },
     {
       img: "https://via.placeholder.com/150",
-      text: "Icon 2",
+      text: "Have fun! - Study",
     },
     {
       img: "https://via.placeholder.com/150",
-      text: "Icon 3",
+      text: "It's my... - Business",
+    },
+    {
+      img: "https://via.placeholder.com/150",
+      text: "I am here for you. - Volunteer",
+    },
+    {
+      img: "https://via.placeholder.com/150",
+      text: "Once upon a time... - Storyteller",
+    },
+    {
+      img: "https://via.placeholder.com/150",
+      text: "Tell me more! - Story-hunter",
     },
   ];
 
   const [selectedPurpose, setSelectedPurpose] = useState(null);
 
-  const themeIcons = {
-    "Icon 1": [
-      { img: "https://via.placeholder.com/150", text: "Icon 1 Theme 1" },
-      { img: "https://via.placeholder.com/150", text: "Icon 1 Theme 2" },
-    ],
-    "Icon 2": [
-      { img: "https://via.placeholder.com/150", text: "Icon 2 Theme 1" },
-      { img: "https://via.placeholder.com/150", text: "Icon 2 Theme 2" },
-    ],
-    "Icon 3": [
-      { img: "https://via.placeholder.com/150", text: "Icon 3 Theme 1" },
-      { img: "https://via.placeholder.com/150", text: "Icon 3 Theme 2" },
-    ],
-  };
+  const commonThemes = [
+    { img: "https://via.placeholder.com/150", text: "Social Circle" },
+    { img: "https://via.placeholder.com/150", text: "Life Impact" },
+    { img: "https://via.placeholder.com/150", text: "Skills" },
+    { img: "https://via.placeholder.com/150", text: "Development" },
+    { img: "https://via.placeholder.com/150", text: "Education" },
+    { img: "https://via.placeholder.com/150", text: "Beliefs" },
+    { img: "https://via.placeholder.com/150", text: "Social Impact" },
+    { img: "https://via.placeholder.com/150", text: "Politics" },
+    { img: "https://via.placeholder.com/150", text: "Regulation/Legalization" },
+    { img: "https://via.placeholder.com/150", text: "Healthcare" },
+    { img: "https://via.placeholder.com/150", text: "Versus" },
+  ];
 
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -49,10 +60,15 @@ const PurposePage = () => {
       <Container maxWidth="md">
         <Grid container spacing={isSmallScreen ? 2 : 4} justifyContent="center">
           {icons.map((icon, index) => (
-            <Grid item key={index} xs={12} sm={6} md={4}>
+            <Grid item key={index} xs={6} sm={4} md={2}>
               <Box
                 onClick={() => {
                   setSelectedPurpose(icon.text);
+                }}
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
                 }}
               >
                 <Avatar
@@ -64,9 +80,16 @@ const PurposePage = () => {
                     cursor: "pointer",
                   }}
                 />
-                <Typography variant="subtitle1" align="center">
-                  {icon.text}
-                </Typography>
+                {icon.text.split(" - ").map((part, i) => (
+                  <Typography
+                    key={i}
+                    variant="subtitle1"
+                    align="center"
+                    display="block"
+                  >
+                    {part}
+                  </Typography>
+                ))}
               </Box>
             </Grid>
           ))}
@@ -79,9 +102,15 @@ const PurposePage = () => {
               spacing={isSmallScreen ? 2 : 4}
               justifyContent="center"
             >
-              {themeIcons[selectedPurpose].map((icon, index) => (
-                <Grid item key={index} xs={12} sm={6} md={4}>
-                  <Box>
+              {commonThemes.map((icon, index) => (
+                <Grid item key={index} xs={6} sm={4} md={2}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                    }}
+                  >
                     <Avatar
                       alt={icon.text}
                       src={icon.img}
