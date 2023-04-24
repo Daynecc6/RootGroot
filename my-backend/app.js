@@ -7,6 +7,8 @@ const mysql = require("mysql2/promise");
 
 dotenv.config();
 
+const PORT = process.env.PORT || 3001;
+
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -222,7 +224,49 @@ app.get("/api/user-profile", authMiddleware, async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3001;
+const fetchStoryAndConversation = async (subtheme) => {
+  const query = `
+    SELECT s.subtheme_name, sc.scenario_text, c.speaker, c.message, c.order_number
+    FROM subthemes s
+    JOIN scenarios sc ON sc.subtheme_id = s.id
+    JOIN conversations c ON c.scenario_id = sc.id
+    WHERE s.subtheme_name = ?
+    ORDER BY c.order_number;
+  `;
+
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    const [results] = await connection.execute(query, [subtheme]);
+    connection.end();
+
+    const storyData = {
+      scenario_text: results[0]?.scenario_text,
+      conversations: results.map((row) => ({
+        speaker: row.speaker,
+        message: row.message,
+      })),
+    };
+
+    return storyData;
+  } catch (error) {
+    console.error("Error connecting to the database:", error);
+    throw new Error("An error occurred while accessing the database.");
+  }
+};
+
+app.get("/api/story/:subtheme", async (req, res) => {
+  const { subtheme } = req.params;
+  try {
+    const result = await fetchStoryAndConversation(subtheme);
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "Failed to fetch story and conversation data." });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

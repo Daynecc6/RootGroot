@@ -1,8 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Tabs, Tab, Box, Typography, Paper, Grid } from "@mui/material";
+import {
+  Tabs,
+  Tab,
+  Box,
+  Typography,
+  Paper,
+  Grid,
+  TextField,
+  Button,
+} from "@mui/material";
 
 const UserProfile = () => {
   const [userProfile, setUserProfile] = useState(null);
+  const [selectedTab, setSelectedTab] = useState(0);
+  const [editedProfile, setEditedProfile] = useState({ ...userProfile });
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -31,8 +42,6 @@ const UserProfile = () => {
     fetchUserProfile();
   }, []);
 
-  const [selectedTab, setSelectedTab] = useState(0);
-
   const handleChange = (event, newValue) => {
     setSelectedTab(newValue);
   };
@@ -53,16 +62,15 @@ const UserProfile = () => {
     );
   };
 
-  const InfoBox = ({ label, value }) => {
-    const displayValue = Array.isArray(value)
-      ? value.join("<br/>")
-      : value.startsWith("[") && value.endsWith("]")
-      ? value
-          .slice(1, -1)
-          .split(",")
-          .map((item) => item.trim().replace(/"/g, ""))
-          .join("<br/>")
-      : value;
+  const InfoBox = ({ label, value, isEditable, onChange }) => {
+    const [isEditing, setIsEditing] = useState(false);
+    const [inputValue, setInputValue] = useState(value || "");
+
+    const displayValue = value
+      ? value.startsWith("[") && value.endsWith("]")
+        ? value.slice(1, -1).replace(/['"]/g, "").replace(/,/g, ", ")
+        : value
+      : "";
 
     return (
       <Grid item xs={12} md={6}>
@@ -72,19 +80,61 @@ const UserProfile = () => {
             sx={{
               padding: "0.5rem",
               marginTop: "0.5rem",
-              width: "30%",
+              width: "100%",
               textAlign: "center",
             }}
             elevation={1}
+            onClick={() => isEditable && setIsEditing(true)}
           >
-            <Typography
-              variant="body2"
-              dangerouslySetInnerHTML={{ __html: displayValue }}
-            />
+            {isEditable && isEditing ? (
+              <TextField
+                value={inputValue}
+                fullWidth
+                onChange={(e) => {
+                  setInputValue(e.target.value);
+                  onChange && onChange(e);
+                }}
+                onBlur={() => setIsEditing(false)}
+                InputProps={{ disableUnderline: true }}
+                autoFocus
+              />
+            ) : (
+              <Typography
+                variant="body2"
+                dangerouslySetInnerHTML={{ __html: displayValue }}
+              />
+            )}
           </Paper>
         </div>
       </Grid>
     );
+  };
+
+  const updateProfile = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        "http://localhost:3001/api/update-user-profile",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(editedProfile),
+        }
+      );
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error);
+      }
+
+      const updatedUserData = await response.json();
+      setUserProfile(updatedUserData);
+    } catch (error) {
+      console.error("Error updating user profile:", error.message);
+    }
   };
 
   if (!userProfile) {
@@ -107,7 +157,14 @@ const UserProfile = () => {
       </Tabs>
       <TabPanel value={selectedTab} index={0}>
         <Grid container spacing={2}>
-          <InfoBox label="Username" value={userProfile.username} />
+          <InfoBox
+            label="Username"
+            value={editedProfile.username}
+            editable
+            onChange={(e) =>
+              setEditedProfile({ ...editedProfile, username: e.target.value })
+            }
+          />
           <InfoBox label="Email" value={userProfile.email} />
           <InfoBox label="First Name" value={userProfile.first_name} />
           <InfoBox label="Last Name" value={userProfile.last_name} />
@@ -143,6 +200,9 @@ const UserProfile = () => {
           />
         </Grid>
       </TabPanel>
+      <Button variant="contained" color="primary" onClick={updateProfile}>
+        Update Profile
+      </Button>
     </div>
   );
 };

@@ -16,6 +16,7 @@ import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 import PurposePage from "./PurposePage";
 import WorldMap from "./WorldMap";
+import StoryPage from "./StoryPage";
 
 const ProtectedRoute = ({ token, children, fallback }) => {
   const navigate = useNavigate();
@@ -49,6 +50,7 @@ const Main = () => {
         />
         <Route path="/purpose" element={<PurposePage />} />
         <Route path="/user-profile" element={<UserProfile />} />
+        <Route path="/storypage" element={<StoryPage />} />
       </Routes>
       <Footer />
     </Router>

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
@@ -8,6 +9,12 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 const PurposePage = () => {
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const [selectedPurpose, setSelectedPurpose] = useState(null);
+  const [selectedTheme, setSelectedTheme] = useState(null);
+
   const icons = [
     {
       img: "https://via.placeholder.com/150",
@@ -34,9 +41,6 @@ const PurposePage = () => {
       text: "Tell me more! - Story-hunter",
     },
   ];
-
-  const [selectedPurpose, setSelectedPurpose] = useState(null);
-
   const commonThemes = [
     { img: "https://via.placeholder.com/150", text: "Social Circle" },
     { img: "https://via.placeholder.com/150", text: "Life Impact" },
@@ -50,9 +54,57 @@ const PurposePage = () => {
     { img: "https://via.placeholder.com/150", text: "Healthcare" },
     { img: "https://via.placeholder.com/150", text: "Versus" },
   ];
+  const subThemes = {
+    "Social Circle": [
+      { img: "https://via.placeholder.com/150", text: "Relationship" },
+      { img: "https://via.placeholder.com/150", text: "Family" },
+      { img: "https://via.placeholder.com/150", text: "Community" },
+    ],
+    "Life Impact": [
+      { img: "https://via.placeholder.com/150", text: "Personal Sensation" },
+      { img: "https://via.placeholder.com/150", text: "Physiological Needs" },
+      { img: "https://via.placeholder.com/150", text: "Challenges" },
+      { img: "https://via.placeholder.com/150", text: "Consumption" },
+    ],
+    Skills: [
+      { img: "https://via.placeholder.com/150", text: "Personal Skills" },
+      { img: "https://via.placeholder.com/150", text: "Interpersonal Skills" },
+    ],
+    Development: [
+      { img: "https://via.placeholder.com/150", text: "Personal Development" },
+      {
+        img: "https://via.placeholder.com/150",
+        text: "Professional Development/Life",
+      },
+      {
+        img: "https://via.placeholder.com/150",
+        text: "Intercultural Competence",
+      },
+    ],
+    Education: [{ img: "https://via.placeholder.com/150", text: "Education" }],
+    Beliefs: [{ img: "https://via.placeholder.com/150", text: "Beliefs" }],
+    "Social Impact": [
+      { img: "https://via.placeholder.com/150", text: "Social Justice" },
+      { img: "https://via.placeholder.com/150", text: "Human Rights" },
+    ],
+    Politics: [{ img: "https://via.placeholder.com/150", text: "Politics" }],
+    "Regulation/Legalization": [
+      {
+        img: "https://via.placeholder.com/150",
+        text: "Regulation/Legalization",
+      },
+    ],
+    Healthcare: [
+      { img: "https://via.placeholder.com/150", text: "Healthcare" },
+    ],
+    Versus: [{ img: "https://via.placeholder.com/150", text: "Versus" }],
+  };
 
-  const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const navigate = useNavigate();
+
+  const handleSubThemeClick = (subTheme) => {
+    navigate("/storypage", { state: { selectedSubTheme: subTheme } });
+  };
 
   return (
     <div>
@@ -64,6 +116,7 @@ const PurposePage = () => {
               <Box
                 onClick={() => {
                   setSelectedPurpose(icon.text);
+                  setSelectedTheme(null);
                 }}
                 sx={{
                   display: "flex",
@@ -114,6 +167,45 @@ const PurposePage = () => {
                     <Avatar
                       alt={icon.text}
                       src={icon.img}
+                      onClick={() => {
+                        setSelectedTheme(icon.text);
+                      }}
+                      sx={{
+                        width: isSmallScreen ? 80 : 100,
+                        height: isSmallScreen ? 80 : 100,
+                        cursor: "pointer",
+                      }}
+                    />
+                    <Typography variant="subtitle1" align="center">
+                      {icon.text}
+                    </Typography>
+                  </Box>
+                </Grid>
+              ))}
+            </Grid>
+          </>
+        )}
+        {selectedTheme && (
+          <>
+            <h3>{selectedTheme} Sub-themes</h3>
+            <Grid
+              container
+              spacing={isSmallScreen ? 2 : 4}
+              justifyContent="center"
+            >
+              {subThemes[selectedTheme].map((icon, index) => (
+                <Grid item key={index} xs={6} sm={4} md={2}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Avatar
+                      alt={icon.text}
+                      src={icon.img}
+                      onClick={() => handleSubThemeClick(icon.text)}
                       sx={{
                         width: isSmallScreen ? 80 : 100,
                         height: isSmallScreen ? 80 : 100,
