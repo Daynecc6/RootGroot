@@ -7,13 +7,17 @@ import Container from "@mui/material/Container";
 import { Box } from "@mui/system";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { ThemeProvider } from "@mui/material/styles";
+import { Button } from "@mui/material";
 
 const PurposePage = () => {
   const theme = useTheme();
+
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [selectedPurpose, setSelectedPurpose] = useState(null);
   const [selectedTheme, setSelectedTheme] = useState(null);
+  const [step, setStep] = useState(0);
 
   const icons = [
     {
@@ -99,6 +103,21 @@ const PurposePage = () => {
     ],
     Versus: [{ img: "https://via.placeholder.com/150", text: "Versus" }],
   };
+  const handleBackClick = () => {
+    if (step === 0) {
+      return;
+    }
+    setStep(step - 1);
+  };
+  const handlePurposeClick = (purpose) => {
+    setSelectedPurpose(purpose);
+    setStep(1);
+  };
+
+  const handleThemeClick = (theme) => {
+    setSelectedTheme(theme);
+    setStep(2);
+  };
 
   const navigate = useNavigate();
 
@@ -107,122 +126,127 @@ const PurposePage = () => {
   };
 
   return (
-    <div>
-      <h1>Purpose Page</h1>
-      <Container maxWidth="md">
-        <Grid container spacing={isSmallScreen ? 2 : 4} justifyContent="center">
-          {icons.map((icon, index) => (
-            <Grid item key={index} xs={6} sm={4} md={2}>
-              <Box
-                onClick={() => {
-                  setSelectedPurpose(icon.text);
-                  setSelectedTheme(null);
-                }}
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
-              >
-                <Avatar
-                  alt={icon.text}
-                  src={icon.img}
-                  sx={{
-                    width: isSmallScreen ? 80 : 100,
-                    height: isSmallScreen ? 80 : 100,
-                    cursor: "pointer",
-                  }}
-                />
-                {icon.text.split(" - ").map((part, i) => (
-                  <Typography
-                    key={i}
-                    variant="subtitle1"
-                    align="center"
-                    display="block"
-                  >
-                    {part}
-                  </Typography>
-                ))}
-              </Box>
-            </Grid>
-          ))}
-        </Grid>
-        {selectedPurpose && (
-          <>
-            <h2>{selectedPurpose} Themes</h2>
-            <Grid
-              container
-              spacing={isSmallScreen ? 2 : 4}
-              justifyContent="center"
+    <ThemeProvider theme={theme}>
+      <div style={{ padding: "2rem", backgroundColor: "#F7F7F7" }}>
+        <h1 style={{ textAlign: "center", fontWeight: "bold" }}>
+          Purpose Page
+        </h1>
+        <Container maxWidth="md">
+          <Box textAlign="left" mb={2}>
+            <Button
+              variant="outlined"
+              onClick={handleBackClick}
+              disabled={step === 0}
             >
-              {commonThemes.map((icon, index) => (
-                <Grid item key={index} xs={6} sm={4} md={2}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Avatar
-                      alt={icon.text}
-                      src={icon.img}
-                      onClick={() => {
-                        setSelectedTheme(icon.text);
-                      }}
+              Back
+            </Button>
+          </Box>
+          <Grid container spacing={2} justifyContent="center">
+            {step === 0 && (
+              <>
+                {/* Render purpose icons */}
+                <Typography variant="h6" align="center">
+                  Purposes
+                </Typography>
+                {icons.map((icon, index) => (
+                  <Grid item xs={4} sm={4} key={index}>
+                    <Box
+                      onClick={() => handlePurposeClick(icon.text)}
                       sx={{
-                        width: isSmallScreen ? 80 : 100,
-                        height: isSmallScreen ? 80 : 100,
-                        cursor: "pointer",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
                       }}
-                    />
-                    <Typography variant="subtitle1" align="center">
-                      {icon.text}
-                    </Typography>
-                  </Box>
-                </Grid>
-              ))}
-            </Grid>
-          </>
-        )}
-        {selectedTheme && (
-          <>
-            <h3>{selectedTheme} Sub-themes</h3>
-            <Grid
-              container
-              spacing={isSmallScreen ? 2 : 4}
-              justifyContent="center"
-            >
-              {subThemes[selectedTheme].map((icon, index) => (
-                <Grid item key={index} xs={6} sm={4} md={2}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Avatar
-                      alt={icon.text}
-                      src={icon.img}
+                    >
+                      <Avatar
+                        alt={icon.text}
+                        src={icon.img}
+                        sx={{
+                          width: 100,
+                          height: 100,
+                          cursor: "pointer",
+                        }}
+                      />
+                      <Typography variant="subtitle1" align="center">
+                        {icon.text}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                ))}
+              </>
+            )}
+
+            {step === 1 && (
+              <>
+                {/* Render theme icons */}
+                <Typography variant="h6" align="center">
+                  {selectedPurpose} Themes
+                </Typography>
+                {commonThemes.map((icon, index) => (
+                  <Grid item xs={4} sm={4} key={index}>
+                    <Box
+                      onClick={() => handleThemeClick(icon.text)}
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Avatar
+                        alt={icon.text}
+                        src={icon.img}
+                        sx={{
+                          width: 100,
+                          height: 100,
+                          cursor: "pointer",
+                        }}
+                      />
+                      <Typography variant="subtitle1" align="center">
+                        {icon.text}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                ))}
+              </>
+            )}
+
+            {step === 2 && (
+              <>
+                {/* Render sub-theme icons */}
+                <Typography variant="h6" align="center">
+                  {selectedTheme} Sub-themes
+                </Typography>
+                {subThemes[selectedTheme].map((icon, index) => (
+                  <Grid item xs={4} sm={4} key={index}>
+                    <Box
                       onClick={() => handleSubThemeClick(icon.text)}
                       sx={{
-                        width: isSmallScreen ? 80 : 100,
-                        height: isSmallScreen ? 80 : 100,
-                        cursor: "pointer",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
                       }}
-                    />
-                    <Typography variant="subtitle1" align="center">
-                      {icon.text}
-                    </Typography>
-                  </Box>
-                </Grid>
-              ))}
-            </Grid>
-          </>
-        )}
-      </Container>
-    </div>
+                    >
+                      <Avatar
+                        alt={icon.text}
+                        src={icon.img}
+                        sx={{
+                          width: 100,
+                          height: 100,
+                          cursor: "pointer",
+                        }}
+                      />
+                      <Typography variant="subtitle1" align="center">
+                        {icon.text}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                ))}
+              </>
+            )}
+          </Grid>
+        </Container>
+      </div>
+    </ThemeProvider>
   );
 };
 
