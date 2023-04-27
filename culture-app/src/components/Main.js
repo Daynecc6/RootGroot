@@ -8,15 +8,16 @@ import {
   useNavigate,
 } from "react-router-dom";
 
-import Footer from "./sections/Footer";
-import NavBar from "./Navbar";
-import UserProfile from "./UserProfile";
-import MainContent from "./sections/Content";
-import LoginForm from "./LoginForm";
-import RegisterForm from "./RegisterForm";
-import PurposePage from "./PurposePage";
-import WorldMap from "./WorldMap";
-import StoryPage from "./StoryPage";
+import { Footer, NavBar } from "./index";
+import {
+  UserProfile,
+  MainContent,
+  LoginForm,
+  RegisterForm,
+  PurposePage,
+  WorldMap,
+  StoryPage,
+} from "../pages/index";
 
 const ProtectedRoute = ({ token, children, fallback }) => {
   const navigate = useNavigate();
@@ -41,7 +42,7 @@ const Main = () => {
         <Route path="/login" element={<LoginForm />} />
         <Route path="/register" element={<RegisterForm />} />
         <Route
-          path="/world map"
+          path="/world-map"
           element={
             <ProtectedRoute token={token} fallback={<MainContent />}>
               <WorldMap />

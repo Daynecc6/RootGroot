@@ -1,6 +1,4 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { login } from "../redux/authActions";
+import { useAuth } from "./redux/useAuth";
 import {
   Button,
   TextField,
@@ -9,37 +7,18 @@ import {
   Typography,
   Alert,
 } from "@mui/material";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
-import RegisterForm from "./RegisterForm";
+import { Link as RouterLink } from "react-router-dom";
 
 const LoginForm = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const {
+    username,
+    setUsername,
+    password,
+    setPassword,
+    errorMessage,
+    handleSubmit,
+  } = useAuth();
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      const token = await dispatch(login(username, password));
-      localStorage.setItem("token", token);
-      dispatch({ type: "LOGIN", payload: token });
-
-      if (token) {
-        navigate("/home"); // Move this inside the if condition and change to /home
-        console.log("here");
-      }
-    } catch (error) {
-      console.error("Login failed:", error.message);
-      setErrorMessage("Login failed: Invalid credentials");
-    }
-  };
-
-  // LoginForm.js
-  // ...
   return (
     <Container maxWidth="xs">
       <Box sx={{ mt: 8, mb: 4 }}>
@@ -79,7 +58,6 @@ const LoginForm = () => {
       </form>
     </Container>
   );
-  // ...
 };
 
 export default LoginForm;

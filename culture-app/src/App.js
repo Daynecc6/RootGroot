@@ -2,7 +2,7 @@ import React from "react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import { Provider } from "react-redux";
-import store from "./redux/store";
+import store from "./pages/Login/redux/store";
 import Main from "./components/Main";
 
 const theme = createTheme({

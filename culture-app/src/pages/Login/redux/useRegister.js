@@ -1,23 +1,9 @@
-// src/components/RegisterForm.js
 import { useState } from "react";
-import {
-  Button,
-  TextField,
-  Container,
-  Box,
-  Typography,
-  Alert,
-} from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
-import { register } from "../redux/authActions";
-import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import EmailUsernamePassword from "./UserDetails/EmailUsernamePassword";
-import UserName from "./UserDetails/UserName";
-import Countries from "./UserDetails/Countries";
-// ... import other step components
+import { register } from "./authActions";
+import { useNavigate } from "react-router-dom";
 
-const RegisterForm = () => {
+export const useRegister = () => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     email: "",
@@ -203,59 +189,19 @@ const RegisterForm = () => {
     }
   };
 
-  const renderStep = () => {
-    switch (step) {
-      case 1:
-        return (
-          <EmailUsernamePassword
-            handleNext={handleNextClick} // Updated here
-            handleInputChange={handleInputChange}
-            handlePasswordBlur={handlePasswordBlur}
-            formData={formData}
-            errors={inputError}
-          />
-        );
-
-      case 2:
-        return (
-          <UserName
-            handleNext={handleNextClick}
-            handleBack={handleBackClick}
-            handleInputChange={handleInputChange}
-            formData={formData}
-            errors={inputError}
-          />
-        );
-      case 3:
-        return (
-          <Countries
-            handleNext={handleNextClick}
-            handleBack={handleBackClick}
-            handleInputChange={handleInputChange}
-            formData={formData}
-            errors={inputError}
-          />
-        );
-      default:
-        return null;
-    }
+  return {
+    step,
+    setStep,
+    formData,
+    setFormData,
+    errorMessage,
+    inputError,
+    setInputError,
+    handleNextClick,
+    handleBackClick,
+    handleInputChange,
+    handleSubmit,
+    checkEmailUsername,
+    handlePasswordBlur,
   };
-
-  return (
-    <Container maxWidth="xs">
-      <Box sx={{ mt: 8, mb: 4 }}>
-        <Typography variant="h4">Register</Typography>
-      </Box>
-      <form onSubmit={handleSubmit}>
-        {errorMessage && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {errorMessage}
-          </Alert>
-        )}
-        {renderStep()}
-      </form>
-    </Container>
-  );
 };
-
-export default RegisterForm;

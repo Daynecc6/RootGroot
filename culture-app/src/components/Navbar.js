@@ -1,53 +1,71 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   AppBar,
   Toolbar,
-  Typography,
   IconButton,
   Drawer,
   List,
   ListItem,
   ListItemText,
-  Button,
+  ListItemIcon,
   Box,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { useTheme } from "@mui/material/styles";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import { useSelector, useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
-import { logout } from "../redux/authActions";
+import HomeIcon from "@mui/icons-material/Home";
+import WorldMapIcon from "@mui/icons-material/Map";
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import { Link } from "react-router-dom";
+import useNavBar from "./useNavBar";
 
 const NavBar = () => {
-  const navLinks = ["Home", "About", "Contact", "World Map", "User-Profile"];
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const storeToken = useSelector((state) => state.auth.token);
-  const [token, setToken] = useState(storeToken);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    setToken(storeToken);
-  }, [storeToken]);
+  const { token, isMobile, handleLogout } = useNavBar();
 
   const toggleDrawer = (open) => (event) => {
     setDrawerOpen(open);
   };
 
-  const handleLogout = () => {
-    if (token) {
-      dispatch(logout());
-      navigate("/home");
-    }
-  };
+  const navLinks = [
+    {
+      label: "Home",
+      path: "/home",
+      icon: <HomeIcon />,
+      alwaysShowIcon: true,
+      iconSize: "large",
+    },
+    {
+      label: "World Map",
+      path: "/world-map",
+      icon: <WorldMapIcon />,
+      alwaysShowIcon: true,
+      iconSize: "large",
+    },
+    {
+      label: "User-Profile",
+      path: "/user-profile",
+      icon: <AccountBoxIcon />,
+      alwaysShowIcon: true,
+      iconSize: "large",
+    },
+    { type: "spacer" },
+    ...(!token
+      ? [
+          { label: "Login", path: "/login" },
+          { label: "Register", path: "/register" },
+        ]
+      : [
+          {
+            label: "Logout",
+            onClick: handleLogout,
+          },
+        ]),
+  ];
 
   return (
     <AppBar position="static">
       <Toolbar>
-        {isMobile ? (
+        {isMobile && (
           <IconButton
             edge="start"
             color="inherit"
@@ -57,55 +75,68 @@ const NavBar = () => {
           >
             <MenuIcon />
           </IconButton>
-        ) : (
-          navLinks.map((link) => (
-            <Link
-              key={link}
-              to={`/${link.toLowerCase()}`}
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              <Typography
-                variant="subtitle1"
-                component="div"
-                sx={{ marginRight: 2 }}
-              >
-                {link}
-              </Typography>
-            </Link>
-          ))
         )}
-        <Box sx={{ flexGrow: 1 }} />
-        <div>
-          {token ? (
-            <Button color="inherit" onClick={handleLogout}>
-              Logout
-            </Button>
-          ) : (
-            <>
-              <Button component={Link} to="/login" color="inherit">
-                Login
-              </Button>
-              <Button component={Link} to="/register" color="inherit">
-                Register
-              </Button>
-            </>
-          )}
-        </div>
+        {navLinks.map((link) => (
+          <React.Fragment key={link.label}>
+            {link.type === "spacer" ? (
+              <Box sx={{ flexGrow: 1 }} />
+            ) : isMobile ? null : (
+              <Link
+                to={link.path || ""}
+                style={{ textDecoration: "none", color: "inherit" }}
+                onClick={link.onClick}
+              >
+                {link.alwaysShowIcon ? (
+                  <IconButton
+                    edge="start"
+                    color="inherit"
+                    aria-label={link.label}
+                    sx={{ fontSize: link.iconSize }}
+                  >
+                    {link.icon && (
+                      <IconButton
+                        edge="start"
+                        color="inherit"
+                        aria-label={link.label}
+                        sx={{ mr: 1 }}
+                      >
+                        {React.cloneElement(link.icon, {
+                          fontSize: link.iconSize,
+                        })}
+                      </IconButton>
+                    )}
+                  </IconButton>
+                ) : (
+                  <ListItemText primary={link.label} sx={{ marginRight: 2 }} />
+                )}
+              </Link>
+            )}
+          </React.Fragment>
+        ))}
       </Toolbar>
 
       <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
         <List>
-          {navLinks.map((text) => (
-            <ListItem
-              button
-              key={text}
-              onClick={toggleDrawer(false)}
-              component={Link}
-              to={`/${text.toLowerCase()}`}
-            >
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
+          {navLinks.map(
+            (link, index) =>
+              link.type !== "spacer" && (
+                <ListItem
+                  button
+                  key={index}
+                  onClick={toggleDrawer(false)}
+                  component={link.path ? Link : "div"}
+                  to={link.path}
+                >
+                  {link.icon ? (
+                    <ListItemIcon>
+                      {React.cloneElement(link.icon, { fontSize: "large" })}
+                    </ListItemIcon>
+                  ) : (
+                    <ListItemText primary={link.label} />
+                  )}
+                </ListItem>
+              )
+          )}
         </List>
       </Drawer>
     </AppBar>

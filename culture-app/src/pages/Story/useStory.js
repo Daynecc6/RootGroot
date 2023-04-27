@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-const StoryPage = () => {
+export const useStory = () => {
   const location = useLocation();
   const selectedSubTheme = location.state.selectedSubTheme;
   const [storyData, setStoryData] = useState(null);
@@ -27,28 +27,10 @@ const StoryPage = () => {
     }
   };
 
-  return (
-    <div>
-      <h1>Story Page</h1>
-      <h2>{selectedSubTheme}</h2>
-      {storyData && (
-        <>
-          <p>{storyData.scenario_text}</p>
-          <div>
-            {storyData.conversations
-              .slice(0, conversationIndex + 1)
-              .map((conversation, index) => (
-                <p key={index}>
-                  <strong>{conversation.speaker}:</strong>{" "}
-                  {conversation.message}
-                </p>
-              ))}
-          </div>
-          <button onClick={handleNextClick}>Next</button>
-        </>
-      )}
-    </div>
-  );
+  return {
+    selectedSubTheme,
+    storyData,
+    conversationIndex,
+    handleNextClick,
+  };
 };
-
-export default StoryPage;

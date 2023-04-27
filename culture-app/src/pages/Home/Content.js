@@ -1,7 +1,7 @@
 import React from "react";
-import Landing from "./area/Landing";
-import AboutApp from "./area/AboutApp";
-import AboutUs from "./area/AboutUs";
+import Landing from "./Landing";
+import AboutApp from "./AboutApp";
+import AboutUs from "./AboutUs";
 
 const MainContent = () => {
   return (

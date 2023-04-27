@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
-import logo from "../../../assets/rootgroot.png";
+import logo from "../../assets/rootgroot.png";
 
 const Landing = () => {
   return (
