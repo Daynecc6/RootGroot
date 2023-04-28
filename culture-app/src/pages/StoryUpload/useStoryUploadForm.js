@@ -56,24 +56,6 @@ export const useStoryUploadForm = () => {
     setFormData({ ...formData, conversations: newConversations });
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    // Send the form data to your backend API
-    const response = await fetch("/api/stories", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
-
-    if (response.ok) {
-      alert("Story uploaded successfully!");
-    } else {
-      alert("Error uploading the story.");
-    }
-  };
-
   const [currentQuestion, setCurrentQuestion] = useState({
     question: "",
     choices: [""],
@@ -127,6 +109,26 @@ export const useStoryUploadForm = () => {
       ...formData,
       questions: formData.questions.filter((_, i) => i !== index),
     });
+  };
+
+  const handleSubmit = async (event) => {
+    console.log("Sending form data:", formData);
+
+    event.preventDefault();
+    // Send the form data to your backend API
+    const response = await fetch("http://localhost:3001/api/stories", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+
+    if (response.ok) {
+      alert("Story uploaded successfully!");
+    } else {
+      alert("Error uploading the story.");
+    }
   };
 
   return {

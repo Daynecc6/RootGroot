@@ -267,6 +267,80 @@ app.get("/api/story/:subtheme", async (req, res) => {
   }
 });
 
+// Add this endpoint to your backend code
+app.post("/api/stories", async (req, res) => {
+  console.log("Story upload request received:", req.body);
+
+  const {
+    country,
+    purpose,
+    theme,
+    subtheme,
+    title,
+    scenario,
+    freeresp,
+    conversations,
+    questions,
+  } = req.body;
+
+  // You may want to add checks for null values or validation here
+
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+
+    const [result] = await connection.execute(
+      "INSERT INTO stories (country, purpose, theme, subtheme, title, scenario, freeresp) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      [country, purpose, theme, subtheme, title, scenario, freeresp]
+    );
+
+    const storyId = result.insertId;
+
+    for (
+      let order_number = 0;
+      order_number < conversations.length;
+      order_number++
+    ) {
+      const { speaker, message } = conversations[order_number];
+      await connection.execute(
+        "INSERT INTO conversations (story_id, speaker, message, order_number) VALUES (?, ?, ?, ?)",
+        [storyId, speaker, message, order_number]
+      );
+    }
+
+    for (const question of questions) {
+      const { question: questionText, choices, answer } = question;
+      const [questionResult] = await connection.execute(
+        "INSERT INTO questions (story_id, question_text, choices, answer) VALUES (?, ?, ?, ?)",
+        [
+          storyId,
+          question.question,
+          JSON.stringify(question.choices),
+          question.answer,
+        ]
+      );
+
+      const questionId = questionResult.insertId;
+
+      for (const choice of choices) {
+        await connection.execute(
+          "INSERT INTO choices (question_id, choice) VALUES (?, ?)",
+          [questionId, choice]
+        );
+      }
+    }
+
+    connection.end();
+
+    console.log("Story uploaded successfully!");
+    res.json({ message: "Story uploaded successfully!" });
+  } catch (error) {
+    console.error("Error connecting to the database:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while accessing the database." });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
