@@ -50,7 +50,7 @@ function Conversations({
       </Box>
 
       <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="conversations">
+        <Droppable droppableId="conversation">
           {(provided) => (
             <List ref={provided.innerRef} {...provided.droppableProps}>
               {formData.conversations.map((conversation, index) => (
