@@ -5,3 +5,4 @@ export { default as RegisterForm } from "./Register/RegisterForm";
 export { default as PurposePage } from "./Purpose/PurposePage";
 export { default as WorldMap } from "./WorldMap/WorldMap";
 export { default as StoryPage } from "./Story/StoryPage";
+export { default as StoryUploadForm } from "./StoryUpload/StoryUploadForm";

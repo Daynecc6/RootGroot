@@ -13,6 +13,7 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import HomeIcon from "@mui/icons-material/Home";
 import WorldMapIcon from "@mui/icons-material/Map";
+import CreateIcon from "@mui/icons-material/Create";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import { Link } from "react-router-dom";
 import useNavBar from "./useNavBar";
@@ -45,6 +46,13 @@ const NavBar = () => {
       label: "User-Profile",
       path: "/user-profile",
       icon: <AccountBoxIcon />,
+      alwaysShowIcon: true,
+      iconSize: "large",
+    },
+    {
+      label: "Story Upload",
+      path: "/story-upload-form",
+      icon: <CreateIcon />,
       alwaysShowIcon: true,
       iconSize: "large",
     },

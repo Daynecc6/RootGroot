@@ -1,8 +1,10 @@
 import React from "react";
 import useWorldMap from "./useWorldMap";
 
+const countriesWithStories = ["CN", "SV", "GT", "HN", "KE", "LS", "SD", "US"];
+
 function WorldMap() {
-  const { mapRef } = useWorldMap();
+  const { mapRef } = useWorldMap(countriesWithStories);
 
   return (
     <div>

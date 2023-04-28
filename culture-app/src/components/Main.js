@@ -17,6 +17,7 @@ import {
   PurposePage,
   WorldMap,
   StoryPage,
+  StoryUploadForm,
 } from "../pages/index";
 
 const ProtectedRoute = ({ token, children, fallback }) => {
@@ -52,6 +53,7 @@ const Main = () => {
         <Route path="/purpose" element={<PurposePage />} />
         <Route path="/user-profile" element={<UserProfile />} />
         <Route path="/storypage" element={<StoryPage />} />
+        <Route path="/story-upload-form" element={<StoryUploadForm />} />
       </Routes>
       <Footer />
     </Router>

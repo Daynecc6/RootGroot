@@ -4,7 +4,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import axios from "axios";
 
-const useWorldMap = () => {
+const useWorldMap = (countriesWithStories) => {
   const mapRef = useRef(null);
   const boundsRef = useRef(null);
   const navigate = useNavigate();
@@ -33,6 +33,18 @@ const useWorldMap = () => {
       .then((response) => response.json())
       .then((geojsonData) => {
         L.geoJSON(geojsonData, {
+          style: (feature) => {
+            return {
+              fillColor: countriesWithStories.includes(
+                feature.properties.ISO_A2
+              )
+                ? "blue" // Change this to the desired highlight color
+                : "gray", // Change this to the desired default color
+              fillOpacity: 0.7,
+              weight: 1,
+              color: "black",
+            };
+          },
           onEachFeature: (feature, layer) => {
             const onMouseOver = async (e) => {
               // Fetch country information from REST Countries API
@@ -120,7 +132,7 @@ const useWorldMap = () => {
     return () => {
       map.remove();
     };
-  }, [navigate]);
+  }, [navigate, countriesWithStories]);
 
   return { mapRef, boundsRef };
 };
