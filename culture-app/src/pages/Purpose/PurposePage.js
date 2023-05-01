@@ -122,7 +122,9 @@ const PurposePage = () => {
   const navigate = useNavigate();
 
   const handleSubThemeClick = (subTheme) => {
-    navigate("/storypage", { state: { selectedSubTheme: subTheme } });
+    navigate("/storypage", {
+      state: { selectedSubTheme: { theme: selectedTheme, subtheme: subTheme } },
+    });
   };
 
   return (

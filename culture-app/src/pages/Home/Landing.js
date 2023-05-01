@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import logo from "../../assets/rootgroot.png";
 
 const Landing = () => {
@@ -19,7 +19,6 @@ const Landing = () => {
         alt="My Logo"
         style={{ maxWidth: "35%", maxHeight: "35%" }}
       />
-      <Typography variant="h5">The Shapers of the Cultures</Typography>
     </Box>
   );
 };

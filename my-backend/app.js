@@ -344,3 +344,51 @@ app.post("/api/stories", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+app.get("/api/stories", async (req, res) => {
+  try {
+    const { country, purpose, theme, subtheme } = req.query;
+
+    // Connect to the database
+    const connection = await mysql.createConnection(dbConfig);
+
+    // Fetch a story based on the country, purpose, theme, and subtheme
+    const [storyRows] = await connection.execute(
+      "SELECT * FROM stories WHERE country = ? AND purpose = ? AND theme = ? AND subtheme = ? LIMIT 1",
+      [country, purpose, theme, subtheme]
+    );
+    // Inside the try block, after getting the storyRows
+
+    const story = storyRows[0];
+
+    // Fetch conversations
+    const [conversationRows] = await connection.execute(
+      "SELECT * FROM conversations WHERE story_id = ? ORDER BY order_number",
+      [story.id]
+    );
+
+    const [questionRows] = await connection.execute(
+      "SELECT * FROM questions WHERE story_id = ?",
+      [story.id]
+    );
+
+    const combinedData = {
+      ...story,
+      conversations: conversationRows,
+      questions: questionRows,
+    };
+
+    // Close the connection to the database
+    await connection.end();
+
+    // Check if there's a story found
+    if (storyRows.length > 0) {
+      res.json(combinedData);
+    } else {
+      res.status(404).json({ message: "Story not found." });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error connecting to the database." });
+  }
+});

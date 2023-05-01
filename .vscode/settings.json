@@ -12,19 +12,6 @@
       "username": "root",
       "database": "culture_db",
       "password": "Dcord2001!"
-    },
-    {
-      "mysqlOptions": {
-        "authProtocol": "default"
-      },
-      "previewLimit": 50,
-      "server": "IOWASQLPROD7.iowa.uiowa.edu",
-      "port": 3306,
-      "driver": "MySQL",
-      "name": "rootgroot",
-      "database": "EDUC_RootGroot",
-      "username": "iowa/dcordray",
-      "password": "Sobczak6!"
     }
   ]
 }
