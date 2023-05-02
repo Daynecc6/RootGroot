@@ -9,11 +9,15 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { ThemeProvider } from "@mui/material/styles";
 import { Button } from "@mui/material";
+import { useLocation } from "react-router-dom";
 
 const PurposePage = () => {
   const theme = useTheme();
 
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const location = useLocation();
+  const countryData = location.state?.countryData;
 
   const [selectedPurpose, setSelectedPurpose] = useState(null);
   const [selectedTheme, setSelectedTheme] = useState(null);
@@ -123,7 +127,14 @@ const PurposePage = () => {
 
   const handleSubThemeClick = (subTheme) => {
     navigate("/storypage", {
-      state: { selectedSubTheme: { theme: selectedTheme, subtheme: subTheme } },
+      state: {
+        selectedSubTheme: {
+          countryData,
+          purpose: selectedPurpose,
+          theme: selectedTheme,
+          subtheme: subTheme,
+        },
+      },
     });
   };
 
@@ -153,7 +164,9 @@ const PurposePage = () => {
                 {icons.map((icon, index) => (
                   <Grid item xs={4} sm={4} key={index}>
                     <Box
-                      onClick={() => handlePurposeClick(icon.text)}
+                      onClick={() =>
+                        handlePurposeClick(icon.text.split(" - ")[1])
+                      }
                       sx={{
                         display: "flex",
                         flexDirection: "column",

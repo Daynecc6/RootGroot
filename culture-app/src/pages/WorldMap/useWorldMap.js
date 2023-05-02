@@ -88,14 +88,14 @@ const useWorldMap = (countriesWithStories) => {
               }
             };
             const onClick = () => {
-              // Handle click event
               if (
                 layer.countryData &&
                 layer.countryData.name &&
                 layer.countryData.name.common
               ) {
-                console.log("Clicked on:", layer.countryData.name.common);
-                navigate("/purpose");
+                navigate("/purpose", {
+                  state: { selectedCountry: layer.countryData },
+                });
               } else {
                 console.log("Country information not available");
               }

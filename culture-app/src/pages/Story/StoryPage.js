@@ -16,7 +16,9 @@ const StoryPage = () => {
     const fetchStory = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3001/api/stories?country=US&purpose=Storyteller&theme=${encodeURIComponent(
+          `http://localhost:3001/api/stories?country=US&purpose=${encodeURIComponent(
+            selectedSubTheme.purpose
+          )}&theme=${encodeURIComponent(
             selectedSubTheme.theme
           )}&subtheme=${encodeURIComponent(selectedSubTheme.subtheme)}`
         );
