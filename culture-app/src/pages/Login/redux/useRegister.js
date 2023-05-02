@@ -163,11 +163,14 @@ export const useRegister = () => {
 
   const checkEmailUsername = async (email, username) => {
     try {
-      const response = await fetch("/api/check-email-username", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, username }),
-      });
+      const response = await fetch(
+        "http://localhost:3001/api/check-email-username",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, username }),
+        }
+      );
 
       if (!response.ok) {
         const error = await response.json();

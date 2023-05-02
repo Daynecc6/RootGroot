@@ -26,6 +26,7 @@ function StoryUploadForm() {
     addQuestion,
     addChoice,
     deleteQuestion,
+    handleExplanationChange,
   } = useStoryUploadForm();
 
   return (
@@ -56,6 +57,7 @@ function StoryUploadForm() {
               handleQuestionChange={handleQuestionChange}
               handleChoiceChange={handleChoiceChange}
               handleAnswerChange={handleAnswerChange}
+              handleExplanationChange={handleExplanationChange} // Add this
               addChoice={addChoice}
               addQuestion={addQuestion}
               deleteQuestion={deleteQuestion}

@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import ConversationsList from "./ConversationsList";
 import QuestionsList from "./QuestionsList";
 import FreeResponse from "./FreeResponse";
+import { Box, Button, Grid, Typography } from "@mui/material";
 
 const StoryPage = () => {
   const [story, setStory] = useState(null);
@@ -38,35 +39,70 @@ const StoryPage = () => {
     }
   };
 
+  const handlePreviousStep = () => {
+    if (currentConversationStep > 0) {
+      setCurrentConversationStep(currentConversationStep - 1);
+    }
+  };
+
   return (
-    <div>
+    <>
       {story ? (
-        <>
-          <h1>{story.title}</h1>
-          <p>{story.scenario}</p>
+        <Box mx="auto" my={4}>
+          <Typography
+            variant="h4"
+            align="center"
+            gutterBottom
+            sx={{ fontWeight: "bold" }}
+          >
+            {story.title}
+          </Typography>
 
-          <h2>Conversations</h2>
-          <ConversationsList
-            conversations={story.conversations}
-            currentConversationStep={currentConversationStep}
-          />
+          <Typography
+            maxWidth={500}
+            variant="body1"
+            align="center"
+            mx="auto"
+            gutterBottom
+          >
+            {story.scenario}
+          </Typography>
 
-          {currentConversationStep < story.conversations.length - 1 ? (
-            <button onClick={handleNextStep}>Next</button>
-          ) : (
-            <>
-              <h2>Questions</h2>
-              <QuestionsList questions={story.questions} />
+          <Box mt={2}>
+            <Grid container spacing={4}>
+              <Grid item xs={12} sm={6}>
+                <ConversationsList
+                  conversations={story.conversations}
+                  currentConversationStep={currentConversationStep}
+                />
+              </Grid>
 
-              <h2>Free response</h2>
-              <FreeResponse freeResponse={story.freeresp} />
-            </>
-          )}
-        </>
+              <Grid item xs={12} sm={6}>
+                {currentConversationStep < story.conversations.length - 1 ? (
+                  <Box textAlign="center" mt={4}>
+                    <Button variant="contained" onClick={handlePreviousStep}>
+                      Back
+                    </Button>
+                    <Button variant="contained" onClick={handleNextStep} ml={2}>
+                      Next
+                    </Button>
+                  </Box>
+                ) : (
+                  <>
+                    <FreeResponse freeResponse={story.freeresp} />
+                    <QuestionsList questions={story.questions} />
+                  </>
+                )}
+              </Grid>
+            </Grid>
+          </Box>
+        </Box>
       ) : (
-        <p>Loading...</p>
+        <Typography variant="body1" align="center">
+          Loading...
+        </Typography>
       )}
-    </div>
+    </>
   );
 };
 

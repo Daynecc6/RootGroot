@@ -310,12 +310,13 @@ app.post("/api/stories", async (req, res) => {
     for (const question of questions) {
       const { question: questionText, choices, answer } = question;
       const [questionResult] = await connection.execute(
-        "INSERT INTO questions (story_id, question_text, choices, answer) VALUES (?, ?, ?, ?)",
+        "INSERT INTO questions (story_id, question_text, choices, answer, explanation) VALUES (?, ?, ?, ?, ?)",
         [
           storyId,
           question.question,
           JSON.stringify(question.choices),
           question.answer,
+          question.explanation,
         ]
       );
 

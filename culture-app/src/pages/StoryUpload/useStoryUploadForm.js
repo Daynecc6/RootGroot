@@ -60,6 +60,7 @@ export const useStoryUploadForm = () => {
     question: "",
     choices: [""],
     answer: "",
+    explanation: "", // Add explanation field
   });
 
   const handleQuestionChange = (event) => {
@@ -75,6 +76,13 @@ export const useStoryUploadForm = () => {
     setCurrentQuestion({ ...currentQuestion, choices: newChoices });
   };
 
+  const handleExplanationChange = (event) => {
+    setCurrentQuestion({
+      ...currentQuestion,
+      explanation: event.target.value,
+    });
+  };
+
   const handleAnswerChange = (event) => {
     setCurrentQuestion({ ...currentQuestion, answer: event.target.value });
   };
@@ -83,7 +91,8 @@ export const useStoryUploadForm = () => {
     if (
       currentQuestion.question &&
       currentQuestion.choices.every((choice) => choice) &&
-      currentQuestion.answer
+      currentQuestion.answer &&
+      currentQuestion.explanation
     ) {
       setFormData({
         ...formData,
@@ -93,6 +102,7 @@ export const useStoryUploadForm = () => {
         question: "",
         choices: [""],
         answer: "",
+        explanation: "",
       });
     }
   };
@@ -144,6 +154,7 @@ export const useStoryUploadForm = () => {
     handleQuestionChange,
     handleChoiceChange,
     handleAnswerChange,
+    handleExplanationChange,
     addQuestion,
     addChoice,
     deleteQuestion,

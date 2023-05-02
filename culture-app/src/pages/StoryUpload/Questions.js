@@ -17,6 +17,7 @@ function Questions({
   handleQuestionChange,
   handleChoiceChange,
   handleAnswerChange,
+  handleExplanationChange,
   addChoice,
   addQuestion,
   deleteQuestion,
@@ -32,6 +33,14 @@ function Questions({
         name="question"
         value={currentQuestion.question}
         onChange={handleQuestionChange}
+        sx={{ mt: 2, mb: 2 }}
+      />
+      <TextField
+        fullWidth
+        label="Explanation"
+        name="explanation"
+        value={currentQuestion.explanation}
+        onChange={handleExplanationChange}
         sx={{ mt: 2, mb: 2 }}
       />
       {currentQuestion.choices.map((choice, index) => (
@@ -79,7 +88,9 @@ function Questions({
           <ListItem key={index}>
             <ListItemText
               primary={question.question}
-              secondary={`Choices: ${question.choices.join(", ")}`}
+              secondary={`Choices: ${question.choices.join(
+                ", "
+              )}, Explanation: ${question.explanation}`}
             />
             <ListItemSecondaryAction>
               <IconButton
