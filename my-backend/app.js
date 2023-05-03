@@ -347,22 +347,34 @@ app.listen(PORT, () => {
 });
 
 app.get("/api/stories", async (req, res) => {
+  const { country, purpose, theme, subtheme, story_id } = req.query;
+
+  let query;
+  let queryParams;
+
+  if (story_id) {
+    query = "SELECT * FROM stories WHERE id = ?";
+    queryParams = [story_id];
+  } else {
+    query = `
+      SELECT * FROM stories
+      WHERE country = ? AND purpose = ? AND theme = ? AND subtheme = ?
+      LIMIT 1;
+    `;
+    queryParams = [country, purpose, theme, subtheme];
+  }
+
   try {
-    const { country, purpose, theme, subtheme } = req.query;
-
-    // Connect to the database
     const connection = await mysql.createConnection(dbConfig);
+    const [storyRows] = await connection.execute(query, queryParams);
 
-    // Fetch a story based on the country, purpose, theme, and subtheme
-    const [storyRows] = await connection.execute(
-      "SELECT * FROM stories WHERE country = ? AND purpose = ? AND theme = ? AND subtheme = ? LIMIT 1",
-      [country, purpose, theme, subtheme]
-    );
-    // Inside the try block, after getting the storyRows
+    if (storyRows.length === 0) {
+      res.status(404).send("No story found.");
+      return;
+    }
 
     const story = storyRows[0];
 
-    // Fetch conversations
     const [conversationRows] = await connection.execute(
       "SELECT * FROM conversations WHERE story_id = ? ORDER BY order_number",
       [story.id]
@@ -379,15 +391,59 @@ app.get("/api/stories", async (req, res) => {
       questions: questionRows,
     };
 
-    // Close the connection to the database
+    connection.end();
+
+    res.json(combinedData);
+  } catch (error) {
+    console.error("Error querying stories:", error);
+    res.status(500).send("Error querying stories.");
+  }
+});
+
+app.get("/next-story-by-speaker", async (req, res) => {
+  const speakerName = req.query.speakerName;
+
+  const query = `
+    SELECT * FROM conversations
+    WHERE speaker = ?
+    AND id > (SELECT id FROM conversations WHERE speaker = ? ORDER BY id LIMIT 1)
+    ORDER BY id
+    LIMIT 1;
+  `;
+
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    const [results] = await connection.execute(query, [
+      speakerName,
+      speakerName,
+    ]);
+    connection.end();
+
+    if (results.length > 0) {
+      res.json(results[0].story_id);
+    } else {
+      res.status(404).send("No next story found.");
+    }
+  } catch (error) {
+    console.error("Error querying next story by speaker:", error);
+    res.status(500).send("Error querying next story by speaker.");
+  }
+});
+
+app.post("/api/free-response", async (req, res) => {
+  try {
+    const { storyId, question, response } = req.body;
+
+    const connection = await mysql.createConnection(dbConfig);
+
+    await connection.execute(
+      "INSERT INTO free_responses (story_id, question, response) VALUES (?, ?, ?)",
+      [storyId, question, response]
+    );
+
     await connection.end();
 
-    // Check if there's a story found
-    if (storyRows.length > 0) {
-      res.json(combinedData);
-    } else {
-      res.status(404).json({ message: "Story not found." });
-    }
+    res.status(201).json({ message: "Free response saved." });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error connecting to the database." });

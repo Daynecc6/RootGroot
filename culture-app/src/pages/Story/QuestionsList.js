@@ -10,7 +10,7 @@ import {
 import { Chip } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-const QuestionsList = ({ questions }) => {
+const QuestionsList = ({ questions, conversations }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -18,9 +18,9 @@ const QuestionsList = ({ questions }) => {
   const [showExplanation, setShowExplanation] = useState(false);
   const [score, setScore] = useState(0);
   const [showScore, setShowScore] = useState(false);
-  const [showAnotherStory, setShowAnotherStory] = useState(false);
 
   const currentQuestion = questions[currentQuestionIndex];
+  const currentStorySpeakerName = conversations[0].speaker;
 
   const navigate = useNavigate();
 
@@ -61,8 +61,30 @@ const QuestionsList = ({ questions }) => {
     navigate("/world-map");
   };
 
-  const handleAnotherStory = () => {
-    setShowAnotherStory(true);
+  const fetchNextStoryBySpeaker = async (speakerName) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3001/next-story-by-speaker?speakerName=${speakerName}`
+      );
+      if (response.ok) {
+        const nextStory = await response.json();
+        return nextStory;
+      } else {
+        console.error("Error fetching next story by speaker.");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching next story by speaker:", error);
+      return null;
+    }
+  };
+
+  const handleNextStoryBySpeaker = (nextStoryId) => {
+    navigate("/storypage", {
+      state: {
+        nextStoryId,
+      },
+    });
   };
 
   return (
@@ -143,6 +165,21 @@ const QuestionsList = ({ questions }) => {
               sx={{ mt: 2 }}
             >
               Next Story
+            </Button>
+
+            <Button
+              variant="contained"
+              sx={{ mt: 2 }}
+              onClick={async () => {
+                const nextStory = await fetchNextStoryBySpeaker(
+                  currentStorySpeakerName
+                );
+                if (nextStory) {
+                  handleNextStoryBySpeaker(nextStory);
+                }
+              }}
+            >
+              Another story by {currentStorySpeakerName}
             </Button>
           </Box>
         )}

@@ -4,6 +4,7 @@ import ConversationsList from "./ConversationsList";
 import QuestionsList from "./QuestionsList";
 import FreeResponse from "./FreeResponse";
 import { Box, Button, Grid, Typography } from "@mui/material";
+import { useParams } from "react-router-dom";
 
 const StoryPage = () => {
   const [story, setStory] = useState(null);
@@ -11,19 +12,32 @@ const StoryPage = () => {
 
   const location = useLocation();
   const selectedSubTheme = location.state.selectedSubTheme;
+  const nextStoryId = location.state.nextStoryId;
+
+  useEffect(() => {
+    setCurrentConversationStep(0);
+  }, [story]);
 
   useEffect(() => {
     const fetchStory = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:3001/api/stories?country=${encodeURIComponent(
-            selectedSubTheme.country
-          )}&purpose=${encodeURIComponent(
-            selectedSubTheme.purpose
-          )}&theme=${encodeURIComponent(
-            selectedSubTheme.theme
-          )}&subtheme=${encodeURIComponent(selectedSubTheme.subtheme)}`
-        );
+        let response;
+        if (nextStoryId) {
+          response = await fetch(
+            `http://localhost:3001/api/stories?story_id=${nextStoryId}`
+          );
+        } else {
+          response = await fetch(
+            `http://localhost:3001/api/stories?country=${encodeURIComponent(
+              selectedSubTheme.country
+            )}&purpose=${encodeURIComponent(
+              selectedSubTheme.purpose
+            )}&theme=${encodeURIComponent(
+              selectedSubTheme.theme
+            )}&subtheme=${encodeURIComponent(selectedSubTheme.subtheme)}`
+          );
+        }
+
         if (!response.ok) {
           throw new Error("An error occurred while fetching the story data.");
         }
@@ -35,7 +49,7 @@ const StoryPage = () => {
     };
 
     fetchStory();
-  }, [selectedSubTheme]);
+  }, [selectedSubTheme, nextStoryId]);
 
   const handleNextStep = () => {
     if (currentConversationStep < story.conversations.length - 1) {
@@ -93,7 +107,10 @@ const StoryPage = () => {
                   </Box>
                 ) : (
                   <>
-                    <FreeResponse freeResponse={story.freeresp} />
+                    <FreeResponse
+                      freeResponse={story.freeresp}
+                      storyID={story.id}
+                    />
                     <QuestionsList
                       questions={story.questions}
                       conversations={story.conversations}
