@@ -17,7 +17,7 @@ const PurposePage = () => {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const location = useLocation();
-  const countryData = location.state?.countryData;
+  const countryData = location.state.selectedCountry.name.common;
 
   const [selectedPurpose, setSelectedPurpose] = useState(null);
   const [selectedTheme, setSelectedTheme] = useState(null);
@@ -129,7 +129,7 @@ const PurposePage = () => {
     navigate("/storypage", {
       state: {
         selectedSubTheme: {
-          countryData,
+          country: countryData,
           purpose: selectedPurpose,
           theme: selectedTheme,
           subtheme: subTheme,

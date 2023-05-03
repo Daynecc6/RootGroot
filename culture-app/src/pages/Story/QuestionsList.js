@@ -8,6 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Chip } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const QuestionsList = ({ questions }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -17,8 +18,11 @@ const QuestionsList = ({ questions }) => {
   const [showExplanation, setShowExplanation] = useState(false);
   const [score, setScore] = useState(0);
   const [showScore, setShowScore] = useState(false);
+  const [showAnotherStory, setShowAnotherStory] = useState(false);
 
   const currentQuestion = questions[currentQuestionIndex];
+
+  const navigate = useNavigate();
 
   const handleAnswerChange = (event) => {
     setSelectedAnswer(event.target.value);
@@ -51,6 +55,14 @@ const QuestionsList = ({ questions }) => {
   const handleFinish = () => {
     handleSubmit();
     setShowScore(true);
+  };
+
+  const handleNextStory = () => {
+    navigate("/world-map");
+  };
+
+  const handleAnotherStory = () => {
+    setShowAnotherStory(true);
   };
 
   return (
@@ -125,6 +137,13 @@ const QuestionsList = ({ questions }) => {
             <Typography variant="h6">
               Your final score is {score}/{questions.length}
             </Typography>
+            <Button
+              variant="contained"
+              onClick={handleNextStory}
+              sx={{ mt: 2 }}
+            >
+              Next Story
+            </Button>
           </Box>
         )}
       </form>

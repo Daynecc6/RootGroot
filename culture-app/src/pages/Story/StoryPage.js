@@ -16,7 +16,9 @@ const StoryPage = () => {
     const fetchStory = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3001/api/stories?country=US&purpose=${encodeURIComponent(
+          `http://localhost:3001/api/stories?country=${encodeURIComponent(
+            selectedSubTheme.country
+          )}&purpose=${encodeURIComponent(
             selectedSubTheme.purpose
           )}&theme=${encodeURIComponent(
             selectedSubTheme.theme
@@ -92,7 +94,10 @@ const StoryPage = () => {
                 ) : (
                   <>
                     <FreeResponse freeResponse={story.freeresp} />
-                    <QuestionsList questions={story.questions} />
+                    <QuestionsList
+                      questions={story.questions}
+                      conversations={story.conversations}
+                    />
                   </>
                 )}
               </Grid>
