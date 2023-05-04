@@ -29,15 +29,13 @@ const useWorldMap = (countriesWithStories) => {
     }).addTo(map);
 
     // Load GeoJSON data and add to map
-    fetch("countries.geo.json")
+    fetch("/countries.geo.json")
       .then((response) => response.json())
       .then((geojsonData) => {
         L.geoJSON(geojsonData, {
           style: (feature) => {
             return {
-              fillColor: countriesWithStories.includes(
-                feature.properties.ISO_A2
-              )
+              fillColor: countriesWithStories.includes(feature.properties.ADMIN)
                 ? "blue" // Change this to the desired highlight color
                 : "gray", // Change this to the desired default color
               fillOpacity: 0.7,

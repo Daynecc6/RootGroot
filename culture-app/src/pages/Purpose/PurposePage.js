@@ -11,6 +11,14 @@ import { ThemeProvider } from "@mui/material/styles";
 import { Button } from "@mui/material";
 import { useLocation } from "react-router-dom";
 
+const importAll = (r) => {
+  return r.keys().map(r);
+};
+
+const avatarImages = importAll(
+  require.context("../../assets/Avatars", false, /\.(png|jpe?g|svg)$/)
+);
+
 const PurposePage = () => {
   const theme = useTheme();
 
@@ -50,18 +58,19 @@ const PurposePage = () => {
     },
   ];
   const commonThemes = [
-    { img: "https://via.placeholder.com/150", text: "Social Circle" },
-    { img: "https://via.placeholder.com/150", text: "Life Impact" },
-    { img: "https://via.placeholder.com/150", text: "Skills" },
-    { img: "https://via.placeholder.com/150", text: "Development" },
-    { img: "https://via.placeholder.com/150", text: "Education" },
-    { img: "https://via.placeholder.com/150", text: "Beliefs" },
-    { img: "https://via.placeholder.com/150", text: "Social Impact" },
-    { img: "https://via.placeholder.com/150", text: "Politics" },
-    { img: "https://via.placeholder.com/150", text: "Regulation/Legalization" },
-    { img: "https://via.placeholder.com/150", text: "Healthcare" },
-    { img: "https://via.placeholder.com/150", text: "Versus" },
+    { img: avatarImages[0], text: "Beliefs" },
+    { img: avatarImages[1], text: "Development" },
+    { img: avatarImages[2], text: "Education" },
+    { img: avatarImages[3], text: "Healthcare" },
+    { img: avatarImages[4], text: "Life Impact" },
+    { img: avatarImages[5], text: "Politics" },
+    { img: avatarImages[6], text: "Regulation" },
+    { img: avatarImages[7], text: "Social Circle" },
+    { img: avatarImages[8], text: "Social Impact" },
+    { img: avatarImages[9], text: "Skills" },
+    { img: avatarImages[10], text: "Versus" },
   ];
+
   const subThemes = {
     "Social Circle": [
       { img: "https://via.placeholder.com/150", text: "Relationship" },

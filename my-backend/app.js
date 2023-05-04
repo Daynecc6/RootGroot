@@ -449,3 +449,55 @@ app.post("/api/free-response", async (req, res) => {
     res.status(500).json({ message: "Error connecting to the database." });
   }
 });
+
+app.get("/api/countries-highlighted", async (req, res) => {
+  const query = `SELECT country FROM stories;`;
+
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    const [results] = await connection.execute(query);
+    connection.end();
+
+    if (results.length > 0) {
+      res.json(results);
+      console.log(results);
+    } else {
+      res.status(404).send("No countries found.");
+    }
+  } catch (error) {
+    console.error("No countries found:", error);
+    res.status(500).send("No countries found.");
+  }
+});
+
+app.post("/update-completed-stories", async (req, res) => {
+  const { userId, storyId } = req.body;
+
+  const connection = await mysql.createConnection(dbConfig);
+
+  try {
+    const [rows] = await connection.execute(
+      "SELECT completed_stories FROM users WHERE username = ?",
+      [userId]
+    );
+
+    let completedStories = rows[0].completed_stories
+      ? rows[0].completed_stories.split(",")
+      : [];
+
+    if (!completedStories.includes(storyId.toString())) {
+      completedStories.push(storyId);
+      const updatedCompletedStories = completedStories.join(",");
+
+      await connection.execute(
+        "UPDATE users SET completed_stories = ? WHERE username = ?",
+        [updatedCompletedStories, userId]
+      );
+    }
+
+    res.sendStatus(200);
+  } catch (error) {
+    console.error("Error updating completed stories:", error);
+    res.sendStatus(500);
+  }
+});

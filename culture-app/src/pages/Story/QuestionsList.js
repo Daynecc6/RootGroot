@@ -10,7 +10,7 @@ import {
 import { Chip } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-const QuestionsList = ({ questions, conversations }) => {
+const QuestionsList = ({ questions, conversations, userId, storyId }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -52,9 +52,34 @@ const QuestionsList = ({ questions, conversations }) => {
     setShowExplanation(false);
   };
 
-  const handleFinish = () => {
+  const updateCompletedStories = async (userId, storyId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3001/update-completed-stories`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId,
+            storyId,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Error updating completed stories.");
+      }
+    } catch (error) {
+      console.error("Error updating completed stories:", error);
+    }
+  };
+
+  const handleFinish = async () => {
     handleSubmit();
     setShowScore(true);
+    await updateCompletedStories(userId, storyId); // Replace 'userId' and 'storyId' with the actual values.
   };
 
   const handleNextStory = () => {

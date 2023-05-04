@@ -1,10 +1,36 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import useWorldMap from "./useWorldMap";
 
-const countriesWithStories = ["CN", "SV", "GT", "HN", "KE", "LS", "SD", "US"];
+async function fetchCountriesWithStories() {
+  try {
+    const response = await fetch(
+      `http://localhost:3001/api/countries-highlighted`
+    );
+    if (response.ok) {
+      const fetchedCountries = await response.json();
+      return fetchedCountries.map((countryObj) => countryObj.country);
+    } else {
+      console.error("Error fetching countries.");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching countries:", error);
+    return null;
+  }
+}
 
 function WorldMap() {
+  const [countriesWithStories, setCountriesWithStories] = useState([]);
   const { mapRef } = useWorldMap(countriesWithStories);
+
+  useEffect(() => {
+    async function fetchData() {
+      const fetchedCountries = await fetchCountriesWithStories();
+      setCountriesWithStories(fetchedCountries || []);
+    }
+
+    fetchData();
+  }, []);
 
   return (
     <div>

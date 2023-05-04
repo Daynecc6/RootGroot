@@ -1,6 +1,7 @@
 import React from "react";
 import { Tabs, Tab, Button, Grid } from "@mui/material";
 import { useUserProfile } from "./useUserProfile";
+import CompletedStories from "./CompletedStories";
 
 const UserProfile = () => {
   const {
@@ -28,10 +29,25 @@ const UserProfile = () => {
         variant="scrollable"
         scrollButtons="auto"
         aria-label="scrollable auto tabs example"
+        sx={{
+          backgroundColor: "#fff",
+          boxShadow: "0 3px 5px rgba(0, 0, 0, 0.15)",
+          ".MuiTabs-indicator": {
+            backgroundColor: "primary.main",
+          },
+          ".Mui-selected": {
+            color: "primary.main",
+          },
+          ".MuiTab-root": {
+            color: "text.secondary",
+          },
+        }}
       >
         <Tab label="Basic Information" />
         <Tab label="Country Information" />
+        <Tab label="Completed Stories" />
       </Tabs>
+
       <TabPanel value={selectedTab} index={0}>
         <Grid container spacing={2}>
           <InfoBox
@@ -76,6 +92,9 @@ const UserProfile = () => {
             value={userProfile.countries_traveled}
           />
         </Grid>
+      </TabPanel>
+      <TabPanel value={selectedTab} index={2}>
+        <CompletedStories completedStories={userProfile.completed_stories} />
       </TabPanel>
       <Button variant="contained" color="primary" onClick={updateProfile}>
         Update Profile

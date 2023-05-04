@@ -9,6 +9,7 @@ import { useParams } from "react-router-dom";
 const StoryPage = () => {
   const [story, setStory] = useState(null);
   const [currentConversationStep, setCurrentConversationStep] = useState(0);
+  const [userId, setUserId] = useState(null);
 
   const location = useLocation();
   const selectedSubTheme = location.state.selectedSubTheme;
@@ -50,6 +51,33 @@ const StoryPage = () => {
 
     fetchStory();
   }, [selectedSubTheme, nextStoryId]);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch("http://localhost:3001/api/user-profile", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error);
+        }
+
+        const userData = await response.json();
+        setUserId(userData.username);
+      } catch (error) {
+        console.error("Error fetching user profile:", error.message);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
 
   const handleNextStep = () => {
     if (currentConversationStep < story.conversations.length - 1) {
@@ -114,6 +142,8 @@ const StoryPage = () => {
                     <QuestionsList
                       questions={story.questions}
                       conversations={story.conversations}
+                      storyId={story.id}
+                      userId={userId}
                     />
                   </>
                 )}

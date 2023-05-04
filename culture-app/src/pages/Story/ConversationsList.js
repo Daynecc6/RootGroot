@@ -8,6 +8,11 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import { styled } from "@mui/system";
 
+const speakerIcons = {
+  AK: require("./SpeakerIcons/AK.png"),
+  Prof: require("./SpeakerIcons/Professor.png"),
+};
+
 const Bubble = styled("div")(({ theme, sender }) => ({
   display: "inline-block",
   borderRadius: 12,
@@ -51,10 +56,15 @@ const ConversationsList = ({ conversations, currentConversationStep }) => (
               }}
             >
               <ListItemAvatar>
-                <Avatar>
-                  <FontAwesomeIcon icon={faUser} />
-                </Avatar>
+                <Avatar
+                  src={speakerIcons[conversation.speaker]}
+                  sx={{
+                    width: (theme) => theme.spacing(8), // 8 * 8px = 64px
+                    height: (theme) => theme.spacing(8), // 8 * 8px = 64px
+                  }}
+                />
               </ListItemAvatar>
+
               <ListItemText
                 primaryTypographyProps={{
                   sx: {
