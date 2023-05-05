@@ -6,8 +6,6 @@ import CompletedStories from "./CompletedStories";
 const UserProfile = () => {
   const {
     userProfile,
-    editedProfile,
-    setEditedProfile,
     selectedTab,
     handleChange,
     updateProfile,
@@ -50,14 +48,7 @@ const UserProfile = () => {
 
       <TabPanel value={selectedTab} index={0}>
         <Grid container spacing={2}>
-          <InfoBox
-            label="Username"
-            value={editedProfile.username}
-            editable
-            onChange={(e) =>
-              setEditedProfile({ ...editedProfile, username: e.target.value })
-            }
-          />
+          <InfoBox label="Username" value={userProfile.username} />
           <InfoBox label="Email" value={userProfile.email} />
           <InfoBox label="First Name" value={userProfile.first_name} />
           <InfoBox label="Last Name" value={userProfile.last_name} />
@@ -96,9 +87,6 @@ const UserProfile = () => {
       <TabPanel value={selectedTab} index={2}>
         <CompletedStories completedStories={userProfile.completed_stories} />
       </TabPanel>
-      <Button variant="contained" color="primary" onClick={updateProfile}>
-        Update Profile
-      </Button>
     </div>
   );
 };

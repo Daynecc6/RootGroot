@@ -19,6 +19,7 @@ import {
   StoryPage,
   StoryUploadForm,
 } from "../pages/index";
+import { Toolbar } from "@mui/material";
 
 const ProtectedRoute = ({ token, children, fallback }) => {
   const navigate = useNavigate();
@@ -37,8 +38,8 @@ const Main = () => {
 
   return (
     <Router>
-      <NavBar />
       <Routes>
+        <Route path="/" element={<MainContent />} />
         <Route path="/home" element={<MainContent />} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/register" element={<RegisterForm />} />
@@ -55,7 +56,7 @@ const Main = () => {
         <Route path="/storypage" element={<StoryPage />} />
         <Route path="/story-upload-form" element={<StoryUploadForm />} />
       </Routes>
-      <Footer />
+      <NavBar />
     </Router>
   );
 };

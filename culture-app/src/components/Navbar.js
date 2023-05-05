@@ -56,7 +56,6 @@ const NavBar = () => {
       alwaysShowIcon: true,
       iconSize: "large",
     },
-    { type: "spacer" },
     ...(!token
       ? [
           { label: "Login", path: "/login" },
@@ -71,8 +70,25 @@ const NavBar = () => {
   ];
 
   return (
-    <AppBar position="static">
-      <Toolbar>
+    <Box
+      sx={{
+        position: "fixed",
+        bottom: 0,
+        top: "auto",
+        width: "100%",
+        margin: "0 auto",
+        bgcolor: "transparent",
+      }}
+    >
+      <AppBar
+        position="static"
+        sx={{
+          bottom: 0,
+          bgcolor: "transparent",
+          boxShadow: "none",
+          mb: 2,
+        }}
+      >
         {isMobile && (
           <IconButton
             edge="start"
@@ -84,70 +100,91 @@ const NavBar = () => {
             <MenuIcon />
           </IconButton>
         )}
-        {navLinks.map((link) => (
-          <React.Fragment key={link.label}>
-            {link.type === "spacer" ? (
-              <Box sx={{ flexGrow: 1 }} />
-            ) : isMobile ? null : (
-              <Link
-                to={link.path || ""}
-                style={{ textDecoration: "none", color: "inherit" }}
-                onClick={link.onClick}
-              >
-                {link.alwaysShowIcon ? (
-                  <IconButton
-                    edge="start"
-                    color="inherit"
-                    aria-label={link.label}
-                    sx={{ fontSize: link.iconSize }}
+        <Box
+          bgcolor="background.paper"
+          borderRadius="8px"
+          boxShadow={3}
+          px={1}
+          sx={{
+            width: "fit-content",
+            margin: "0 auto",
+          }}
+        >
+          <Toolbar
+            sx={{
+              justifyContent: "center",
+              minHeight: "auto",
+              padding: "8px 16px",
+            }}
+          >
+            {navLinks.map((link) => (
+              <React.Fragment key={link.label}>
+                {link.type === "spacer" ? (
+                  <Box sx={{ flexGrow: 1 }} />
+                ) : isMobile ? null : (
+                  <Link
+                    to={link.path || ""}
+                    style={{ textDecoration: "none", color: "inherit" }}
+                    onClick={link.onClick}
                   >
-                    {link.icon && (
+                    {link.alwaysShowIcon ? (
                       <IconButton
                         edge="start"
                         color="inherit"
                         aria-label={link.label}
-                        sx={{ mr: 1 }}
+                        sx={{ fontSize: link.iconSize }}
                       >
-                        {React.cloneElement(link.icon, {
-                          fontSize: link.iconSize,
-                        })}
+                        {link.icon && (
+                          <IconButton
+                            edge="start"
+                            color="inherit"
+                            aria-label={link.label}
+                            sx={{ mr: 1 }}
+                          >
+                            {React.cloneElement(link.icon, {
+                              fontSize: link.iconSize,
+                            })}
+                          </IconButton>
+                        )}
                       </IconButton>
+                    ) : (
+                      <ListItemText
+                        primary={link.label}
+                        sx={{ marginRight: 2 }}
+                      />
                     )}
-                  </IconButton>
-                ) : (
-                  <ListItemText primary={link.label} sx={{ marginRight: 2 }} />
+                  </Link>
                 )}
-              </Link>
+              </React.Fragment>
+            ))}
+          </Toolbar>
+        </Box>
+        <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
+          <List>
+            {navLinks.map(
+              (link, index) =>
+                link.type !== "spacer" && (
+                  <ListItem
+                    button
+                    key={index}
+                    onClick={toggleDrawer(false)}
+                    component={link.path ? Link : "div"}
+                    to={link.path}
+                  >
+                    {link.icon ? (
+                      <ListItemIcon>
+                        {React.cloneElement(link.icon, { fontSize: "large" })}
+                      </ListItemIcon>
+                    ) : (
+                      <ListItemText primary={link.label} />
+                    )}
+                  </ListItem>
+                )
             )}
-          </React.Fragment>
-        ))}
-      </Toolbar>
-
-      <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
-        <List>
-          {navLinks.map(
-            (link, index) =>
-              link.type !== "spacer" && (
-                <ListItem
-                  button
-                  key={index}
-                  onClick={toggleDrawer(false)}
-                  component={link.path ? Link : "div"}
-                  to={link.path}
-                >
-                  {link.icon ? (
-                    <ListItemIcon>
-                      {React.cloneElement(link.icon, { fontSize: "large" })}
-                    </ListItemIcon>
-                  ) : (
-                    <ListItemText primary={link.label} />
-                  )}
-                </ListItem>
-              )
-          )}
-        </List>
-      </Drawer>
-    </AppBar>
+          </List>
+        </Drawer>
+      </AppBar>
+    </Box>
   );
 };
 
