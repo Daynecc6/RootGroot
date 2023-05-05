@@ -1,9 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Grid, Typography } from "@mui/material";
 
 const CompletedStories = ({ completedStories }) => {
   const storyIds = completedStories ? completedStories.split(",") : [];
   const [storyBadges, setStoryBadges] = useState([]);
+  const storyIdsRef = useRef(storyIds);
+
+  useEffect(() => {
+    storyIdsRef.current = storyIds;
+  }, [storyIds]);
 
   useEffect(() => {
     const fetchStoryBadges = async () => {
@@ -24,16 +29,16 @@ const CompletedStories = ({ completedStories }) => {
       }
     };
 
-    fetchStoryBadges();
-  }, [storyIds]);
+    if (storyIds.length > 0) {
+      fetchStoryBadges();
+    }
+  }, []);
 
   return (
     <Grid container spacing={2}>
       {storyIds.map((storyId, index) => (
         <Grid item key={index}>
-          <Typography>
-            Story ID: {storyId} {storyBadges[index]}
-          </Typography>
+          <Typography>{storyBadges[index]}</Typography>
         </Grid>
       ))}
     </Grid>

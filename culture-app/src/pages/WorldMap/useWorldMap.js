@@ -35,7 +35,9 @@ const useWorldMap = (countriesWithStories) => {
         L.geoJSON(geojsonData, {
           style: (feature) => {
             return {
-              fillColor: countriesWithStories.includes(feature.properties.ADMIN)
+              fillColor: countriesWithStories.includes(
+                feature.properties.ISO_A3
+              )
                 ? "blue" // Change this to the desired highlight color
                 : "gray", // Change this to the desired default color
               fillOpacity: 0.7,

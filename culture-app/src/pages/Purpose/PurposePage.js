@@ -25,7 +25,7 @@ const PurposePage = () => {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const location = useLocation();
-  const countryData = location.state.selectedCountry.name.common;
+  const countryData = location.state.selectedCountry.cca3;
 
   const [selectedPurpose, setSelectedPurpose] = useState(null);
   const [selectedTheme, setSelectedTheme] = useState(null);

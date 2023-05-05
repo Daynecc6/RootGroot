@@ -204,7 +204,7 @@ app.get("/api/user-profile", authMiddleware, async (req, res) => {
     console.log(req.userId);
     const connection = await mysql.createConnection(dbConfig);
     const [rows] = await connection.execute(
-      "SELECT * FROM users WHERE email = ?",
+      "SELECT * FROM users WHERE username = ?",
       [req.userId]
     );
     connection.end();
@@ -499,5 +499,29 @@ app.post("/update-completed-stories", async (req, res) => {
   } catch (error) {
     console.error("Error updating completed stories:", error);
     res.sendStatus(500);
+  }
+});
+
+app.post("/api/update-user-rating", authMiddleware, async (req, res) => {
+  try {
+    const { userId, rating } = req.body;
+
+    const connection = await mysql.createConnection(dbConfig);
+    const [result] = await connection.execute(
+      "UPDATE users SET rating = ? WHERE username = ?",
+      [rating, userId]
+    );
+    connection.end();
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json({ message: "User rating updated successfully" });
+  } catch (error) {
+    console.error("Error connecting to the database:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while accessing the database." });
   }
 });

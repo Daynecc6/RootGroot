@@ -10,7 +10,7 @@ import { styled } from "@mui/system";
 
 const speakerIcons = {
   AK: require("./SpeakerIcons/AK.png"),
-  Prof: require("./SpeakerIcons/Professor.png"),
+  PROF: require("./SpeakerIcons/Professor.png"),
 };
 
 const Bubble = styled("div")(({ theme, sender }) => ({

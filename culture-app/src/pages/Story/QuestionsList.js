@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Radio,
   RadioGroup,
@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { Chip } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import RatingPopup from "./RatingPopup"; // Import the RatingPopup component
 
 const QuestionsList = ({ questions, conversations, userId, storyId }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -18,6 +19,8 @@ const QuestionsList = ({ questions, conversations, userId, storyId }) => {
   const [showExplanation, setShowExplanation] = useState(false);
   const [score, setScore] = useState(0);
   const [showScore, setShowScore] = useState(false);
+  const [showRatingPopup, setShowRatingPopup] = useState(false); // Add a state variable for showing the rating popup
+  const [userRating, setUserRating] = useState(null); // Add a state variable to store the user's rating
 
   const currentQuestion = questions[currentQuestionIndex];
   const currentStorySpeakerName = conversations[0].speaker;
@@ -79,7 +82,8 @@ const QuestionsList = ({ questions, conversations, userId, storyId }) => {
   const handleFinish = async () => {
     handleSubmit();
     setShowScore(true);
-    await updateCompletedStories(userId, storyId); // Replace 'userId' and 'storyId' with the actual values.
+    await updateCompletedStories(userId, storyId);
+    setShowRatingPopup(true);
   };
 
   const handleNextStory = () => {
@@ -111,6 +115,37 @@ const QuestionsList = ({ questions, conversations, userId, storyId }) => {
       },
     });
   };
+
+  const handleCloseRatingPopup = () => {
+    setShowRatingPopup(false);
+  };
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch("http://localhost:3001/api/user-profile", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error);
+        }
+
+        const userData = await response.json();
+        setUserRating(userData.rating);
+      } catch (error) {
+        console.error("Error fetching user profile:", error.message);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
 
   return (
     <Box
@@ -207,6 +242,13 @@ const QuestionsList = ({ questions, conversations, userId, storyId }) => {
               Another story by {currentStorySpeakerName}
             </Button>
           </Box>
+        )}
+        {showRatingPopup && userRating === null && (
+          <RatingPopup
+            isOpen={showRatingPopup}
+            handleClose={handleCloseRatingPopup}
+            userId={userId}
+          />
         )}
       </form>
     </Box>
