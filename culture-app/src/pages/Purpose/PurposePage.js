@@ -12,11 +12,23 @@ import { Button } from "@mui/material";
 import { useLocation } from "react-router-dom";
 
 const importAll = (r) => {
-  return r.keys().map(r);
+  let images = {};
+  r.keys().map((item, index) => {
+    images[item.replace("./", "")] = r(item);
+  });
+  return images;
 };
 
-const avatarImages = importAll(
-  require.context("../../assets/Avatars", false, /\.(png|jpe?g|svg)$/)
+const themeImages = importAll(
+  require.context("../../assets/ThemeAvatars", false, /\.(png|jpe?g|svg)$/)
+);
+
+const purposeImages = importAll(
+  require.context("../../assets/PurposeAvatars", false, /\.(png|jpe?g|svg)$/)
+);
+
+const subthemeImages = importAll(
+  require.context("../../assets/SubthemeAvatars", false, /\.(png|jpe?g|svg)$/)
 );
 
 const PurposePage = () => {
@@ -33,88 +45,98 @@ const PurposePage = () => {
 
   const icons = [
     {
-      img: "https://via.placeholder.com/150",
-      text: "Let's go! - Travel",
-    },
-    {
-      img: "https://via.placeholder.com/150",
-      text: "Have fun! - Study",
-    },
-    {
-      img: "https://via.placeholder.com/150",
+      img: purposeImages["Business.jpg"],
       text: "It's my... - Business",
     },
     {
-      img: "https://via.placeholder.com/150",
-      text: "I am here for you. - Volunteer",
+      img: purposeImages["Storyhunter.png"],
+      text: "Tell me more! - Story-hunter",
     },
     {
-      img: "https://via.placeholder.com/150",
+      img: purposeImages["Storyteller.png"],
       text: "Once upon a time... - Storyteller",
     },
     {
-      img: "https://via.placeholder.com/150",
-      text: "Tell me more! - Story-hunter",
+      img: purposeImages["Study.jpg"],
+      text: "Have fun! - Study",
+    },
+    {
+      img: purposeImages["Travel.png"],
+      text: "Let's go! - Travel",
+    },
+    {
+      img: purposeImages["Volunteer.jpg"],
+      text: "I am here for you. - Volunteer",
     },
   ];
   const commonThemes = [
-    { img: avatarImages[0], text: "Beliefs" },
-    { img: avatarImages[1], text: "Development" },
-    { img: avatarImages[2], text: "Education" },
-    { img: avatarImages[3], text: "Healthcare" },
-    { img: avatarImages[4], text: "Life Impact" },
-    { img: avatarImages[5], text: "Politics" },
-    { img: avatarImages[6], text: "Regulation" },
-    { img: avatarImages[7], text: "Social Circle" },
-    { img: avatarImages[8], text: "Social Impact" },
-    { img: avatarImages[9], text: "Skills" },
-    { img: avatarImages[10], text: "Versus" },
+    { img: themeImages["Beliefs.png"], text: "Beliefs" },
+    { img: themeImages["Development.png"], text: "Development" },
+    { img: themeImages["Education.png"], text: "Education" },
+    { img: themeImages["Healthcare.png"], text: "Healthcare" },
+    { img: themeImages["Life Impact.png"], text: "Life Impact" },
+    { img: themeImages["Politics.png"], text: "Politics" },
+    { img: themeImages["Regulation.png"], text: "Regulation" },
+    { img: themeImages["Skills.png"], text: "Skills" },
+    { img: themeImages["Social Circle.jpg"], text: "Social Circle" },
+    { img: themeImages["Social Impact.png"], text: "Social Impact" },
+    { img: themeImages["Versus.png"], text: "Versus" },
   ];
 
   const subThemes = {
     "Social Circle": [
-      { img: "https://via.placeholder.com/150", text: "Relationship" },
-      { img: "https://via.placeholder.com/150", text: "Family" },
-      { img: "https://via.placeholder.com/150", text: "Community" },
+      { img: subthemeImages["Relationship.jpg"], text: "Relationship" },
+      { img: subthemeImages["Family.jpg"], text: "Family" },
+      { img: subthemeImages["Community.png"], text: "Community" },
     ],
     "Life Impact": [
-      { img: "https://via.placeholder.com/150", text: "Personal Sensation" },
-      { img: "https://via.placeholder.com/150", text: "Physiological Needs" },
-      { img: "https://via.placeholder.com/150", text: "Challenges" },
-      { img: "https://via.placeholder.com/150", text: "Consumption" },
-    ],
-    Skills: [
-      { img: "https://via.placeholder.com/150", text: "Personal Skills" },
-      { img: "https://via.placeholder.com/150", text: "Interpersonal Skills" },
-    ],
-    Development: [
-      { img: "https://via.placeholder.com/150", text: "Personal Development" },
       {
-        img: "https://via.placeholder.com/150",
-        text: "Professional Development/Life",
+        img: subthemeImages["Personal sensation.png"],
+        text: "Personal Sensation",
       },
       {
-        img: "https://via.placeholder.com/150",
+        img: subthemeImages["Physiological needs.png"],
+        text: "Physiological Needs",
+      },
+      { img: subthemeImages["Challenges.png"], text: "Challenges" },
+      { img: subthemeImages["Consumption.png"], text: "Consumption" },
+    ],
+    Skills: [
+      { img: subthemeImages["Personal skills.png"], text: "Personal Skills" },
+      {
+        img: subthemeImages["Interpersonal skills.png"],
+        text: "Interpersonal Skills",
+      },
+    ],
+    Development: [
+      {
+        img: subthemeImages["Personal development.png"],
+        text: "Personal Development",
+      },
+      {
+        img: subthemeImages["Professional development.png"],
+        text: "Professional Development",
+      },
+      {
+        img: subthemeImages["Intercultural competence.png"],
         text: "Intercultural Competence",
       },
     ],
-    Education: [{ img: "https://via.placeholder.com/150", text: "Education" }],
-    Beliefs: [{ img: "https://via.placeholder.com/150", text: "Beliefs" }],
+    Education: [{ img: themeImages["Education.png"], text: "Education" }],
+    Beliefs: [{ img: themeImages["Beliefs.png"], text: "Beliefs" }],
     "Social Impact": [
-      { img: "https://via.placeholder.com/150", text: "Social Justice" },
-      { img: "https://via.placeholder.com/150", text: "Human Rights" },
+      { img: subthemeImages["Social justice.png"], text: "Social Justice" },
+      { img: subthemeImages["Human rights.png"], text: "Human Rights" },
     ],
-    Politics: [{ img: "https://via.placeholder.com/150", text: "Politics" }],
-    "Regulation/Legalization": [
+    Politics: [{ img: themeImages["Politics.png"], text: "Politics" }],
+    Regulation: [
       {
-        img: "https://via.placeholder.com/150",
-        text: "Regulation/Legalization",
+        img: themeImages["Regulation.png"],
+        text: "Regulation",
       },
     ],
-    Healthcare: [
-      { img: "https://via.placeholder.com/150", text: "Healthcare" },
-    ],
-    Versus: [{ img: "https://via.placeholder.com/150", text: "Versus" }],
+    Healthcare: [{ img: themeImages["Healthcare.png"], text: "Healthcare" }],
+    Versus: [{ img: themeImages["Versus.png"], text: "Versus" }],
   };
   const handleBackClick = () => {
     if (step === 0) {
