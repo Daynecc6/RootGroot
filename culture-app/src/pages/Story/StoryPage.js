@@ -4,7 +4,7 @@ import ConversationsList from "./ConversationsList";
 import QuestionsList from "./QuestionsList";
 import FreeResponse from "./FreeResponse";
 import { Box, Button, Grid, Typography } from "@mui/material";
-import { useParams } from "react-router-dom";
+import Alert from "@mui/lab/Alert";
 
 const StoryPage = () => {
   const [story, setStory] = useState(null);
@@ -22,10 +22,18 @@ const StoryPage = () => {
   useEffect(() => {
     const fetchStory = async () => {
       try {
+        const token = localStorage.getItem("token");
+        const requestOptions = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+
         let response;
         if (nextStoryId) {
           response = await fetch(
-            `http://localhost:3001/api/stories?story_id=${nextStoryId}`
+            `http://localhost:3001/api/stories?story_id=${nextStoryId}`,
+            requestOptions
           );
         } else {
           response = await fetch(
@@ -35,8 +43,14 @@ const StoryPage = () => {
               selectedSubTheme.purpose
             )}&theme=${encodeURIComponent(
               selectedSubTheme.theme
-            )}&subtheme=${encodeURIComponent(selectedSubTheme.subtheme)}`
+            )}&subtheme=${encodeURIComponent(selectedSubTheme.subtheme)}`,
+            requestOptions
           );
+        }
+
+        if (response.status === 404) {
+          setStory(null);
+          return;
         }
 
         if (!response.ok) {
@@ -152,9 +166,19 @@ const StoryPage = () => {
           </Box>
         </Box>
       ) : (
-        <Typography variant="body1" align="center">
-          Loading...
-        </Typography>
+        <Alert
+          severity="info"
+          variant="filled"
+          sx={{
+            mr: "5px",
+            ml: "5px",
+            mt: "5px",
+            borderRadius: "15px",
+            backgroundColor: "black", // Set the backgroundColor property to black
+          }}
+        >
+          {`There are currently no more stories for this, or you have completed all the related stories.`}
+        </Alert>
       )}
     </>
   );

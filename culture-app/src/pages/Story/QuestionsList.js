@@ -9,18 +9,36 @@ import {
 } from "@mui/material";
 import { Chip } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import RatingPopup from "./RatingPopup"; // Import the RatingPopup component
+import RatingPopup from "./RatingPopup";
 
 const QuestionsList = ({ questions, conversations, userId, storyId }) => {
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const getProgressFromLocalStorage = (storyId) => {
+    const progress = localStorage.getItem(`story-progress-${storyId}`);
+    return progress ? JSON.parse(progress) : null;
+  };
+
+  const saveProgressToLocalStorage = (storyId, progress) => {
+    localStorage.setItem(`story-progress-${storyId}`, JSON.stringify(progress));
+  };
+
+  const initialProgress = getProgressFromLocalStorage(storyId) || {
+    currentQuestionIndex: 0,
+    score: 0,
+  };
+
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [resultText, setResultText] = useState("");
   const [showExplanation, setShowExplanation] = useState(false);
-  const [score, setScore] = useState(0);
   const [showScore, setShowScore] = useState(false);
   const [showRatingPopup, setShowRatingPopup] = useState(false); // Add a state variable for showing the rating popup
   const [userRating, setUserRating] = useState(null); // Add a state variable to store the user's rating
+  const [noMoreStories, setNoMoreStories] = useState("");
+  const savedProgress = getProgressFromLocalStorage(storyId);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(
+    savedProgress ? savedProgress.currentQuestionIndex : 0
+  );
+  const [score, setScore] = useState(savedProgress ? savedProgress.score : 0);
 
   const currentQuestion = questions[currentQuestionIndex];
   const currentStorySpeakerName = conversations[0].speaker;
@@ -48,11 +66,17 @@ const QuestionsList = ({ questions, conversations, userId, storyId }) => {
   };
 
   const handleNextQuestion = () => {
-    setCurrentQuestionIndex(currentQuestionIndex + 1);
+    const newCurrentQuestionIndex = currentQuestionIndex + 1;
+    setCurrentQuestionIndex(newCurrentQuestionIndex);
     setSelectedAnswer(null);
     setIsSubmitted(false);
     setResultText("");
     setShowExplanation(false);
+
+    saveProgressToLocalStorage(storyId, {
+      currentQuestionIndex: newCurrentQuestionIndex,
+      score,
+    });
   };
 
   const updateCompletedStories = async (userId, storyId) => {
@@ -84,16 +108,27 @@ const QuestionsList = ({ questions, conversations, userId, storyId }) => {
     setShowScore(true);
     await updateCompletedStories(userId, storyId);
     setShowRatingPopup(true);
+
+    saveProgressToLocalStorage(storyId, {
+      currentQuestionIndex,
+      score,
+    });
   };
 
   const handleNextStory = () => {
     navigate("/world-map");
   };
 
-  const fetchNextStoryBySpeaker = async (speakerName) => {
+  const fetchNextStoryBySpeaker = async (speakerName, token) => {
     try {
+      const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:3001/next-story-by-speaker?speakerName=${speakerName}`
+        `http://localhost:3001/next-story-by-speaker?speakerName=${speakerName}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       if (response.ok) {
         const nextStory = await response.json();
@@ -108,12 +143,20 @@ const QuestionsList = ({ questions, conversations, userId, storyId }) => {
     }
   };
 
-  const handleNextStoryBySpeaker = (nextStoryId) => {
-    navigate("/storypage", {
-      state: {
-        nextStoryId,
-      },
-    });
+  const handleNextStoryBySpeaker = async () => {
+    const nextStoryId = await fetchNextStoryBySpeaker(currentStorySpeakerName);
+    if (nextStoryId) {
+      navigate("/storypage", {
+        state: {
+          nextStoryId,
+        },
+      });
+    } else {
+      // No more stories by this speaker
+      setNoMoreStories(
+        `There are no more stories by ${currentStorySpeakerName}`
+      );
+    }
   };
 
   const handleCloseRatingPopup = () => {
@@ -230,17 +273,16 @@ const QuestionsList = ({ questions, conversations, userId, storyId }) => {
             <Button
               variant="contained"
               sx={{ mt: 2 }}
-              onClick={async () => {
-                const nextStory = await fetchNextStoryBySpeaker(
-                  currentStorySpeakerName
-                );
-                if (nextStory) {
-                  handleNextStoryBySpeaker(nextStory);
-                }
-              }}
+              onClick={handleNextStoryBySpeaker}
             >
               Another story by {currentStorySpeakerName}
             </Button>
+
+            {noMoreStories && (
+              <Typography variant="body1" color="textSecondary" sx={{ mt: 2 }}>
+                {noMoreStories}
+              </Typography>
+            )}
           </Box>
         )}
         {showRatingPopup && userRating === null && (

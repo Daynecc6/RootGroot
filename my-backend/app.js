@@ -141,7 +141,6 @@ app.post("/api/login", async (req, res) => {
   console.log("Login request received:", req.body);
 
   const { username, password } = req.body;
-  console.log(username);
 
   // Connect to the database and fetch the user
   try {
@@ -169,7 +168,6 @@ app.post("/api/login", async (req, res) => {
       expiresIn: "1h",
     });
 
-    console.log("User authenticated, sending token:", token);
     res.json({ token });
   } catch (error) {
     console.error("Error connecting to the database:", error);
@@ -189,9 +187,7 @@ const authMiddleware = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log(decoded);
     req.userId = decoded.userId;
-    console.log(req.userId);
     return next();
   } catch (error) {
     res.status(401).json({ error: "Invalid token" });
@@ -201,7 +197,6 @@ const authMiddleware = async (req, res, next) => {
 //User profile data
 app.get("/api/user-profile", authMiddleware, async (req, res) => {
   try {
-    console.log(req.userId);
     const connection = await mysql.createConnection(dbConfig);
     const [rows] = await connection.execute(
       "SELECT * FROM users WHERE username = ?",
@@ -346,8 +341,9 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
-app.get("/api/stories", async (req, res) => {
+app.get("/api/stories", authMiddleware, async (req, res) => {
   const { country, purpose, theme, subtheme, story_id } = req.query;
+  const { userId } = req;
 
   let query;
   let queryParams;
@@ -357,11 +353,13 @@ app.get("/api/stories", async (req, res) => {
     queryParams = [story_id];
   } else {
     query = `
-      SELECT * FROM stories
-      WHERE country = ? AND purpose = ? AND theme = ? AND subtheme = ?
-      LIMIT 1;
+    SELECT * FROM stories
+    WHERE country = ? AND purpose = ? AND theme = ? AND subtheme = ?
+    AND id NOT IN (SELECT id FROM stories WHERE FIND_IN_SET(id, (SELECT completed_stories FROM users WHERE username = ?)) > 0)
+    LIMIT 1;
+    
     `;
-    queryParams = [country, purpose, theme, subtheme];
+    queryParams = [country, purpose, theme, subtheme, userId];
   }
 
   try {
@@ -400,12 +398,14 @@ app.get("/api/stories", async (req, res) => {
   }
 });
 
-app.get("/next-story-by-speaker", async (req, res) => {
+app.get("/next-story-by-speaker", authMiddleware, async (req, res) => {
   const speakerName = req.query.speakerName;
+  const { userId } = req;
 
   const query = `
     SELECT * FROM conversations
     WHERE speaker = ?
+    AND story_id NOT IN (SELECT id FROM stories WHERE FIND_IN_SET(id, (SELECT completed_stories FROM users WHERE username = ?)) > 0)
     AND id > (SELECT id FROM conversations WHERE speaker = ? ORDER BY id LIMIT 1)
     ORDER BY id
     LIMIT 1;
@@ -415,6 +415,7 @@ app.get("/next-story-by-speaker", async (req, res) => {
     const connection = await mysql.createConnection(dbConfig);
     const [results] = await connection.execute(query, [
       speakerName,
+      userId,
       speakerName,
     ]);
     connection.end();
@@ -460,7 +461,6 @@ app.get("/api/countries-highlighted", async (req, res) => {
 
     if (results.length > 0) {
       res.json(results);
-      console.log(results);
     } else {
       res.status(404).send("No countries found.");
     }
