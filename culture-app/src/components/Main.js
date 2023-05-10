@@ -21,7 +21,7 @@ import {
 } from "../pages/index";
 import { Toolbar } from "@mui/material";
 
-const ProtectedRoute = ({ token, children, fallback }) => {
+const ProtectedRoute = ({ token, children, fallback, mapData }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,7 +33,7 @@ const ProtectedRoute = ({ token, children, fallback }) => {
   return token ? children : fallback;
 };
 
-const Main = () => {
+const Main = (mapData) => {
   const token = useSelector((state) => state.auth.token);
 
   return (
@@ -47,7 +47,7 @@ const Main = () => {
           path="/world-map"
           element={
             <ProtectedRoute token={token} fallback={<MainContent />}>
-              <WorldMap />
+              <WorldMap mapData={mapData} />
             </ProtectedRoute>
           }
         />

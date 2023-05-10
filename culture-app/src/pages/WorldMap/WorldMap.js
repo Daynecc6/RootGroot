@@ -19,9 +19,9 @@ async function fetchCountriesWithStories() {
   }
 }
 
-function WorldMap() {
+function WorldMap(mapData) {
   const [countriesWithStories, setCountriesWithStories] = useState([]);
-  const { mapRef } = useWorldMap(countriesWithStories);
+  const { mapRef } = useWorldMap(countriesWithStories, mapData);
 
   useEffect(() => {
     async function fetchData() {
@@ -38,7 +38,7 @@ function WorldMap() {
         id="info-box"
         style={{
           position: "absolute",
-          top: "64px",
+          top: "0px",
           right: "10px",
           zIndex: 1000,
           padding: "6px",
@@ -52,10 +52,10 @@ function WorldMap() {
         id="map"
         ref={mapRef}
         style={{
-          height: "calc(100% - 64px)",
+          height: "calc(100% - 0px)",
           width: "100%",
           position: "absolute",
-          top: "64px",
+          top: "0",
           left: 0,
         }}
       />

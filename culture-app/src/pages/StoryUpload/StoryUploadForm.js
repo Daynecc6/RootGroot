@@ -30,7 +30,7 @@ function StoryUploadForm() {
   } = useStoryUploadForm();
 
   return (
-    <Container maxWidth="xl">
+    <Container maxWidth="xl" sx={{ paddingBottom: "200px" }}>
       <Box sx={{ mt: 4, mb: 2, textAlign: "center" }}>
         <Typography variant="h4">Upload Story</Typography>
       </Box>

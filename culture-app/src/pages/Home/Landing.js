@@ -14,11 +14,19 @@ const Landing = () => {
       bgcolor="primary.main"
       color="white"
     >
-      <img
-        src={logo}
-        alt="My Logo"
-        style={{ maxWidth: "35%", maxHeight: "35%" }}
-      />
+      <Box
+        sx={{
+          width: "35%",
+          height: "auto",
+          "@media (max-width: 600px)": { width: "80%" },
+        }}
+      >
+        <img
+          src={logo}
+          alt="My Logo"
+          style={{ width: "100%", height: "auto" }}
+        />
+      </Box>
     </Box>
   );
 };

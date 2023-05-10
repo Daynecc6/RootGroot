@@ -25,7 +25,7 @@ const useNavBar = () => {
     }
   };
 
-  return { token, isMobile, handleLogout };
+  return { token, handleLogout };
 };
 
 export default useNavBar;

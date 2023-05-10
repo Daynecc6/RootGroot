@@ -1,16 +1,5 @@
-import React, { useState } from "react";
-import {
-  AppBar,
-  Toolbar,
-  IconButton,
-  Drawer,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
-  Box,
-} from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
+import React from "react";
+import { AppBar, Toolbar, IconButton, ListItemText, Box } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import WorldMapIcon from "@mui/icons-material/Map";
 import CreateIcon from "@mui/icons-material/Create";
@@ -19,13 +8,7 @@ import { Link } from "react-router-dom";
 import useNavBar from "./useNavBar";
 
 const NavBar = () => {
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
-  const { token, isMobile, handleLogout } = useNavBar();
-
-  const toggleDrawer = (open) => (event) => {
-    setDrawerOpen(open);
-  };
+  const { token, handleLogout } = useNavBar();
 
   const navLinks = [
     {
@@ -73,11 +56,12 @@ const NavBar = () => {
     <Box
       sx={{
         position: "fixed",
-        bottom: 0,
+        bottom: -5,
         top: "auto",
         width: "100%",
         margin: "0 auto",
         bgcolor: "transparent",
+        zIndex: 1000,
       }}
     >
       <AppBar
@@ -89,100 +73,87 @@ const NavBar = () => {
           mb: 2,
         }}
       >
-        {isMobile && (
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-            onClick={toggleDrawer(true)}
-          >
-            <MenuIcon />
-          </IconButton>
-        )}
         <Box
-          bgcolor="background.paper"
-          borderRadius="8px"
-          boxShadow={3}
-          px={1}
           sx={{
-            width: "fit-content",
-            margin: "0 auto",
+            position: "absolute",
+            bottom: 0,
+            width: "100%",
+            height: "auto",
+            zIndex: -1,
           }}
         >
-          <Toolbar
-            sx={{
-              justifyContent: "center",
-              minHeight: "auto",
-              padding: "8px 16px",
-            }}
+          <svg
+            viewBox="0 0 500 37.5"
+            preserveAspectRatio="none"
+            width="100%"
+            height="200px"
           >
-            {navLinks.map((link) => (
-              <React.Fragment key={link.label}>
-                {link.type === "spacer" ? (
-                  <Box sx={{ flexGrow: 1 }} />
-                ) : isMobile ? null : (
-                  <Link
-                    to={link.path || ""}
-                    style={{ textDecoration: "none", color: "inherit" }}
-                    onClick={link.onClick}
-                  >
-                    {link.alwaysShowIcon ? (
-                      <IconButton
-                        edge="start"
-                        color="inherit"
-                        aria-label={link.label}
-                        sx={{ fontSize: link.iconSize }}
-                      >
-                        {link.icon && (
-                          <IconButton
-                            edge="start"
-                            color="inherit"
-                            aria-label={link.label}
-                            sx={{ mr: 1 }}
-                          >
-                            {React.cloneElement(link.icon, {
-                              fontSize: link.iconSize,
-                            })}
-                          </IconButton>
-                        )}
-                      </IconButton>
-                    ) : (
-                      <ListItemText
-                        primary={link.label}
-                        sx={{ marginRight: 2 }}
-                      />
-                    )}
-                  </Link>
-                )}
-              </React.Fragment>
-            ))}
-          </Toolbar>
+            <defs>
+              <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow
+                  dx="1"
+                  dy="1"
+                  stdDeviation="2"
+                  floodColor="#000000"
+                  floodOpacity="0.5"
+                />
+              </filter>
+            </defs>
+            <path
+              d="M-3.92,39.3525 C.00,-15 478.27,58.075 550.00,-15 L513.26,39.105 L-16.64,41.575 Z"
+              fill=""
+              filter="url(#shadow)"
+            ></path>
+          </svg>
         </Box>
-        <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
-          <List>
-            {navLinks.map(
-              (link, index) =>
-                link.type !== "spacer" && (
-                  <ListItem
-                    button
-                    key={index}
-                    onClick={toggleDrawer(false)}
-                    component={link.path ? Link : "div"}
-                    to={link.path}
-                  >
-                    {link.icon ? (
-                      <ListItemIcon>
-                        {React.cloneElement(link.icon, { fontSize: "large" })}
-                      </ListItemIcon>
-                    ) : (
-                      <ListItemText primary={link.label} />
-                    )}
-                  </ListItem>
-                )
-            )}
-          </List>
-        </Drawer>
+        <Toolbar
+          sx={{
+            justifyContent: "center",
+            minHeight: "auto",
+            padding: "8px 16px",
+          }}
+        >
+          {navLinks.map((link) => (
+            <React.Fragment key={link.label}>
+              {link.type === "spacer" ? (
+                <Box sx={{ flexGrow: 1 }} />
+              ) : (
+                <Link
+                  to={link.path || ""}
+                  style={{ textDecoration: "none", color: "white" }}
+                  onClick={link.onClick}
+                >
+                  {link.alwaysShowIcon ? (
+                    <IconButton
+                      edge="start"
+                      color="inherit"
+                      aria-label={link.label}
+                      sx={{ fontSize: link.iconSize }}
+                    >
+                      {link.icon && (
+                        <IconButton
+                          edge="start"
+                          color="inherit"
+                          aria-label={link.label}
+                          sx={{ mr: 1 }}
+                        >
+                          {React.cloneElement(link.icon, {
+                            fontSize: link.iconSize,
+                          })}
+                        </IconButton>
+                      )}
+                    </IconButton>
+                  ) : (
+                    <ListItemText
+                      primary={link.label}
+                      sx={{ marginRight: 2 }}
+                    />
+                  )}
+                </Link>
+              )}
+            </React.Fragment>
+          ))}
+        </Toolbar>
       </AppBar>
     </Box>
   );
