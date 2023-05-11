@@ -13,12 +13,13 @@ require("dotenv").config();
 const mysql = require("mysql2");
 
 const DATABASE_URL =
-  'mysql://cynja7vck5xhbwsslyul:pscale_pw_25FwXDfuSzfBRlvb1Er5Mz0m52IemdECxxB6PQYYdpt@aws.connect.psdb.cloud/rootgroot?ssl={"rejectUnauthorized":true}';
+  'mysql://g9jvievuvvho6wtn0dcu:pscale_pw_rjm474ZPFCnlmGC3WqYzyVDU2fEE7vu83xL4XFZohRO@aws.connect.psdb.cloud/rootgroot?ssl={"rejectUnauthorized":true}';
+
 const connection = mysql.createConnection(DATABASE_URL);
 
 (async () => {
   try {
-    connection.query("SELECT * FROM users", (error, rows, fields) => {
+    connection.execute("SELECT * FROM users", (error, rows, fields) => {
       if (error) {
         console.error("Error executing query:", error);
       } else {
