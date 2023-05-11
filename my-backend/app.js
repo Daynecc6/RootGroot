@@ -525,3 +525,15 @@ app.post("/api/update-user-rating", authMiddleware, async (req, res) => {
       .json({ error: "An error occurred while accessing the database." });
   }
 });
+
+app.get("/api/stories-icons", async (req, res) => {
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    const [storyRows] = await connection.execute("SELECT * FROM stories");
+    connection.end();
+    res.json(storyRows);
+  } catch (error) {
+    console.error("Error querying stories:", error);
+    res.status(500).send("Error querying stories.");
+  }
+});

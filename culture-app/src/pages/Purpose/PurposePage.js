@@ -8,9 +8,9 @@ import { ThemeProvider } from "@mui/material/styles";
 import { Button } from "@mui/material";
 import { usePurposePage } from "./usePurposePage";
 
-const BackButton = ({ onClick, disabled }) => (
+const BackButton = ({ onClick }) => (
   <Box textAlign="left" mb={2}>
-    <Button variant="outlined" onClick={onClick} disabled={disabled}>
+    <Button variant="contained" sx={{ color: "black" }} onClick={onClick}>
       Back
     </Button>
   </Box>
@@ -19,7 +19,15 @@ const BackButton = ({ onClick, disabled }) => (
 const IconGrid = ({ icons, handleClick, isSmallScreen }) => (
   <>
     {icons.map((icon, index) => (
-      <Grid item xs={4} sm={4} key={index}>
+      <Grid
+        item
+        xs={4}
+        sm={4}
+        key={index}
+        container
+        justifyContent="center"
+        alignItems="center"
+      >
         <Box
           onClick={() => handleClick(icon.text)}
           sx={{
@@ -32,12 +40,12 @@ const IconGrid = ({ icons, handleClick, isSmallScreen }) => (
             alt={icon.text}
             src={icon.img}
             sx={{
-              width: isSmallScreen ? 100 : 150,
-              height: isSmallScreen ? 100 : 150,
+              width: isSmallScreen ? 125 : 150,
+              height: isSmallScreen ? 125 : 150,
               cursor: "pointer",
             }}
           />
-          <Typography variant="subtitle1" align="center">
+          <Typography variant="subtitle1" align="center" fontWeight="bold">
             {icon.text2}
             {icon.text}
           </Typography>
@@ -56,9 +64,9 @@ const PurposePage = () => {
     selectedPurpose,
     selectedTheme,
     step,
-    icons,
-    commonThemes,
-    subThemes,
+    filteredIcons,
+    filteredCommonThemes,
+    filteredSubThemes,
     handleBackClick,
     handlePurposeClick,
     handleThemeClick,
@@ -66,55 +74,111 @@ const PurposePage = () => {
     navigate,
   } = usePurposePage();
 
-  console.log(countryData);
-
   return (
     <ThemeProvider theme={theme}>
       <div style={{ padding: "2rem" }}>
-        <h1 style={{ textAlign: "center", fontWeight: "bold" }}>
-          Purpose Page
-        </h1>
         <Container maxWidth="md" sx={{ marginBottom: "5rem" }}>
-          <BackButton onClick={handleBackClick} disabled={step === 0} />
           <Grid container spacing={2} justifyContent="center">
             {step === 0 && (
               <>
-                <Typography variant="h6" align="center">
-                  Purposes
-                </Typography>
+                <Grid item xs={12} alignItems="center">
+                  <Typography
+                    variant="h3"
+                    fontWeight="bold"
+                    style={{
+                      fontFamily: "Lobster",
+                      textAlign: "center",
+                      display: "block",
+                      margin: "auto",
+                    }}
+                  >
+                    PURPOSES
+                  </Typography>
+                </Grid>
                 <IconGrid
-                  icons={icons}
+                  icons={filteredIcons}
                   handleClick={handlePurposeClick}
                   isSmallScreen={isSmallScreen}
                 />
+                <Grid container justifyContent="center">
+                  <Grid
+                    item
+                    xs={12}
+                    sx={{ display: "flex", justifyContent: "center" }}
+                  >
+                    <BackButton onClick={handleBackClick} />
+                  </Grid>
+                </Grid>
               </>
             )}
 
             {step === 1 && (
               <>
-                <Typography variant="h6" align="center">
-                  {selectedPurpose} Themes
-                </Typography>
+                <Grid item xs={12}>
+                  <Typography
+                    variant="h3"
+                    fontWeight="bold"
+                    style={{
+                      fontFamily: "Lobster",
+                      textAlign: "center",
+                      display: "block",
+                      margin: "auto",
+                    }}
+                  >
+                    THEMES
+                  </Typography>
+                </Grid>
                 <IconGrid
-                  icons={commonThemes}
+                  icons={filteredCommonThemes}
                   handleClick={handleThemeClick}
                   isSmallScreen={isSmallScreen}
                 />
+                <Grid container justifyContent="center">
+                  <Grid
+                    item
+                    xs={12}
+                    sx={{ display: "flex", justifyContent: "center" }}
+                  >
+                    <BackButton onClick={handleBackClick} />
+                  </Grid>
+                </Grid>
               </>
             )}
 
-            {step === 2 && selectedTheme && subThemes[selectedTheme] && (
-              <>
-                <Typography variant="h6" align="center">
-                  {selectedTheme} Sub-themes
-                </Typography>
-                <IconGrid
-                  icons={subThemes[selectedTheme]}
-                  handleClick={handleSubThemeClick}
-                  isSmallScreen={isSmallScreen}
-                />
-              </>
-            )}
+            {step === 2 &&
+              selectedTheme &&
+              filteredSubThemes[selectedTheme] && (
+                <>
+                  <Grid item xs={12}>
+                    <Typography
+                      variant="h3"
+                      fontWeight="bold"
+                      style={{
+                        fontFamily: "Lobster",
+                        textAlign: "center",
+                        display: "block",
+                        margin: "auto",
+                      }}
+                    >
+                      SUB-THEMES
+                    </Typography>
+                  </Grid>
+                  <IconGrid
+                    icons={filteredSubThemes[selectedTheme]}
+                    handleClick={handleSubThemeClick}
+                    isSmallScreen={isSmallScreen}
+                  />
+                  <Grid container justifyContent="center">
+                    <Grid
+                      item
+                      xs={12}
+                      sx={{ display: "flex", justifyContent: "center" }}
+                    >
+                      <BackButton onClick={handleBackClick} />
+                    </Grid>
+                  </Grid>
+                </>
+              )}
           </Grid>
         </Container>
       </div>

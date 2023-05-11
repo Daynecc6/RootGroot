@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -23,6 +23,35 @@ const purposeImages = importAll(
 const subthemeImages = importAll(
   require.context("../../assets/SubthemeAvatars", false, /\.(png|jpe?g|svg)$/)
 );
+
+const fetchStories = async () => {
+  const response = await fetch("http://localhost:3001/api/stories-icons");
+  const stories = await response.json();
+  return stories;
+};
+
+const extractUniqueIcons = (stories, selectedCountry) => {
+  const countries = new Set();
+  const purposes = new Set();
+  const themes = new Set();
+  const subthemes = new Set();
+
+  stories
+    .filter((story) => story.country === selectedCountry)
+    .forEach((story) => {
+      countries.add(story.country);
+      purposes.add(story.purpose);
+      themes.add(story.theme);
+      subthemes.add(story.subtheme);
+    });
+
+  return {
+    countries: Array.from(countries),
+    purposes: Array.from(purposes),
+    themes: Array.from(themes),
+    subthemes: Array.from(subthemes),
+  };
+};
 
 export const usePurposePage = () => {
   const theme = useTheme();
@@ -172,19 +201,18 @@ export const usePurposePage = () => {
   };
   const handleBackClick = () => {
     if (step === 0) {
-      return;
+      navigate("/world-map");
+    } else {
+      setStep(step - 1);
     }
-    setStep(step - 1);
   };
   const handlePurposeClick = (purpose) => {
     setSelectedPurpose(purpose);
-    console.log(purpose);
     setStep(1);
   };
 
   const handleThemeClick = (icon) => {
     setSelectedTheme(icon);
-    console.log(icon);
     setStep(2);
   };
 
@@ -202,6 +230,44 @@ export const usePurposePage = () => {
       },
     });
   };
+
+  const [uniqueIcons, setUniqueIcons] = useState({
+    purposes: [],
+    themes: [],
+    subthemes: [],
+  });
+
+  useEffect(() => {
+    const fetchAndExtractIcons = async () => {
+      const stories = await fetchStories();
+      const extractedIcons = extractUniqueIcons(stories, countryData);
+      setUniqueIcons(extractedIcons);
+    };
+
+    fetchAndExtractIcons();
+  }, [countryData]);
+
+  // ...
+
+  // ...
+
+  const filteredIcons = icons.filter((icon) =>
+    uniqueIcons.purposes.includes(icon.text)
+  );
+
+  const filteredCommonThemes = commonThemes.filter((theme) =>
+    uniqueIcons.themes.includes(theme.text)
+  );
+
+  const filteredSubThemes = Object.entries(subThemes)
+    .filter(([key]) => uniqueIcons.themes.includes(key))
+    .reduce((acc, [key, value]) => {
+      const filteredSubThemesArray = value.filter((subtheme) =>
+        uniqueIcons.subthemes.includes(subtheme.text)
+      );
+      return { ...acc, [key]: filteredSubThemesArray };
+    }, {});
+
   return {
     theme,
     isSmallScreen,
@@ -210,9 +276,9 @@ export const usePurposePage = () => {
     selectedPurpose,
     selectedTheme,
     step,
-    icons,
-    commonThemes,
-    subThemes,
+    filteredIcons,
+    filteredCommonThemes,
+    filteredSubThemes,
     handleBackClick,
     handlePurposeClick,
     handleThemeClick,
