@@ -79,9 +79,7 @@ app.post("/api/register", async (req, res) => {
   }
 
   try {
-    const connection = await mysql.createConnection(
-      'mysql://p5nj84rpnl1k45rrpnlj:pscale_pw_SIXdD0yr3UC9DSk4VRDiH14ypaDOfHdrzDpmqr3R70M@aws.connect.psdb.cloud/rootgroot?ssl={"rejectUnauthorized":true}'
-    );
+    const connection = await mysql.createConnection(process.env.DATABASE_URL);
 
     // Hash the password and insert the new user
     const hashedPassword = await bcrypt.hash(password, 10);
