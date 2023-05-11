@@ -7,8 +7,8 @@ import Avatar from "@mui/material/Avatar";
 import { styled } from "@mui/system";
 
 const speakerIcons = {
-  PROF: require("./SpeakerIcons/AK.png"),
-  AK: require("./SpeakerIcons/Professor.png"),
+  AK: require("./SpeakerIcons/AK.png"),
+  PROF: require("./SpeakerIcons/Professor.png"),
 };
 
 const Bubble = styled("div")(({ theme, sender }) => ({
