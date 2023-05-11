@@ -15,10 +15,10 @@ app.use(cors());
 
 // Replace the placeholder values with your own database credentials
 const dbConfig = {
-  host: "localhost",
-  user: "root",
-  password: "Dcord2001!",
-  database: "culture_db",
+  host: "sql.freedb.tech",
+  user: "frreedb_dayne",
+  password: "#8vB?57pyj6UX@K!",
+  database: "freedb_rootgroot",
 };
 
 //Register route

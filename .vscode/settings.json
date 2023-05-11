@@ -12,6 +12,19 @@
       "username": "root",
       "database": "culture_db",
       "password": "Dcord2001!"
+    },
+    {
+      "mysqlOptions": {
+        "authProtocol": "default"
+      },
+      "previewLimit": 50,
+      "server": "sql.freedb.tech",
+      "port": 3306,
+      "driver": "MySQL",
+      "name": "root",
+      "database": "freedb_rootgroot",
+      "username": "freedb_dayne",
+      "password": "#8vB?57pyj6UX@K"
     }
   ]
 }
