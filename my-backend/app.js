@@ -13,7 +13,7 @@ require("dotenv").config();
 const mysql = require("mysql2");
 
 const DATABASE_URL =
-  'mysql://44uprmiyc8p3kxz306px:************@aws.connect.psdb.cloud/rootgroot?ssl={"rejectUnauthorized":true}';
+  'mysql://24y2tvu2ekd2qg1j6kcv:pscale_pw_jGI9A59XgcXfNJe1YrMVAZy4pSmO06dUIuffJ2kN1Ko@aws.connect.psdb.cloud/rootgroot?ssl={"rejectUnauthorized":true}';
 const connection = mysql.createConnection(DATABASE_URL);
 
 (async () => {
