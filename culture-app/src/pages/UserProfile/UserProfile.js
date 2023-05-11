@@ -1,7 +1,8 @@
 import React from "react";
 import { Tabs, Tab, Box, Grid } from "@mui/material";
 import { useUserProfile } from "./useUserProfile";
-import CompletedStories from "./CompletedStories";
+import { Alert } from "@mui/material";
+import ErrorIcon from "@mui/icons-material/Error";
 
 const UserProfile = () => {
   const {
@@ -14,7 +15,16 @@ const UserProfile = () => {
   } = useUserProfile();
 
   if (!userProfile) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <Alert
+          severity="error"
+          sx={{ backgroundColor: "black", color: "white" }}
+        >
+          You need to be logged in to see this information.
+        </Alert>
+      </div>
+    );
   }
 
   return (
