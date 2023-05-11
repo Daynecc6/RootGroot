@@ -1,5 +1,12 @@
-import React from "react";
-import { AppBar, Toolbar, IconButton, ListItemText, Box } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  ListItemText,
+  Box,
+  Tooltip,
+} from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import WorldMapIcon from "@mui/icons-material/Map";
 import CreateIcon from "@mui/icons-material/Create";
@@ -9,6 +16,34 @@ import useNavBar from "./useNavBar";
 
 const NavBar = () => {
   const { token, handleLogout } = useNavBar();
+  const [username, setUsername] = useState(null);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch("http://localhost:3001/api/user-profile", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error);
+        }
+
+        const userData = await response.json();
+        setUsername(userData.username);
+      } catch (error) {
+        console.error("Error fetching user profile:", error.message);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
 
   const navLinks = [
     {
@@ -32,13 +67,17 @@ const NavBar = () => {
       alwaysShowIcon: true,
       iconSize: "large",
     },
-    {
-      label: "Story Upload",
-      path: "/story-upload-form",
-      icon: <CreateIcon />,
-      alwaysShowIcon: true,
-      iconSize: "large",
-    },
+    ...(username === "Yuchen_Liu" || username === "daynecc"
+      ? [
+          {
+            label: "Story Upload",
+            path: "/story-upload-form",
+            icon: <CreateIcon />,
+            alwaysShowIcon: true,
+            iconSize: "large",
+          },
+        ]
+      : []),
     ...(!token
       ? [
           { label: "Login", path: "/login" },
@@ -124,25 +163,27 @@ const NavBar = () => {
                   onClick={link.onClick}
                 >
                   {link.alwaysShowIcon ? (
-                    <IconButton
-                      edge="start"
-                      color="inherit"
-                      aria-label={link.label}
-                      sx={{ fontSize: link.iconSize }}
-                    >
-                      {link.icon && (
-                        <IconButton
-                          edge="start"
-                          color="inherit"
-                          aria-label={link.label}
-                          sx={{ mr: 1 }}
-                        >
-                          {React.cloneElement(link.icon, {
-                            fontSize: link.iconSize,
-                          })}
-                        </IconButton>
-                      )}
-                    </IconButton>
+                    <Tooltip title={link.label}>
+                      <IconButton
+                        edge="start"
+                        color="inherit"
+                        aria-label={link.label}
+                        sx={{ fontSize: link.iconSize }}
+                      >
+                        {link.icon && (
+                          <IconButton
+                            edge="start"
+                            color="inherit"
+                            aria-label={link.label}
+                            sx={{ mr: 1 }}
+                          >
+                            {React.cloneElement(link.icon, {
+                              fontSize: link.iconSize,
+                            })}
+                          </IconButton>
+                        )}
+                      </IconButton>
+                    </Tooltip>
                   ) : (
                     <ListItemText
                       primary={link.label}

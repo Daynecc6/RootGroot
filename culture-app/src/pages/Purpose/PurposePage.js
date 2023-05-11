@@ -10,7 +10,11 @@ import { usePurposePage } from "./usePurposePage";
 
 const BackButton = ({ onClick }) => (
   <Box textAlign="left" mb={2}>
-    <Button variant="contained" sx={{ color: "black" }} onClick={onClick}>
+    <Button
+      variant="contained"
+      sx={{ color: "black", mt: "20px" }}
+      onClick={onClick}
+    >
       Back
     </Button>
   </Box>
@@ -21,8 +25,9 @@ const IconGrid = ({ icons, handleClick, isSmallScreen }) => (
     {icons.map((icon, index) => (
       <Grid
         item
-        xs={4}
-        sm={4}
+        xs={12} // Each icon takes up a full row on extra small screens
+        sm={6} // Each icon takes up half a row on small screens
+        md={4} // Each icon takes up a third of a row on medium and larger screens
         key={index}
         container
         justifyContent="center"
@@ -59,9 +64,6 @@ const PurposePage = () => {
   const {
     theme,
     isSmallScreen,
-    location,
-    countryData,
-    selectedPurpose,
     selectedTheme,
     step,
     filteredIcons,
@@ -71,7 +73,7 @@ const PurposePage = () => {
     handlePurposeClick,
     handleThemeClick,
     handleSubThemeClick,
-    navigate,
+    storyHunterIcon,
   } = usePurposePage();
 
   return (
@@ -96,7 +98,7 @@ const PurposePage = () => {
                   </Typography>
                 </Grid>
                 <IconGrid
-                  icons={filteredIcons}
+                  icons={[storyHunterIcon, ...filteredIcons]}
                   handleClick={handlePurposeClick}
                   isSmallScreen={isSmallScreen}
                 />

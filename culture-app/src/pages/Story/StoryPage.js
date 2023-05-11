@@ -36,14 +36,21 @@ const StoryPage = () => {
             requestOptions
           );
         } else {
+          const queryParams = [
+            `country=${encodeURIComponent(selectedSubTheme.country)}`,
+            `theme=${encodeURIComponent(selectedSubTheme.theme)}`,
+            `subtheme=${encodeURIComponent(selectedSubTheme.subtheme)}`,
+          ];
+
+          if (selectedSubTheme.purpose !== "Story-hunter") {
+            queryParams.push(
+              `purpose=${encodeURIComponent(selectedSubTheme.purpose)}`
+            );
+          }
+
+          const queryString = queryParams.join("&");
           response = await fetch(
-            `http://localhost:3001/api/stories?country=${encodeURIComponent(
-              selectedSubTheme.country
-            )}&purpose=${encodeURIComponent(
-              selectedSubTheme.purpose
-            )}&theme=${encodeURIComponent(
-              selectedSubTheme.theme
-            )}&subtheme=${encodeURIComponent(selectedSubTheme.subtheme)}`,
+            `http://localhost:3001/api/stories?${queryString}`,
             requestOptions
           );
         }

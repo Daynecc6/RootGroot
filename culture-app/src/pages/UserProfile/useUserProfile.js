@@ -65,12 +65,19 @@ export const useUserProfile = () => {
 
     return (
       <Grid item xs={12} md={6}>
-        <div style={{ marginBottom: "1rem" }}>
+        <div
+          style={{
+            marginBottom: "1rem",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
           <Typography variant="body1">{label}</Typography>
           <Paper
             sx={{
-              padding: "0.5rem",
-              marginTop: "0.5rem",
+              padding: "0.25rem",
+              marginTop: "0rem",
               width: "100%",
               textAlign: "center",
             }}

@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   BrowserRouter as Router,
@@ -36,6 +36,52 @@ const ProtectedRoute = ({ token, children, fallback, mapData }) => {
 const Main = (mapData) => {
   const token = useSelector((state) => state.auth.token);
 
+  const [username, setUsername] = useState(null);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch("http://localhost:3001/api/user-profile", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error);
+        }
+
+        const userData = await response.json();
+        setUsername(userData.username);
+      } catch (error) {
+        console.error("Error fetching user profile:", error.message);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
+
+  const RestrictedUploadRoute = ({
+    allowedUsernames,
+    username,
+    children,
+    fallback,
+  }) => {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+      if (!allowedUsernames.includes(username)) {
+        navigate("/home");
+      }
+    }, [allowedUsernames, username, navigate]);
+
+    return allowedUsernames.includes(username) ? children : fallback;
+  };
+
   return (
     <Router>
       <Routes>
@@ -54,7 +100,18 @@ const Main = (mapData) => {
         <Route path="/purpose" element={<PurposePage />} />
         <Route path="/user-profile" element={<UserProfile />} />
         <Route path="/storypage" element={<StoryPage />} />
-        <Route path="/story-upload-form" element={<StoryUploadForm />} />
+        <Route
+          path="/story-upload-form"
+          element={
+            <RestrictedUploadRoute
+              allowedUsernames={["Yuchen_Liu", "daynecc"]}
+              username={username}
+              fallback={<MainContent />}
+            >
+              <StoryUploadForm />
+            </RestrictedUploadRoute>
+          }
+        />
       </Routes>
       <NavBar />
     </Router>

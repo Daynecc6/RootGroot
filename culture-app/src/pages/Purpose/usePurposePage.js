@@ -30,6 +30,12 @@ const fetchStories = async () => {
   return stories;
 };
 
+const storyHunterIcon = {
+  img: purposeImages["Storyhunter.png"],
+  text: "Story-hunter",
+  text2: "Tell me more! - ",
+};
+
 const extractUniqueIcons = (stories, selectedCountry) => {
   const countries = new Set();
   const purposes = new Set();
@@ -251,8 +257,9 @@ export const usePurposePage = () => {
 
   // ...
 
-  const filteredIcons = icons.filter((icon) =>
-    uniqueIcons.purposes.includes(icon.text)
+  const filteredIcons = icons.filter(
+    (icon) =>
+      uniqueIcons.purposes.includes(icon.text) && icon.text !== "Story-hunter"
   );
 
   const filteredCommonThemes = commonThemes.filter((theme) =>
@@ -284,5 +291,6 @@ export const usePurposePage = () => {
     handleThemeClick,
     handleSubThemeClick,
     navigate,
+    storyHunterIcon,
   };
 };
