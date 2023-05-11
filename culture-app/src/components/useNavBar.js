@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useTheme } from "@mui/material/styles";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import { logout } from "../pages/Login/redux/authActions";
 
 const useNavBar = () => {
@@ -11,7 +9,6 @@ const useNavBar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const theme = useTheme();
   //const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
