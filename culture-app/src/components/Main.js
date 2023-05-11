@@ -8,7 +8,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 
-import { Footer, NavBar } from "./index";
+import { NavBar } from "./index";
 import {
   UserProfile,
   MainContent,
@@ -19,7 +19,6 @@ import {
   StoryPage,
   StoryUploadForm,
 } from "../pages/index";
-import { Toolbar } from "@mui/material";
 
 const ProtectedRoute = ({ token, children, fallback, mapData }) => {
   const navigate = useNavigate();

@@ -1,13 +1,5 @@
 import { useRegister } from "../Login/redux/useRegister";
-import {
-  Button,
-  TextField,
-  Container,
-  Box,
-  Typography,
-  Alert,
-} from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
+import { Container, Box, Typography, Alert } from "@mui/material";
 import EmailUsernamePassword from "./EmailUsernamePassword";
 import UserName from "./UserName";
 import Countries from "./Countries";
@@ -15,17 +7,13 @@ import Countries from "./Countries";
 const RegisterForm = () => {
   const {
     step,
-    setStep,
     formData,
-    setFormData,
     errorMessage,
     inputError,
-    setInputError,
     handleNextClick,
     handleBackClick,
     handleInputChange,
     handleSubmit,
-    checkEmailUsername,
     handlePasswordBlur,
   } = useRegister();
 

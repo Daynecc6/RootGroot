@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import axios from "axios";
-import simplify from "simplify-geojson";
 
 const useWorldMap = (countriesWithStories, mapData) => {
   const mapRef = useRef(null);

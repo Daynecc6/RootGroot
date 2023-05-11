@@ -66,7 +66,7 @@ export const useRegister = () => {
       }
     }
 
-    if (step == 2) {
+    if (step === 2) {
       const requiredFields = [
         "first_name",
         "last_name",

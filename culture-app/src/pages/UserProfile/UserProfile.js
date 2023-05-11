@@ -2,17 +2,10 @@ import React from "react";
 import { Tabs, Tab, Box, Grid } from "@mui/material";
 import { useUserProfile } from "./useUserProfile";
 import { Alert } from "@mui/material";
-import ErrorIcon from "@mui/icons-material/Error";
 
 const UserProfile = () => {
-  const {
-    userProfile,
-    selectedTab,
-    handleChange,
-    updateProfile,
-    TabPanel,
-    InfoBox,
-  } = useUserProfile();
+  const { userProfile, selectedTab, handleChange, TabPanel, InfoBox } =
+    useUserProfile();
 
   if (!userProfile) {
     return (

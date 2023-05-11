@@ -21,11 +21,6 @@ const QuestionsList = ({ questions, conversations, userId, storyId }) => {
     localStorage.setItem(`story-progress-${storyId}`, JSON.stringify(progress));
   };
 
-  const initialProgress = getProgressFromLocalStorage(storyId) || {
-    currentQuestionIndex: 0,
-    score: 0,
-  };
-
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [resultText, setResultText] = useState("");
