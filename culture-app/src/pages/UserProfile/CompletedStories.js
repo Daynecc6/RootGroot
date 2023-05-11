@@ -15,7 +15,9 @@ const CompletedStories = ({ completedStories }) => {
       try {
         if (storyIds.length > 0) {
           const promises = storyIds.map((storyId) =>
-            fetch(`http://localhost:3001/api/stories?story_id=${storyId}`)
+            fetch(
+              `https://root-groot-webservice.onrender.com/api/stories?story_id=${storyId}`
+            )
           );
           const responses = await Promise.all(promises);
           const data = await Promise.all(

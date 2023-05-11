@@ -1,13 +1,16 @@
 export const login = (username, password) => async (dispatch) => {
   // Call your actual login API here
   const loginUser = async (username, password) => {
-    const response = await fetch("http://localhost:3001/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username, password }),
-    });
+    const response = await fetch(
+      "https://root-groot-webservice.onrender.com/api/login",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      }
+    );
 
     if (response.ok) {
       const data = await response.json();
@@ -38,13 +41,16 @@ export const logout = () => (dispatch) => {
 export const register = (formData) => async (dispatch) => {
   // Call your actual register API here
   const registerUser = async (formData) => {
-    const response = await fetch("http://localhost:3001/api/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ formData }),
-    });
+    const response = await fetch(
+      "https://root-groot-webservice.onrender.com/api/register",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ formData }),
+      }
+    );
 
     if (response.ok) {
       const data = await response.json();

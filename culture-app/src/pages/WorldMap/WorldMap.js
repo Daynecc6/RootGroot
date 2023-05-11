@@ -4,7 +4,7 @@ import useWorldMap from "./useWorldMap";
 async function fetchCountriesWithStories() {
   try {
     const response = await fetch(
-      `http://localhost:3001/api/countries-highlighted`
+      `https://root-groot-webservice.onrender.com/api/countries-highlighted`
     );
     if (response.ok) {
       const fetchedCountries = await response.json();

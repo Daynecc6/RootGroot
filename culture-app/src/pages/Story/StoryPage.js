@@ -32,7 +32,7 @@ const StoryPage = () => {
         let response;
         if (nextStoryId) {
           response = await fetch(
-            `http://localhost:3001/api/stories?story_id=${nextStoryId}`,
+            `https://root-groot-webservice.onrender.com/api/stories?story_id=${nextStoryId}`,
             requestOptions
           );
         } else {
@@ -50,7 +50,7 @@ const StoryPage = () => {
 
           const queryString = queryParams.join("&");
           response = await fetch(
-            `http://localhost:3001/api/stories?${queryString}`,
+            `https://root-groot-webservice.onrender.com/api/stories?${queryString}`,
             requestOptions
           );
         }
@@ -77,13 +77,16 @@ const StoryPage = () => {
     const fetchUserProfile = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch("http://localhost:3001/api/user-profile", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          "https://root-groot-webservice.onrender.com/api/user-profile",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (!response.ok) {
           const error = await response.json();

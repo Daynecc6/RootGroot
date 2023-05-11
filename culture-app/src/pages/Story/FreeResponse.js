@@ -12,7 +12,7 @@ const FreeResponse = ({ freeResponse, storyID }) => {
   const handleSubmit = async () => {
     try {
       const userResponse = await fetch(
-        "http://localhost:3001/api/free-response",
+        "https://root-groot-webservice.onrender.com/api/free-response",
         {
           method: "POST",
           headers: {

@@ -25,7 +25,9 @@ const subthemeImages = importAll(
 );
 
 const fetchStories = async () => {
-  const response = await fetch("http://localhost:3001/api/stories-icons");
+  const response = await fetch(
+    "https://root-groot-webservice.onrender.com/api/stories-icons"
+  );
   const stories = await response.json();
   return stories;
 };

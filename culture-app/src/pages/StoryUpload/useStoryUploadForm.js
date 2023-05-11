@@ -126,13 +126,16 @@ export const useStoryUploadForm = () => {
 
     event.preventDefault();
     // Send the form data to your backend API
-    const response = await fetch("http://localhost:3001/api/stories", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
+    const response = await fetch(
+      "https://root-groot-webservice.onrender.com/api/stories",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      }
+    );
 
     if (response.ok) {
       alert("Story uploaded successfully!");

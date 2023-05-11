@@ -77,7 +77,7 @@ const QuestionsList = ({ questions, conversations, userId, storyId }) => {
   const updateCompletedStories = async (userId, storyId) => {
     try {
       const response = await fetch(
-        `http://localhost:3001/update-completed-stories`,
+        `https://root-groot-webservice.onrender.com/update-completed-stories`,
         {
           method: "POST",
           headers: {
@@ -118,7 +118,7 @@ const QuestionsList = ({ questions, conversations, userId, storyId }) => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:3001/next-story-by-speaker?speakerName=${speakerName}`,
+        `https://root-groot-webservice.onrender.com/next-story-by-speaker?speakerName=${speakerName}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -162,13 +162,16 @@ const QuestionsList = ({ questions, conversations, userId, storyId }) => {
     const fetchUserProfile = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch("http://localhost:3001/api/user-profile", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          "https://root-groot-webservice.onrender.com/api/user-profile",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (!response.ok) {
           const error = await response.json();
