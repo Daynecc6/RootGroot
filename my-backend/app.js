@@ -12,7 +12,9 @@ app.use(cors());
 require("dotenv").config();
 const mysql = require("mysql2");
 
-const connection = mysql.createConnection(process.env.DATABASE_URL);
+const DATABASE_URL =
+  'mysql://cynja7vck5xhbwsslyul:pscale_pw_25FwXDfuSzfBRlvb1Er5Mz0m52IemdECxxB6PQYYdpt@aws.connect.psdb.cloud/rootgroot?ssl={"rejectUnauthorized":true}';
+const connection = mysql.createConnection(DATABASE_URL);
 
 (async () => {
   try {
