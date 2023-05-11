@@ -5,6 +5,7 @@ export const login = (username, password) => async (dispatch) => {
       "https://root-groot-webservice.onrender.com/api/login",
       {
         method: "POST",
+        mode: "cors",
         headers: {
           "Content-Type": "application/json",
         },
