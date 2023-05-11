@@ -7,19 +7,13 @@ const mysql = require("mysql2/promise");
 
 dotenv.config();
 
-const PORT = process.env.PORT || 3001;
+//const PORT = process.env.PORT || 3001;
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Replace the placeholder values with your own database credentials
-const dbConfig = {
-  host: "sql.freedb.tech",
-  user: "frreedb_dayne",
-  password: "#8vB?57pyj6UX@K!",
-  database: "freedb_rootgroot",
-};
+require("dotenv").config();
 
 //Register route
 app.post("/api/register", async (req, res) => {
@@ -68,7 +62,7 @@ app.post("/api/register", async (req, res) => {
   }
 
   try {
-    const connection = await mysql.createConnection(dbConfig);
+    const connection = await mysql.createConnection(process.env.DATABASE_URL);
 
     // Hash the password and insert the new user
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -114,7 +108,7 @@ app.post("/api/check-email-username", async (req, res) => {
   const { email, username } = req.body;
 
   try {
-    const connection = await mysql.createConnection(dbConfig);
+    const connection = await mysql.createConnection(process.env.DATABASE_URL);
     const [rows] = await connection.execute(
       "SELECT * FROM users WHERE email = ? OR username = ?",
       [email, username]
@@ -144,11 +138,13 @@ app.post("/api/login", async (req, res) => {
 
   // Connect to the database and fetch the user
   try {
-    const connection = await mysql.createConnection(dbConfig);
+    const connection = await mysql.createConnection(process.env.DATABASE_URL);
+
     const [rows] = await connection.execute(
       "SELECT * FROM users WHERE username = ?",
       [username]
     );
+
     connection.end();
 
     if (rows.length === 0) {
@@ -197,7 +193,7 @@ const authMiddleware = async (req, res, next) => {
 //User profile data
 app.get("/api/user-profile", authMiddleware, async (req, res) => {
   try {
-    const connection = await mysql.createConnection(dbConfig);
+    const connection = await mysql.createConnection(process.env.DATABASE_URL);
     const [rows] = await connection.execute(
       "SELECT * FROM users WHERE username = ?",
       [req.userId]
@@ -230,7 +226,7 @@ const fetchStoryAndConversation = async (subtheme) => {
   `;
 
   try {
-    const connection = await mysql.createConnection(dbConfig);
+    const connection = await mysql.createConnection(process.env.DATABASE_URL);
     const [results] = await connection.execute(query, [subtheme]);
     connection.end();
 
@@ -281,7 +277,7 @@ app.post("/api/stories", async (req, res) => {
   // You may want to add checks for null values or validation here
 
   try {
-    const connection = await mysql.createConnection(dbConfig);
+    const connection = await mysql.createConnection(process.env.DATABASE_URL);
 
     const [result] = await connection.execute(
       "INSERT INTO stories (country, purpose, theme, subtheme, title, scenario, freeresp) VALUES (?, ?, ?, ?, ?, ?, ?)",
@@ -337,8 +333,8 @@ app.post("/api/stories", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.listen(3001, () => {
+  console.log("Server is running on port 3002");
 });
 
 app.get("/api/stories", authMiddleware, async (req, res) => {
@@ -363,7 +359,7 @@ app.get("/api/stories", authMiddleware, async (req, res) => {
   }
 
   try {
-    const connection = await mysql.createConnection(dbConfig);
+    const connection = await mysql.createConnection(process.env.DATABASE_URL);
     const [storyRows] = await connection.execute(query, queryParams);
 
     if (storyRows.length === 0) {
@@ -412,7 +408,7 @@ app.get("/next-story-by-speaker", authMiddleware, async (req, res) => {
   `;
 
   try {
-    const connection = await mysql.createConnection(dbConfig);
+    const connection = await mysql.createConnection(process.env.DATABASE_URL);
     const [results] = await connection.execute(query, [
       speakerName,
       userId,
@@ -435,7 +431,7 @@ app.post("/api/free-response", async (req, res) => {
   try {
     const { storyId, question, response } = req.body;
 
-    const connection = await mysql.createConnection(dbConfig);
+    const connection = await mysql.createConnection(process.env.DATABASE_URL);
 
     await connection.execute(
       "INSERT INTO free_responses (story_id, question, response) VALUES (?, ?, ?)",
@@ -455,7 +451,7 @@ app.get("/api/countries-highlighted", async (req, res) => {
   const query = `SELECT country FROM stories;`;
 
   try {
-    const connection = await mysql.createConnection(dbConfig);
+    const connection = await mysql.createConnection(process.env.DATABASE_URL);
     const [results] = await connection.execute(query);
     connection.end();
 
@@ -473,7 +469,7 @@ app.get("/api/countries-highlighted", async (req, res) => {
 app.post("/update-completed-stories", async (req, res) => {
   const { userId, storyId } = req.body;
 
-  const connection = await mysql.createConnection(dbConfig);
+  const connection = await mysql.createConnection(process.env.DATABASE_URL);
 
   try {
     const [rows] = await connection.execute(
@@ -506,7 +502,7 @@ app.post("/api/update-user-rating", authMiddleware, async (req, res) => {
   try {
     const { userId, rating } = req.body;
 
-    const connection = await mysql.createConnection(dbConfig);
+    const connection = await mysql.createConnection(process.env.DATABASE_URL);
     const [result] = await connection.execute(
       "UPDATE users SET rating = ? WHERE username = ?",
       [rating, userId]
@@ -528,7 +524,7 @@ app.post("/api/update-user-rating", authMiddleware, async (req, res) => {
 
 app.get("/api/stories-icons", async (req, res) => {
   try {
-    const connection = await mysql.createConnection(dbConfig);
+    const connection = await mysql.createConnection(process.env.DATABASE_URL);
     const [storyRows] = await connection.execute("SELECT * FROM stories");
     connection.end();
     res.json(storyRows);
