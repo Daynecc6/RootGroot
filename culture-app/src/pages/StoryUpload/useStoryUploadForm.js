@@ -127,7 +127,7 @@ export const useStoryUploadForm = () => {
     event.preventDefault();
     // Send the form data to your backend API
     const response = await fetch(
-      "https://root-groot-webservice.onrender.com/api/stories",
+      "https://rootgroot-ht6a.onrender.com/api/stories",
       {
         method: "POST",
         headers: {

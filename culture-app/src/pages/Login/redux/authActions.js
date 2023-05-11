@@ -2,7 +2,7 @@ export const login = (username, password) => async (dispatch) => {
   // Call your actual login API here
   const loginUser = async (username, password) => {
     const response = await fetch(
-      "https://root-groot-webservice.onrender.com/api/login",
+      "https://rootgroot-ht6a.onrender.com/api/login",
       {
         method: "POST",
         mode: "cors",
@@ -43,7 +43,7 @@ export const register = (formData) => async (dispatch) => {
   // Call your actual register API here
   const registerUser = async (formData) => {
     const response = await fetch(
-      "https://root-groot-webservice.onrender.com/api/register",
+      "https://rootgroot-ht6a.onrender.com/api/register",
       {
         method: "POST",
         headers: {

@@ -11,7 +11,7 @@ export const useUserProfile = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(
-          "https://root-groot-webservice.onrender.com/api/user-profile",
+          "https://rootgroot-ht6a.onrender.com/api/user-profile",
           {
             method: "GET",
             headers: {
@@ -115,7 +115,7 @@ export const useUserProfile = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        "https://root-groot-webservice.onrender.com/api/update-user-profile",
+        "https://rootgroot-ht6a.onrender.com/api/update-user-profile",
         {
           method: "PUT",
           headers: {

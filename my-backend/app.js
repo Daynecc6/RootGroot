@@ -85,7 +85,7 @@ app.post("/api/register", async (req, res) => {
 
     // Hash the password and insert the new user
     const hashedPassword = await bcrypt.hash(password, 10);
-    await connection.query(
+    await connection.execute(
       "INSERT INTO users (email, username, first_name, last_name, preferred_name, gender, languages_spoke, birth_country, countries_worked, countries_lived, countries_studied, countries_volunteered, countries_traveled, countries_bucket, password, age) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
         email,
@@ -128,7 +128,7 @@ app.post("/api/check-email-username", async (req, res) => {
 
   try {
     const connection = await mysql.createConnection(process.env.DATABASE_URL);
-    const [rows] = await connection.query(
+    const [rows] = await connection.execute(
       "SELECT * FROM users WHERE email = ? OR username = ?",
       [email, username]
     );
@@ -161,7 +161,7 @@ app.post("/api/login", async (req, res) => {
       'mysql://p5nj84rpnl1k45rrpnlj:pscale_pw_SIXdD0yr3UC9DSk4VRDiH14ypaDOfHdrzDpmqr3R70M@aws.connect.psdb.cloud/rootgroot?ssl={"rejectUnauthorized":true}'
     );
 
-    const [rows] = await connection.query(
+    const [rows] = await connection.execute(
       "SELECT * FROM users WHERE username = ?",
       [username]
     );
@@ -215,7 +215,7 @@ const authMiddleware = async (req, res, next) => {
 app.get("/api/user-profile", authMiddleware, async (req, res) => {
   try {
     const connection = await mysql.createConnection(process.env.DATABASE_URL);
-    const [rows] = await connection.query(
+    const [rows] = await connection.execute(
       "SELECT * FROM users WHERE username = ?",
       [req.userId]
     );
@@ -248,7 +248,7 @@ const fetchStoryAndConversation = async (subtheme) => {
 
   try {
     const connection = await mysql.createConnection(process.env.DATABASE_URL);
-    const [results] = await connection.query(query, [subtheme]);
+    const [results] = await connection.execute(query, [subtheme]);
     connection.end();
 
     const storyData = {
@@ -300,7 +300,7 @@ app.post("/api/stories", async (req, res) => {
   try {
     const connection = await mysql.createConnection(process.env.DATABASE_URL);
 
-    const [result] = await connection.query(
+    const [result] = await connection.execute(
       "INSERT INTO stories (country, purpose, theme, subtheme, title, scenario, freeresp) VALUES (?, ?, ?, ?, ?, ?, ?)",
       [country, purpose, theme, subtheme, title, scenario, freeresp]
     );
@@ -313,7 +313,7 @@ app.post("/api/stories", async (req, res) => {
       order_number++
     ) {
       const { speaker, message } = conversations[order_number];
-      await connection.query(
+      await connection.execute(
         "INSERT INTO conversations (story_id, speaker, message, order_number) VALUES (?, ?, ?, ?)",
         [storyId, speaker, message, order_number]
       );
@@ -321,7 +321,7 @@ app.post("/api/stories", async (req, res) => {
 
     for (const question of questions) {
       const { question: questionText, choices, answer } = question;
-      const [questionResult] = await connection.query(
+      const [questionResult] = await connection.execute(
         "INSERT INTO questions (story_id, question_text, choices, answer, explanation) VALUES (?, ?, ?, ?, ?)",
         [
           storyId,
@@ -335,7 +335,7 @@ app.post("/api/stories", async (req, res) => {
       const questionId = questionResult.insertId;
 
       for (const choice of choices) {
-        await connection.query(
+        await connection.execute(
           "INSERT INTO choices (question_id, choice) VALUES (?, ?)",
           [questionId, choice]
         );
@@ -381,7 +381,7 @@ app.get("/api/stories", authMiddleware, async (req, res) => {
 
   try {
     const connection = await mysql.createConnection(process.env.DATABASE_URL);
-    const [storyRows] = await connection.query(query, queryParams);
+    const [storyRows] = await connection.execute(query, queryParams);
 
     if (storyRows.length === 0) {
       res.status(404).send("No story found.");
@@ -390,12 +390,12 @@ app.get("/api/stories", authMiddleware, async (req, res) => {
 
     const story = storyRows[0];
 
-    const [conversationRows] = await connection.query(
+    const [conversationRows] = await connection.execute(
       "SELECT * FROM conversations WHERE story_id = ? ORDER BY order_number",
       [story.id]
     );
 
-    const [questionRows] = await connection.query(
+    const [questionRows] = await connection.execute(
       "SELECT * FROM questions WHERE story_id = ?",
       [story.id]
     );
@@ -430,7 +430,7 @@ app.get("/next-story-by-speaker", authMiddleware, async (req, res) => {
 
   try {
     const connection = await mysql.createConnection(process.env.DATABASE_URL);
-    const [results] = await connection.query(query, [
+    const [results] = await connection.execute(query, [
       speakerName,
       userId,
       speakerName,
@@ -454,7 +454,7 @@ app.post("/api/free-response", async (req, res) => {
 
     const connection = await mysql.createConnection(process.env.DATABASE_URL);
 
-    await connection.query(
+    await connection.execute(
       "INSERT INTO free_responses (story_id, question, response) VALUES (?, ?, ?)",
       [storyId, question, response]
     );
@@ -473,7 +473,7 @@ app.get("/api/countries-highlighted", async (req, res) => {
 
   try {
     const connection = await mysql.createConnection(process.env.DATABASE_URL);
-    const [results] = await connection.query(query);
+    const [results] = await connection.execute(query);
     connection.end();
 
     if (results.length > 0) {
@@ -493,7 +493,7 @@ app.post("/update-completed-stories", async (req, res) => {
   const connection = await mysql.createConnection(process.env.DATABASE_URL);
 
   try {
-    const [rows] = await connection.query(
+    const [rows] = await connection.execute(
       "SELECT completed_stories FROM users WHERE username = ?",
       [userId]
     );
@@ -506,7 +506,7 @@ app.post("/update-completed-stories", async (req, res) => {
       completedStories.push(storyId);
       const updatedCompletedStories = completedStories.join(",");
 
-      await connection.query(
+      await connection.execute(
         "UPDATE users SET completed_stories = ? WHERE username = ?",
         [updatedCompletedStories, userId]
       );
@@ -524,7 +524,7 @@ app.post("/api/update-user-rating", authMiddleware, async (req, res) => {
     const { userId, rating } = req.body;
 
     const connection = await mysql.createConnection(process.env.DATABASE_URL);
-    const [result] = await connection.query(
+    const [result] = await connection.execute(
       "UPDATE users SET rating = ? WHERE username = ?",
       [rating, userId]
     );
@@ -546,7 +546,7 @@ app.post("/api/update-user-rating", authMiddleware, async (req, res) => {
 app.get("/api/stories-icons", async (req, res) => {
   try {
     const connection = await mysql.createConnection(process.env.DATABASE_URL);
-    const [storyRows] = await connection.query("SELECT * FROM stories");
+    const [storyRows] = await connection.execute("SELECT * FROM stories");
     connection.end();
     res.json(storyRows);
   } catch (error) {

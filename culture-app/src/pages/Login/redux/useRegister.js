@@ -164,7 +164,7 @@ export const useRegister = () => {
   const checkEmailUsername = async (email, username) => {
     try {
       const response = await fetch(
-        "https://root-groot-webservice.onrender.com/api/check-email-username",
+        "https://rootgroot-ht6a.onrender.com/api/check-email-username",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

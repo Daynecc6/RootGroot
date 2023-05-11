@@ -77,7 +77,7 @@ const QuestionsList = ({ questions, conversations, userId, storyId }) => {
   const updateCompletedStories = async (userId, storyId) => {
     try {
       const response = await fetch(
-        `https://root-groot-webservice.onrender.com/update-completed-stories`,
+        `https://rootgroot-ht6a.onrender.com/update-completed-stories`,
         {
           method: "POST",
           headers: {
@@ -118,7 +118,7 @@ const QuestionsList = ({ questions, conversations, userId, storyId }) => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `https://root-groot-webservice.onrender.com/next-story-by-speaker?speakerName=${speakerName}`,
+        `https://rootgroot-ht6a.onrender.com/next-story-by-speaker?speakerName=${speakerName}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -163,7 +163,7 @@ const QuestionsList = ({ questions, conversations, userId, storyId }) => {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(
-          "https://root-groot-webservice.onrender.com/api/user-profile",
+          "https://rootgroot-ht6a.onrender.com/api/user-profile",
           {
             method: "GET",
             headers: {

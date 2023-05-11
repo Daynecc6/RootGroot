@@ -30,7 +30,7 @@ const RatingPopup = ({ isOpen, handleClose, userId }) => {
       }
 
       const response = await fetch(
-        "https://root-groot-webservice.onrender.com/api/update-user-rating",
+        "https://rootgroot-ht6a.onrender.com/api/update-user-rating",
         {
           method: "POST",
           headers: {
