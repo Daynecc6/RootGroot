@@ -6,6 +6,7 @@ const dotenv = require("dotenv");
 const mysql = require("mysql2/promise");
 
 dotenv.config();
+const connection = await mysql.createConnection('mysql://p5nj84rpnl1k45rrpnlj:pscale_pw_SIXdD0yr3UC9DSk4VRDiH14ypaDOfHdrzDpmqr3R70M@aws.connect.psdb.cloud/rootgroot?ssl={"rejectUnauthorized":true}')
 
 //const PORT = process.env.PORT || 3001;
 
@@ -62,7 +63,7 @@ app.post("/api/register", async (req, res) => {
   }
 
   try {
-    const connection = await mysql.createConnection(process.env.DATABASE_URL);
+const connection = await mysql.createConnection('mysql://p5nj84rpnl1k45rrpnlj:pscale_pw_SIXdD0yr3UC9DSk4VRDiH14ypaDOfHdrzDpmqr3R70M@aws.connect.psdb.cloud/rootgroot?ssl={"rejectUnauthorized":true}')
 
     // Hash the password and insert the new user
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -108,6 +109,7 @@ app.post("/api/check-email-username", async (req, res) => {
   const { email, username } = req.body;
 
   try {
+const connection = await mysql.createConnection('mysql://p5nj84rpnl1k45rrpnlj:pscale_pw_SIXdD0yr3UC9DSk4VRDiH14ypaDOfHdrzDpmqr3R70M@aws.connect.psdb.cloud/rootgroot?ssl={"rejectUnauthorized":true}')
     const connection = await mysql.createConnection(process.env.DATABASE_URL);
     const [rows] = await connection.execute(
       "SELECT * FROM users WHERE email = ? OR username = ?",
@@ -138,7 +140,8 @@ app.post("/api/login", async (req, res) => {
 
   // Connect to the database and fetch the user
   try {
-    const connection = await mysql.createConnection(process.env.DATABASE_URL);
+    const connection = await mysql.createConnection('mysql://p5nj84rpnl1k45rrpnlj:pscale_pw_SIXdD0yr3UC9DSk4VRDiH14ypaDOfHdrzDpmqr3R70M@aws.connect.psdb.cloud/rootgroot?ssl={"rejectUnauthorized":true}')
+
 
     const [rows] = await connection.execute(
       "SELECT * FROM users WHERE username = ?",
