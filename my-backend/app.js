@@ -19,23 +19,7 @@ const mysql = require("mysql2");
 
 const DATABASE_URL =
   'mysql://86kgr3fznfyjheynp1dm:pscale_pw_PG7SGrJqfrn7jPBMjts1p3srImBRASDBt7GJ5kHscqK@aws.connect.psdb.cloud/rootgroot?ssl={"rejectUnauthorized":true}';
-const connection = mysql.createConnection(DATABASE_URL);
-
-(async () => {
-  try {
-    connection.execute("SELECT * FROM users", (error, rows, fields) => {
-      if (error) {
-        console.error("Error executing query:", error);
-      } else {
-        console.log(rows);
-      }
-      // Close the connection when you're done with your database operations
-      connection.end();
-    });
-  } catch (error) {
-    console.error("Error connecting to the database:", error);
-  }
-})();
+const pool = mysql.createPool(DATABASE_URL);
 
 //Register route
 app.post("/api/register", async (req, res) => {
@@ -159,14 +143,15 @@ app.post("/api/login", async (req, res) => {
   const { username, password } = req.body;
 
   // Connect to the database and fetch the user
-  const connection = await mysql.createConnection(DATABASE_URL);
   try {
+    const connection = await pool.getConnection();
+
     const [rows] = await connection.execute(
       "SELECT * FROM users WHERE username = ?",
       [username]
     );
 
-    connection.end();
+    connection.release();
 
     if (rows.length === 0) {
       console.log("User not found:", username);
