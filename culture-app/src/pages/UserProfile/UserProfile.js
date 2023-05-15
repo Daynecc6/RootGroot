@@ -36,9 +36,6 @@ const UserProfile = () => {
           ".MuiTabs-indicator": {
             backgroundColor: "black",
           },
-          ".Mui-selected": {
-            color: "Black",
-          },
           ".MuiTab-root": {
             color: "black",
           },
