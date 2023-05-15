@@ -160,12 +160,13 @@ app.post("/api/login", async (req, res) => {
 
   // Connect to the database and fetch the user
   try {
-    const connection = mysql.createConnection(DATABASE_URL);
-
-    const rows = await connection.execute(
-      "SELECT * FROM users WHERE username = ?",
-      [username]
+    const connection = mysql.createConnection(
+      'mysql://86kgr3fznfyjheynp1dm:pscale_pw_PG7SGrJqfrn7jPBMjts1p3srImBRASDBt7GJ5kHscqK@aws.connect.psdb.cloud/rootgroot?ssl={"rejectUnauthorized":true}'
     );
+
+    const rows = connection.execute("SELECT * FROM users WHERE username = ?", [
+      username,
+    ]);
 
     connection.end();
 
