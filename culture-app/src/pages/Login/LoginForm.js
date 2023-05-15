@@ -42,6 +42,9 @@ const LoginForm = () => {
               {
                 borderColor: "black",
               },
+            "& .MuiInputLabel-outlined.Mui-focused": {
+              color: "black",
+            },
           }}
         />
         <TextField
@@ -57,6 +60,9 @@ const LoginForm = () => {
               {
                 borderColor: "black",
               },
+            "& .MuiInputLabel-outlined.Mui-focused": {
+              color: "black",
+            },
           }}
         />
         <Box sx={{ mt: 4, mb: 20, display: "flex", justifyContent: "center" }}>

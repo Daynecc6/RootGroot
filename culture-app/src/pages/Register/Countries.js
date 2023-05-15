@@ -26,6 +26,15 @@ const Countries = ({ handleBack, handleInputChange, formData, errors }) => {
         error={!!errors.birth_country}
         variant="outlined"
         margin="normal"
+        sx={{
+          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+            {
+              borderColor: "black",
+            },
+          "& .MuiInputLabel-outlined.Mui-focused": {
+            color: "black",
+          },
+        }}
       >
         <InputLabel id="birth-country-label">Birth Country</InputLabel>
         <Select
@@ -68,6 +77,15 @@ const Countries = ({ handleBack, handleInputChange, formData, errors }) => {
         error={!!errors.languages_spoke}
         variant="outlined"
         margin="normal"
+        sx={{
+          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+            {
+              borderColor: "black",
+            },
+          "& .MuiInputLabel-outlined.Mui-focused": {
+            color: "black",
+          },
+        }}
       >
         <InputLabel id="languages-spoke-label">Languages Spoke</InputLabel>
         <Select
@@ -111,6 +129,15 @@ const Countries = ({ handleBack, handleInputChange, formData, errors }) => {
         error={!!errors.countries_worked}
         variant="outlined"
         margin="normal"
+        sx={{
+          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+            {
+              borderColor: "black",
+            },
+          "& .MuiInputLabel-outlined.Mui-focused": {
+            color: "black",
+          },
+        }}
       >
         <InputLabel id="countries-worked-label">
           Countries you have worked in
@@ -157,6 +184,15 @@ const Countries = ({ handleBack, handleInputChange, formData, errors }) => {
         error={!!errors.countries_lived}
         variant="outlined"
         margin="normal"
+        sx={{
+          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+            {
+              borderColor: "black",
+            },
+          "& .MuiInputLabel-outlined.Mui-focused": {
+            color: "black",
+          },
+        }}
       >
         <InputLabel id="countries-lived-label">Countries lived in</InputLabel>
         <Select
@@ -200,6 +236,15 @@ const Countries = ({ handleBack, handleInputChange, formData, errors }) => {
         error={!!errors.countries_studied}
         variant="outlined"
         margin="normal"
+        sx={{
+          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+            {
+              borderColor: "black",
+            },
+          "& .MuiInputLabel-outlined.Mui-focused": {
+            color: "black",
+          },
+        }}
       >
         <InputLabel id="countries-studied-label">
           Countries you have studied in
@@ -245,6 +290,15 @@ const Countries = ({ handleBack, handleInputChange, formData, errors }) => {
         error={!!errors.countries_volunteered}
         variant="outlined"
         margin="normal"
+        sx={{
+          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+            {
+              borderColor: "black",
+            },
+          "& .MuiInputLabel-outlined.Mui-focused": {
+            color: "black",
+          },
+        }}
       >
         <InputLabel id="countries-volunteered-label">
           Countries you have volunteered in
@@ -291,6 +345,15 @@ const Countries = ({ handleBack, handleInputChange, formData, errors }) => {
         error={!!errors.countries_traveled}
         variant="outlined"
         margin="normal"
+        sx={{
+          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+            {
+              borderColor: "black",
+            },
+          "& .MuiInputLabel-outlined.Mui-focused": {
+            color: "black",
+          },
+        }}
       >
         <InputLabel id="countries-traveled-label">
           Countries you have traveled to
@@ -337,6 +400,15 @@ const Countries = ({ handleBack, handleInputChange, formData, errors }) => {
         error={!!errors.countries_bucket}
         variant="outlined"
         margin="normal"
+        sx={{
+          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+            {
+              borderColor: "black",
+            },
+          "& .MuiInputLabel-outlined.Mui-focused": {
+            color: "black",
+          },
+        }}
       >
         <InputLabel id="countries-bucket-label">
           Countries on your bucket list

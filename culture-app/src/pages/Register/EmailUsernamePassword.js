@@ -10,7 +10,19 @@ const EmailUsernamePassword = ({
 }) => {
   return (
     <>
-      <FormControl fullWidth error={!!errors.email}>
+      <FormControl
+        fullWidth
+        error={!!errors.email}
+        sx={{
+          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+            {
+              borderColor: "black",
+            },
+          "& .MuiInputLabel-outlined.Mui-focused": {
+            color: "black",
+          },
+        }}
+      >
         <TextField
           fullWidth
           margin="normal"
@@ -22,7 +34,19 @@ const EmailUsernamePassword = ({
         {errors.email && <FormHelperText>{errors.email}</FormHelperText>}
       </FormControl>
 
-      <FormControl fullWidth error={!!errors.username}>
+      <FormControl
+        fullWidth
+        error={!!errors.username}
+        sx={{
+          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+            {
+              borderColor: "black",
+            },
+          "& .MuiInputLabel-outlined.Mui-focused": {
+            color: "black",
+          },
+        }}
+      >
         <TextField
           fullWidth
           margin="normal"
@@ -33,7 +57,19 @@ const EmailUsernamePassword = ({
         />
         {errors.username && <FormHelperText>{errors.username}</FormHelperText>}
       </FormControl>
-      <FormControl fullWidth error={!!errors.password}>
+      <FormControl
+        fullWidth
+        error={!!errors.password}
+        sx={{
+          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+            {
+              borderColor: "black",
+            },
+          "& .MuiInputLabel-outlined.Mui-focused": {
+            color: "black",
+          },
+        }}
+      >
         <TextField
           fullWidth
           margin="normal"
@@ -46,7 +82,19 @@ const EmailUsernamePassword = ({
         />
         {errors.password && <FormHelperText>{errors.password}</FormHelperText>}
       </FormControl>
-      <FormControl fullWidth error={!!errors.verify_password}>
+      <FormControl
+        fullWidth
+        error={!!errors.verify_password}
+        sx={{
+          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+            {
+              borderColor: "black",
+            },
+          "& .MuiInputLabel-outlined.Mui-focused": {
+            color: "black",
+          },
+        }}
+      >
         <TextField
           fullWidth
           margin="normal"

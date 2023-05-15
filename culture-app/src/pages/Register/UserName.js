@@ -19,7 +19,19 @@ const UserName = ({
 }) => {
   return (
     <>
-      <FormControl fullWidth error={!!errors.first_name}>
+      <FormControl
+        fullWidth
+        error={!!errors.first_name}
+        sx={{
+          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+            {
+              borderColor: "black",
+            },
+          "& .MuiInputLabel-outlined.Mui-focused": {
+            color: "black",
+          },
+        }}
+      >
         <TextField
           fullWidth
           margin="normal"
@@ -34,7 +46,19 @@ const UserName = ({
         )}
       </FormControl>
 
-      <FormControl fullWidth error={!!errors.last_name}>
+      <FormControl
+        fullWidth
+        error={!!errors.last_name}
+        sx={{
+          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+            {
+              borderColor: "black",
+            },
+          "& .MuiInputLabel-outlined.Mui-focused": {
+            color: "black",
+          },
+        }}
+      >
         <TextField
           fullWidth
           margin="normal"
@@ -49,7 +73,19 @@ const UserName = ({
         )}
       </FormControl>
 
-      <FormControl fullWidth error={!!errors.preferred_name}>
+      <FormControl
+        fullWidth
+        error={!!errors.preferred_name}
+        sx={{
+          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+            {
+              borderColor: "black",
+            },
+          "& .MuiInputLabel-outlined.Mui-focused": {
+            color: "black",
+          },
+        }}
+      >
         <TextField
           fullWidth
           margin="normal"
@@ -64,7 +100,19 @@ const UserName = ({
         )}
       </FormControl>
 
-      <FormControl fullWidth error={!!errors.age}>
+      <FormControl
+        fullWidth
+        error={!!errors.age}
+        sx={{
+          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+            {
+              borderColor: "black",
+            },
+          "& .MuiInputLabel-outlined.Mui-focused": {
+            color: "black",
+          },
+        }}
+      >
         <TextField
           fullWidth
           margin="normal"
@@ -82,6 +130,15 @@ const UserName = ({
         error={!!errors.gender}
         variant="outlined"
         margin="normal"
+        sx={{
+          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+            {
+              borderColor: "black",
+            },
+          "& .MuiInputLabel-outlined.Mui-focused": {
+            color: "black",
+          },
+        }}
       >
         <InputLabel id="gender-label">Gender</InputLabel>
         <Select
