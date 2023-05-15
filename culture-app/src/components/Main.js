@@ -21,7 +21,7 @@ import {
   StorySubmission,
 } from "../pages/index";
 
-const ProtectedRoute = ({ token, children, fallback }) => {
+const ProtectedRoute = ({ token, children, fallback, mapData }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,19 +30,7 @@ const ProtectedRoute = ({ token, children, fallback }) => {
     }
   }, [token, navigate]);
 
-  if (!token) {
-    return (
-      <div>
-        <p>You need to be logged in to access this page.</p>
-        <p>
-          Please <Link to="/login">log in</Link> or{" "}
-          <Link to="/register">register</Link> to continue.
-        </p>
-      </div>
-    );
-  }
-
-  return children;
+  return token ? children : fallback;
 };
 
 const Main = (mapData) => {
