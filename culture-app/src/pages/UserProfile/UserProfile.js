@@ -38,6 +38,9 @@ const UserProfile = () => {
           },
           ".MuiTab-root": {
             color: "black",
+            "&.Mui-selected": {
+              color: "black",
+            },
           },
         }}
       >
