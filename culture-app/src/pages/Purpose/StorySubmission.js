@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Box, TextField, Button } from "@mui/material";
 
 const StorySubmission = () => {
   const [story, setStory] = useState("");
