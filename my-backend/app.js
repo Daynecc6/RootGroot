@@ -160,38 +160,45 @@ app.post("/api/login", async (req, res) => {
 
   // Connect to the database and fetch the user
   try {
-    const connection = mysql.createConnection(
+    const connection = await mysql.createConnection(
       'mysql://86kgr3fznfyjheynp1dm:pscale_pw_PG7SGrJqfrn7jPBMjts1p3srImBRASDBt7GJ5kHscqK@aws.connect.psdb.cloud/rootgroot?ssl={"rejectUnauthorized":true}'
     );
 
-    connection.execute("SELECT * FROM users", (error, rows, fields) => {
-      if (error) {
-        console.error("Error executing query:", error);
-      } else {
-        console.log(rows);
+    connection.execute(
+      "SELECT * FROM users WHERE username = ?",
+      [username],
+      async (error, rows, fields) => {
+        if (error) {
+          console.error("Error executing query:", error);
+          return res
+            .status(500)
+            .json({ error: "An error occurred while accessing the database." });
+        } else {
+          console.log(rows);
+
+          if (rows.length === 0) {
+            console.log("User not found:", username);
+            return res.status(400).json({ error: "Invalid credentials" });
+          }
+
+          const user = rows[0];
+          console.log(user);
+          const validPassword = await bcrypt.compare(password, user.password);
+          if (!validPassword) {
+            console.log("Invalid password for user:", username);
+            return res.status(400).json({ error: "Invalid credentials" });
+          }
+
+          const token = jwt.sign({ userId: username }, process.env.JWT_SECRET, {
+            expiresIn: "1h",
+          });
+
+          res.json({ token });
+        }
+        // Close the connection when you're done with your database operations
+        connection.end();
       }
-      // Close the connection when you're done with your database operations
-      connection.end();
-    });
-
-    if (rows.length === 0) {
-      console.log("User not found:", username);
-      return res.status(400).json({ error: "Invalid credentials" });
-    }
-
-    const user = rows;
-    console.log(user);
-    const validPassword = await bcrypt.compare(password, user.password);
-    if (!validPassword) {
-      console.log("Invalid password for user:", username);
-      return res.status(400).json({ error: "Invalid credentials" });
-    }
-
-    const token = jwt.sign({ userId: username }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
-
-    res.json({ token });
+    );
   } catch (error) {
     console.error("Error connecting to the database:", error);
     res
