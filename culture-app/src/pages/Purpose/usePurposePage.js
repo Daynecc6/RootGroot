@@ -215,8 +215,12 @@ export const usePurposePage = () => {
     }
   };
   const handlePurposeClick = (purpose) => {
-    setSelectedPurpose(purpose);
-    setStep(1);
+    if (purpose === "Story-hunter") {
+      navigate("/story-submission");
+    } else {
+      setSelectedPurpose(purpose);
+      setStep(1);
+    }
   };
 
   const handleThemeClick = (icon) => {

@@ -18,6 +18,7 @@ import {
   WorldMap,
   StoryPage,
   StoryUploadForm,
+  StorySubmission,
 } from "../pages/index";
 
 const ProtectedRoute = ({ token, children, fallback, mapData }) => {
@@ -90,6 +91,7 @@ const Main = (mapData) => {
         <Route path="/" element={<MainContent />} />
         <Route path="/home" element={<MainContent />} />
         <Route path="/login" element={<LoginForm />} />
+        <Route path="/story-submission" element={<StorySubmission />} />
         <Route path="/register" element={<RegisterForm />} />
         <Route
           path="/world-map"
