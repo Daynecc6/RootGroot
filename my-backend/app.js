@@ -7,7 +7,12 @@ const dotenv = require("dotenv");
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+const corsOptions = {
+  origin: "https://rootgroot.netlify.app",
+  optionsSuccessStatus: 200, // Some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+
+app.use(cors(corsOptions));
 
 require("dotenv").config();
 const mysql = require("mysql2");
