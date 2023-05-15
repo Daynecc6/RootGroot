@@ -26,7 +26,7 @@ const ProtectedRoute = ({ token, children, fallback, mapData }) => {
 
   useEffect(() => {
     if (!token) {
-      navigate("/home");
+      navigate("/login");
     }
   }, [token, navigate]);
 
