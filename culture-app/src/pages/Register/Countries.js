@@ -457,6 +457,7 @@ const Countries = ({ handleBack, handleInputChange, formData, errors }) => {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "center",
+          marginBottom: "64px",
         }}
       >
         <Button
