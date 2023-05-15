@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, TextField, Button } from "@mui/material";
+import { Box, TextField, Button, Typography } from "@mui/material";
 
 const StorySubmission = () => {
   const [story, setStory] = useState("");
@@ -51,6 +51,9 @@ const StorySubmission = () => {
         minHeight: "100vh",
       }}
     >
+      <Typography variant="h4" component="h1" gutterBottom>
+        Submit your own story
+      </Typography>
       <TextField
         label="Your Story"
         multiline
