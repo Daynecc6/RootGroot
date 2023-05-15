@@ -88,7 +88,7 @@ app.post("/api/register", async (req, res) => {
 
     // Hash the password and insert the new user
     const hashedPassword = await bcrypt.hash(password, 10);
-    await connection.execute(
+    connection.execute(
       "INSERT INTO users (email, username, first_name, last_name, preferred_name, gender, languages_spoke, birth_country, countries_worked, countries_lived, countries_studied, countries_volunteered, countries_traveled, countries_bucket, password, age) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
         email,
@@ -107,17 +107,26 @@ app.post("/api/register", async (req, res) => {
         countries_bucket,
         hashedPassword,
         age,
-      ]
+      ],
+      (error) => {
+        if (error) {
+          console.error("Error executing query:", error);
+          res
+            .status(500)
+            .json({ error: "An error occurred while accessing the database." });
+        } else {
+          // Automatically log the user in and send a token
+          const token = jwt.sign({ userId: username }, process.env.JWT_SECRET, {
+            expiresIn: "1h",
+          });
+
+          console.log("User registered, sending token:", token);
+          res.json({ token });
+        }
+        // Close the connection when you're done with your database operations
+        connection.end();
+      }
     );
-    connection.end();
-
-    // Automatically log the user in and send a token
-    const token = jwt.sign({ userId: username }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
-
-    console.log("User registered, sending token:", token);
-    res.json({ token });
   } catch (error) {
     console.error("Error connecting to the database:", error);
     res
@@ -131,19 +140,28 @@ app.post("/api/check-email-username", async (req, res) => {
 
   try {
     const connection = await mysql.createConnection(DATABASE_URL);
-    const [rows] = await connection.execute(
+    connection.execute(
       "SELECT * FROM users WHERE email = ? OR username = ?",
-      [email, username]
+      [email, username],
+      (error, rows) => {
+        if (error) {
+          console.error("Error executing query:", error);
+          res
+            .status(500)
+            .json({ error: "An error occurred while accessing the database." });
+        } else {
+          if (rows.length > 0) {
+            return res
+              .status(400)
+              .json({ error: "Email or username already in use" });
+          }
+
+          res.json({ message: "Email and username are available" });
+        }
+        // Close the connection when you're done with your database operations
+        connection.end();
+      }
     );
-    connection.end();
-
-    if (rows.length > 0) {
-      return res
-        .status(400)
-        .json({ error: "Email or username already in use" });
-    }
-
-    res.json({ message: "Email and username are available" });
   } catch (error) {
     console.error("Error connecting to the database:", error);
     res
