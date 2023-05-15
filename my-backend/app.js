@@ -246,19 +246,28 @@ const authMiddleware = async (req, res, next) => {
 app.get("/api/user-profile", authMiddleware, async (req, res) => {
   try {
     const connection = await mysql.createConnection(DATABASE_URL);
-    const [rows] = await connection.execute(
+    connection.execute(
       "SELECT * FROM users WHERE username = ?",
-      [req.userId]
+      [req.userId],
+      (error, rows) => {
+        if (error) {
+          console.error("Error executing query:", error);
+          res
+            .status(500)
+            .json({ error: "An error occurred while accessing the database." });
+        } else {
+          if (rows.length === 0) {
+            return res.status(404).json({ error: "User not found" });
+          }
+
+          const user = rows[0];
+          delete user.password; // Remove sensitive data before sending the response
+          res.json(user);
+        }
+        // Close the connection when you're done with your database operations
+        connection.end();
+      }
     );
-    connection.end();
-
-    if (rows.length === 0) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    const user = rows[0];
-    delete user.password; // Remove sensitive data before sending the response
-    res.json(user);
   } catch (error) {
     console.error("Error connecting to the database:", error);
     res
@@ -267,34 +276,40 @@ app.get("/api/user-profile", authMiddleware, async (req, res) => {
   }
 });
 
-const fetchStoryAndConversation = async (subtheme) => {
-  const query = `
-    SELECT s.subtheme_name, sc.scenario_text, c.speaker, c.message, c.order_number
-    FROM subthemes s
-    JOIN scenarios sc ON sc.subtheme_id = s.id
-    JOIN conversations c ON c.scenario_id = sc.id
-    WHERE s.subtheme_name = ?
-    ORDER BY c.order_number;
-  `;
+const fetchStoryAndConversation = (subtheme) => {
+  return new Promise(async (resolve, reject) => {
+    const query = `
+      SELECT s.subtheme_name, sc.scenario_text, c.speaker, c.message, c.order_number
+      FROM subthemes s
+      JOIN scenarios sc ON sc.subtheme_id = s.id
+      JOIN conversations c ON c.scenario_id = sc.id
+      WHERE s.subtheme_name = ?
+      ORDER BY c.order_number;
+    `;
 
-  try {
-    const connection = await mysql.createConnection(DATABASE_URL);
-    const [results] = await connection.execute(query, [subtheme]);
-    connection.end();
-
-    const storyData = {
-      scenario_text: results[0]?.scenario_text,
-      conversations: results.map((row) => ({
-        speaker: row.speaker,
-        message: row.message,
-      })),
-    };
-
-    return storyData;
-  } catch (error) {
-    console.error("Error connecting to the database:", error);
-    throw new Error("An error occurred while accessing the database.");
-  }
+    try {
+      const connection = await mysql.createConnection(DATABASE_URL);
+      connection.execute(query, [subtheme], (error, results) => {
+        if (error) {
+          console.error("Error executing query:", error);
+          reject(new Error("An error occurred while accessing the database."));
+        } else {
+          const storyData = {
+            scenario_text: results[0]?.scenario_text,
+            conversations: results.map((row) => ({
+              speaker: row.speaker,
+              message: row.message,
+            })),
+          };
+          resolve(storyData);
+        }
+        connection.end();
+      });
+    } catch (error) {
+      console.error("Error connecting to the database:", error);
+      reject(new Error("An error occurred while accessing the database."));
+    }
+  });
 };
 
 app.get("/api/story/:subtheme", async (req, res) => {
@@ -331,52 +346,61 @@ app.post("/api/stories", async (req, res) => {
   try {
     const connection = await mysql.createConnection(DATABASE_URL);
 
-    const [result] = await connection.execute(
+    connection.execute(
       "INSERT INTO stories (country, purpose, theme, subtheme, title, scenario, freeresp) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      [country, purpose, theme, subtheme, title, scenario, freeresp]
-    );
+      [country, purpose, theme, subtheme, title, scenario, freeresp],
+      async (error, result) => {
+        if (error) {
+          console.error("Error executing query:", error);
+          res
+            .status(500)
+            .json({ error: "An error occurred while accessing the database." });
+          connection.end();
+          return;
+        }
 
-    const storyId = result.insertId;
+        const storyId = result.insertId;
 
-    for (
-      let order_number = 0;
-      order_number < conversations.length;
-      order_number++
-    ) {
-      const { speaker, message } = conversations[order_number];
-      await connection.execute(
-        "INSERT INTO conversations (story_id, speaker, message, order_number) VALUES (?, ?, ?, ?)",
-        [storyId, speaker, message, order_number]
-      );
-    }
+        for (
+          let order_number = 0;
+          order_number < conversations.length;
+          order_number++
+        ) {
+          const { speaker, message } = conversations[order_number];
+          await connection.execute(
+            "INSERT INTO conversations (story_id, speaker, message, order_number) VALUES (?, ?, ?, ?)",
+            [storyId, speaker, message, order_number]
+          );
+        }
 
-    for (const question of questions) {
-      const { question: questionText, choices, answer } = question;
-      const [questionResult] = await connection.execute(
-        "INSERT INTO questions (story_id, question_text, choices, answer, explanation) VALUES (?, ?, ?, ?, ?)",
-        [
-          storyId,
-          question.question,
-          JSON.stringify(question.choices),
-          question.answer,
-          question.explanation,
-        ]
-      );
+        for (const question of questions) {
+          const { question: questionText, choices, answer } = question;
+          const [questionResult] = await connection.execute(
+            "INSERT INTO questions (story_id, question_text, choices, answer, explanation) VALUES (?, ?, ?, ?, ?)",
+            [
+              storyId,
+              question.question,
+              JSON.stringify(question.choices),
+              question.answer,
+              question.explanation,
+            ]
+          );
 
-      const questionId = questionResult.insertId;
+          const questionId = questionResult.insertId;
 
-      for (const choice of choices) {
-        await connection.execute(
-          "INSERT INTO choices (question_id, choice) VALUES (?, ?)",
-          [questionId, choice]
-        );
+          for (const choice of choices) {
+            await connection.execute(
+              "INSERT INTO choices (question_id, choice) VALUES (?, ?)",
+              [questionId, choice]
+            );
+          }
+        }
+
+        console.log("Story uploaded successfully!");
+        res.json({ message: "Story uploaded successfully!" });
+        connection.end();
       }
-    }
-
-    connection.end();
-
-    console.log("Story uploaded successfully!");
-    res.json({ message: "Story uploaded successfully!" });
+    );
   } catch (error) {
     console.error("Error connecting to the database:", error);
     res
@@ -386,7 +410,7 @@ app.post("/api/stories", async (req, res) => {
 });
 
 app.listen(3001, () => {
-  console.log("Server is running on port 3002");
+  console.log("Server is running on port 3001");
 });
 
 app.get("/api/stories", authMiddleware, async (req, res) => {
@@ -412,37 +436,45 @@ app.get("/api/stories", authMiddleware, async (req, res) => {
 
   try {
     const connection = await mysql.createConnection(DATABASE_URL);
-    const [storyRows] = await connection.execute(query, queryParams);
 
-    if (storyRows.length === 0) {
-      res.status(404).send("No story found.");
-      return;
-    }
+    connection.execute(query, queryParams, async (error, storyRows) => {
+      if (error) {
+        console.error("Error executing query:", error);
+        res.status(500).send("Error querying stories.");
+      } else {
+        if (storyRows.length === 0) {
+          res.status(404).send("No story found.");
+          connection.end();
+          return;
+        }
 
-    const story = storyRows[0];
+        const story = storyRows[0];
 
-    const [conversationRows] = await connection.execute(
-      "SELECT * FROM conversations WHERE story_id = ? ORDER BY order_number",
-      [story.id]
-    );
+        const [conversationRows] = await connection.execute(
+          "SELECT * FROM conversations WHERE story_id = ? ORDER BY order_number",
+          [story.id]
+        );
 
-    const [questionRows] = await connection.execute(
-      "SELECT * FROM questions WHERE story_id = ?",
-      [story.id]
-    );
+        const [questionRows] = await connection.execute(
+          "SELECT * FROM questions WHERE story_id = ?",
+          [story.id]
+        );
 
-    const combinedData = {
-      ...story,
-      conversations: conversationRows,
-      questions: questionRows,
-    };
+        const combinedData = {
+          ...story,
+          conversations: conversationRows,
+          questions: questionRows,
+        };
 
-    connection.end();
-
-    res.json(combinedData);
+        res.json(combinedData);
+      }
+      connection.end();
+    });
   } catch (error) {
-    console.error("Error querying stories:", error);
-    res.status(500).send("Error querying stories.");
+    console.error("Error connecting to the database:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while accessing the database." });
   }
 });
 
@@ -461,21 +493,27 @@ app.get("/next-story-by-speaker", authMiddleware, async (req, res) => {
 
   try {
     const connection = await mysql.createConnection(DATABASE_URL);
-    const [results] = await connection.execute(query, [
-      speakerName,
-      userId,
-      speakerName,
-    ]);
-    connection.end();
+    connection.execute(
+      query,
+      [speakerName, userId, speakerName],
+      (error, results) => {
+        connection.end();
+        if (error) {
+          console.error("Error querying next story by speaker:", error);
+          res.status(500).send("Error querying next story by speaker.");
+          return;
+        }
 
-    if (results.length > 0) {
-      res.json(results[0].story_id);
-    } else {
-      res.status(404).send("No next story found.");
-    }
+        if (results.length > 0) {
+          res.json(results[0].story_id);
+        } else {
+          res.status(404).send("No next story found.");
+        }
+      }
+    );
   } catch (error) {
-    console.error("Error querying next story by speaker:", error);
-    res.status(500).send("Error querying next story by speaker.");
+    console.error("Error connecting to the database:", error);
+    res.status(500).send("Error connecting to the database.");
   }
 });
 
@@ -485,16 +523,24 @@ app.post("/api/free-response", async (req, res) => {
 
     const connection = await mysql.createConnection(DATABASE_URL);
 
-    await connection.execute(
+    connection.execute(
       "INSERT INTO free_responses (story_id, question, response) VALUES (?, ?, ?)",
-      [storyId, question, response]
+      [storyId, question, response],
+      (error) => {
+        if (error) {
+          console.error(error);
+          res
+            .status(500)
+            .json({ message: "Error connecting to the database." });
+        } else {
+          res.status(201).json({ message: "Free response saved." });
+        }
+
+        connection.end();
+      }
     );
-
-    await connection.end();
-
-    res.status(201).json({ message: "Free response saved." });
   } catch (error) {
-    console.error(error);
+    console.error("Error connecting to the database:", error);
     res.status(500).json({ message: "Error connecting to the database." });
   }
 });
@@ -504,48 +550,74 @@ app.get("/api/countries-highlighted", async (req, res) => {
 
   try {
     const connection = await mysql.createConnection(DATABASE_URL);
-    const [results] = await connection.execute(query);
-    connection.end();
 
-    if (results.length > 0) {
-      res.json(results);
-    } else {
-      res.status(404).send("No countries found.");
-    }
+    connection.execute(query, (error, results) => {
+      if (error) {
+        console.error("No countries found:", error);
+        res.status(500).send("No countries found.");
+      } else {
+        if (results.length > 0) {
+          res.json(results);
+        } else {
+          res.status(404).send("No countries found.");
+        }
+      }
+
+      connection.end();
+    });
   } catch (error) {
-    console.error("No countries found:", error);
-    res.status(500).send("No countries found.");
+    console.error("Error connecting to the database:", error);
+    res.status(500).json({ message: "Error connecting to the database." });
   }
 });
 
 app.post("/update-completed-stories", async (req, res) => {
   const { userId, storyId } = req.body;
 
-  const connection = await mysql.createConnection(DATABASE_URL);
-
   try {
-    const [rows] = await connection.execute(
+    const connection = await mysql.createConnection(DATABASE_URL);
+
+    connection.execute(
       "SELECT completed_stories FROM users WHERE username = ?",
-      [userId]
+      [userId],
+      async (error, rows) => {
+        if (error) {
+          console.error("Error updating completed stories:", error);
+          res.sendStatus(500);
+        } else {
+          let completedStories = rows[0].completed_stories
+            ? rows[0].completed_stories.split(",")
+            : [];
+
+          if (!completedStories.includes(storyId.toString())) {
+            completedStories.push(storyId);
+            const updatedCompletedStories = completedStories.join(",");
+
+            connection.execute(
+              "UPDATE users SET completed_stories = ? WHERE username = ?",
+              [updatedCompletedStories, userId],
+              (updateError) => {
+                if (updateError) {
+                  console.error(
+                    "Error updating completed stories:",
+                    updateError
+                  );
+                  res.sendStatus(500);
+                } else {
+                  res.sendStatus(200);
+                }
+                connection.end();
+              }
+            );
+          } else {
+            res.sendStatus(200);
+            connection.end();
+          }
+        }
+      }
     );
-
-    let completedStories = rows[0].completed_stories
-      ? rows[0].completed_stories.split(",")
-      : [];
-
-    if (!completedStories.includes(storyId.toString())) {
-      completedStories.push(storyId);
-      const updatedCompletedStories = completedStories.join(",");
-
-      await connection.execute(
-        "UPDATE users SET completed_stories = ? WHERE username = ?",
-        [updatedCompletedStories, userId]
-      );
-    }
-
-    res.sendStatus(200);
   } catch (error) {
-    console.error("Error updating completed stories:", error);
+    console.error("Error connecting to the database:", error);
     res.sendStatus(500);
   }
 });
@@ -555,17 +627,25 @@ app.post("/api/update-user-rating", authMiddleware, async (req, res) => {
     const { userId, rating } = req.body;
 
     const connection = await mysql.createConnection(DATABASE_URL);
-    const [result] = await connection.execute(
+
+    connection.execute(
       "UPDATE users SET rating = ? WHERE username = ?",
-      [rating, userId]
+      [rating, userId],
+      (error, result) => {
+        connection.end();
+
+        if (error) {
+          console.error("Error connecting to the database:", error);
+          res
+            .status(500)
+            .json({ error: "An error occurred while accessing the database." });
+        } else if (result.affectedRows === 0) {
+          res.status(404).json({ error: "User not found" });
+        } else {
+          res.json({ message: "User rating updated successfully" });
+        }
+      }
     );
-    connection.end();
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    res.json({ message: "User rating updated successfully" });
   } catch (error) {
     console.error("Error connecting to the database:", error);
     res
@@ -577,11 +657,19 @@ app.post("/api/update-user-rating", authMiddleware, async (req, res) => {
 app.get("/api/stories-icons", async (req, res) => {
   try {
     const connection = await mysql.createConnection(DATABASE_URL);
-    const [storyRows] = await connection.execute("SELECT * FROM stories");
-    connection.end();
-    res.json(storyRows);
+
+    connection.execute("SELECT * FROM stories", (error, storyRows) => {
+      connection.end();
+
+      if (error) {
+        console.error("Error querying stories:", error);
+        res.status(500).send("Error querying stories.");
+      } else {
+        res.json(storyRows);
+      }
+    });
   } catch (error) {
-    console.error("Error querying stories:", error);
-    res.status(500).send("Error querying stories.");
+    console.error("Error connecting to the database:", error);
+    res.status(500).send("Error connecting to the database.");
   }
 });
