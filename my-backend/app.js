@@ -164,10 +164,11 @@ app.post("/api/login", async (req, res) => {
       'mysql://86kgr3fznfyjheynp1dm:pscale_pw_PG7SGrJqfrn7jPBMjts1p3srImBRASDBt7GJ5kHscqK@aws.connect.psdb.cloud/rootgroot?ssl={"rejectUnauthorized":true}'
     );
 
-    const [rows, fields] = await connection.execute(
+    const rows = await connection.execute(
       "SELECT * FROM users WHERE username = ?",
       [username]
     );
+    console.log(rows);
 
     connection.end();
 
@@ -176,7 +177,7 @@ app.post("/api/login", async (req, res) => {
       return res.status(400).json({ error: "Invalid credentials" });
     }
 
-    const user = rows[0];
+    const user = rows;
     console.log(user);
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) {
