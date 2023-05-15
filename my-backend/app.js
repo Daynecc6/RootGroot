@@ -673,3 +673,33 @@ app.get("/api/stories-icons", async (req, res) => {
     res.status(500).send("Error connecting to the database.");
   }
 });
+
+app.post("/api/story-submissions", authMiddleware, async (req, res) => {
+  try {
+    const { story } = req.body;
+
+    const connection = await mysql.createConnection(DATABASE_URL);
+
+    connection.execute(
+      "INSERT INTO story_submissions (story) VALUES (?)",
+      [story],
+      (error, result) => {
+        connection.end();
+
+        if (error) {
+          console.error("Error connecting to the database:", error);
+          res
+            .status(500)
+            .json({ error: "An error occurred while accessing the database." });
+        } else {
+          res.status(201).json({ message: "Story submitted successfully" });
+        }
+      }
+    );
+  } catch (error) {
+    console.error("Error connecting to the database:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while accessing the database." });
+  }
+});
