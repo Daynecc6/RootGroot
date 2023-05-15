@@ -674,7 +674,7 @@ app.get("/api/stories-icons", async (req, res) => {
   }
 });
 
-app.post("/api/story-submissions", authMiddleware, async (req, res) => {
+app.post("/api/story-submissions", async (req, res) => {
   try {
     const { story } = req.body;
 

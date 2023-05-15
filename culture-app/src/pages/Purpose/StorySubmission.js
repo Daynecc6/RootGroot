@@ -39,22 +39,40 @@ const StorySubmission = () => {
   };
 
   return (
-    <div>
-      <h1>Submit Your Story</h1>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="story">Story:</label>
-        <textarea
-          id="story"
-          name="story"
-          value={story}
-          onChange={handleChange}
-          rows="10"
-          cols="50"
-          required
-        />
-        <button type="submit">Submit</button>
-      </form>
-    </div>
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "100vh",
+      }}
+    >
+      <TextField
+        label="Your Story"
+        multiline
+        rows={6}
+        variant="outlined"
+        value={story}
+        onChange={handleChange}
+        sx={{
+          width: "80%",
+          marginBottom: 2,
+          "& .Mui-focused": {
+            color: "black",
+          },
+          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+            {
+              borderColor: "black",
+            },
+        }}
+      />
+      <Button type="submit" variant="contained">
+        Submit
+      </Button>
+    </Box>
   );
 };
 
