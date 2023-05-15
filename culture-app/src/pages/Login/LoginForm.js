@@ -37,6 +37,12 @@ const LoginForm = () => {
           label="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          sx={{
+            "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+              {
+                borderColor: "black",
+              },
+          }}
         />
         <TextField
           fullWidth
@@ -46,6 +52,12 @@ const LoginForm = () => {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          sx={{
+            "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+              {
+                borderColor: "black",
+              },
+          }}
         />
         <Box sx={{ mt: 4, mb: 20, display: "flex", justifyContent: "center" }}>
           <Button sx={{ mr: 2 }} type="submit" variant="contained">
