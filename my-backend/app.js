@@ -160,14 +160,19 @@ app.post("/api/login", async (req, res) => {
 
   // Connect to the database and fetch the user
   try {
-    const connection = await mysql.createConnection(
+    const connection = mysql.createConnection(
       'mysql://86kgr3fznfyjheynp1dm:pscale_pw_PG7SGrJqfrn7jPBMjts1p3srImBRASDBt7GJ5kHscqK@aws.connect.psdb.cloud/rootgroot?ssl={"rejectUnauthorized":true}'
     );
 
-    const rows = await connection.execute("SELECT * FROM users");
-    console.log(rows);
-
-    connection.end();
+    connection.execute("SELECT * FROM users", (error, rows, fields) => {
+      if (error) {
+        console.error("Error executing query:", error);
+      } else {
+        console.log(rows);
+      }
+      // Close the connection when you're done with your database operations
+      connection.end();
+    });
 
     if (rows.length === 0) {
       console.log("User not found:", username);
