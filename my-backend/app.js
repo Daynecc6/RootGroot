@@ -159,9 +159,8 @@ app.post("/api/login", async (req, res) => {
   const { username, password } = req.body;
 
   // Connect to the database and fetch the user
+  const connection = await mysql.createConnection(DATABASE_URL);
   try {
-    const connection = await mysql.createConnection(DATABASE_URL);
-
     const [rows] = await connection.execute(
       "SELECT * FROM users WHERE username = ?",
       [username]
