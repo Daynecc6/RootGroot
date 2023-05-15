@@ -164,10 +164,7 @@ app.post("/api/login", async (req, res) => {
       'mysql://86kgr3fznfyjheynp1dm:pscale_pw_PG7SGrJqfrn7jPBMjts1p3srImBRASDBt7GJ5kHscqK@aws.connect.psdb.cloud/rootgroot?ssl={"rejectUnauthorized":true}'
     );
 
-    const rows = await connection.execute(
-      "SELECT * FROM users WHERE username = ?",
-      [username]
-    );
+    const rows = await connection.execute("SELECT * FROM users");
     console.log(rows);
 
     connection.end();
