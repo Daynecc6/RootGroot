@@ -96,7 +96,7 @@ const Main = (mapData) => {
         <Route
           path="/world-map"
           element={
-            <ProtectedRoute token={token} fallback={<MainContent />}>
+            <ProtectedRoute token={token} fallback={<LoginForm />}>
               <WorldMap mapData={mapData} />
             </ProtectedRoute>
           }
