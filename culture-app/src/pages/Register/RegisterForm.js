@@ -56,7 +56,7 @@ const RegisterForm = () => {
   };
 
   return (
-    <Container maxWidth="xs">
+    <Container maxWidth="xs" sx={{ pb: 10 }}>
       <Box sx={{ mt: 8, mb: 4 }}>
         <Typography variant="h4">Register</Typography>
       </Box>
