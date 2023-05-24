@@ -15,6 +15,7 @@ const AboutUs = () => {
       maxWidth="800px"
       mx="auto"
       p="20px"
+      pb="200px"
     >
       <Typography
         variant="h1"
