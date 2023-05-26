@@ -62,6 +62,7 @@ const StorySubmission = () => {
 				justifyContent: "center",
 				minHeight: "100vh",
 				p: 2,
+				pb: "100px",
 			}}
 		>
 			<Typography
