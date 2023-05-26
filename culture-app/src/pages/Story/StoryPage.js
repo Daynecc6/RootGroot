@@ -118,12 +118,12 @@ const StoryPage = () => {
 	return (
 		<>
 			{story ? (
-				<Box mx="auto" my={4}>
+				<Box mx="auto" my={4} sx={{ pb: "200px" }}>
 					<Typography
 						variant="h4"
 						align="center"
 						gutterBottom
-						sx={{ fontWeight: "bold", pb: "200px" }}
+						sx={{ fontWeight: "bold" }}
 					>
 						{story.title}
 					</Typography>
