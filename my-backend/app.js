@@ -3,6 +3,8 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const util = require("util");
+
 //const PORT = process.env.PORT || 3001;
 
 const app = express();
@@ -428,47 +430,42 @@ app.get("/api/stories", authMiddleware, async (req, res) => {
     SELECT * FROM stories
     WHERE country = ? AND purpose = ? AND theme = ? AND subtheme = ?
     LIMIT 1;
-    
     `;
 		queryParams = [country, purpose, theme, subtheme];
 	}
 
 	try {
 		const connection = await mysql.createConnection(DATABASE_URL);
+		const executeQuery = util.promisify(connection.execute).bind(connection);
 
-		connection.execute(query, queryParams, async (error, storyRows) => {
-			if (error) {
-				console.error("Error executing query:", error);
-				res.status(500).send("Error querying stories.");
-			} else {
-				if (storyRows.length === 0) {
-					res.status(404).send("No story found.");
-					connection.end();
-					return;
-				}
+		const storyRows = await executeQuery(query, queryParams);
 
-				const story = storyRows[0];
-
-				const [conversationRows] = await connection.execute(
-					"SELECT * FROM conversations WHERE story_id = ? ORDER BY order_number",
-					[story.id]
-				);
-
-				const [questionRows] = await connection.execute(
-					"SELECT * FROM questions WHERE story_id = ?",
-					[story.id]
-				);
-
-				const combinedData = {
-					...story,
-					conversations: conversationRows,
-					questions: questionRows,
-				};
-
-				res.json(combinedData);
-			}
+		if (storyRows.length === 0) {
+			res.status(404).send("No story found.");
 			connection.end();
-		});
+			return;
+		}
+
+		const story = storyRows[0];
+
+		const conversationRows = await executeQuery(
+			"SELECT * FROM conversations WHERE story_id = ? ORDER BY order_number",
+			[story.id]
+		);
+
+		const questionRows = await executeQuery(
+			"SELECT * FROM questions WHERE story_id = ?",
+			[story.id]
+		);
+
+		const combinedData = {
+			...story,
+			conversations: conversationRows,
+			questions: questionRows,
+		};
+
+		res.json(combinedData);
+		connection.end();
 	} catch (error) {
 		console.error("Error connecting to the database:", error);
 		res
