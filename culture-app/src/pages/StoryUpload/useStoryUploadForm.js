@@ -1,165 +1,204 @@
 import { useState } from "react";
 
 export const useStoryUploadForm = () => {
-  const [formData, setFormData] = useState({
-    country: "",
-    purpose: "",
-    theme: "",
-    subtheme: "",
-    title: "",
-    scenario: "",
-    freeresp: "",
-    conversations: [],
-    questions: [],
-    // Add other fields as needed
-  });
+	const [formData, setFormData] = useState({
+		country: "",
+		purpose: "",
+		theme: "",
+		subtheme: "",
+		title: "",
+		scenario: "",
+		freeresp: "",
+		conversations: [],
+		questions: [],
+		// Add other fields as needed
+	});
 
-  const [currentConversation, setCurrentConversation] = useState({
-    speaker: "",
-    message: "",
-  });
+	const [isFormValid, setIsFormValid] = useState(false);
 
-  const handleChange = (event) => {
-    setFormData({ ...formData, [event.target.name]: event.target.value });
-  };
+	// This function checks if the conversation object is valid
+	const isValidConversation = (conversation) => {
+		return conversation.speaker && conversation.message;
+	};
 
-  const handleConversationChange = (event) => {
-    setCurrentConversation({
-      ...currentConversation,
-      [event.target.name]: event.target.value,
-    });
-  };
+	// This function checks if the question object is valid
+	const isValidQuestion = (question) => {
+		return (
+			question.question &&
+			question.choices.every((choice) => choice) &&
+			question.answer &&
+			question.explanation
+		);
+	};
 
-  const addConversation = () => {
-    if (currentConversation.speaker && currentConversation.message) {
-      setFormData({
-        ...formData,
-        conversations: [...formData.conversations, currentConversation],
-      });
-      setCurrentConversation({ speaker: "", message: "" });
-    }
-  };
+	// Check form validity whenever formData changes
+	useEffect(() => {
+		const formValues = [
+			"country",
+			"purpose",
+			"theme",
+			"subtheme",
+			"title",
+			"scenario",
+			"freeresp",
+		];
+		const isFormDataFilled = formValues.every((field) => formData[field]);
+		const hasValidConversations =
+			formData.conversations.every(isValidConversation);
+		const hasValidQuestions = formData.questions.every(isValidQuestion);
 
-  const deleteConversation = (index) => {
-    setFormData({
-      ...formData,
-      conversations: formData.conversations.filter((_, i) => i !== index),
-    });
-  };
+		setIsFormValid(
+			isFormDataFilled && hasValidConversations && hasValidQuestions
+		);
+	}, [formData]);
 
-  const onDragEnd = (result) => {
-    if (!result.destination) return;
-    const { source, destination } = result;
-    const newConversations = [...formData.conversations];
-    const [removed] = newConversations.splice(source.index, 1);
-    newConversations.splice(destination.index, 0, removed);
-    setFormData({ ...formData, conversations: newConversations });
-  };
+	const [currentConversation, setCurrentConversation] = useState({
+		speaker: "",
+		message: "",
+	});
 
-  const [currentQuestion, setCurrentQuestion] = useState({
-    question: "",
-    choices: [""],
-    answer: "",
-    explanation: "", // Add explanation field
-  });
+	const handleChange = (event) => {
+		setFormData({ ...formData, [event.target.name]: event.target.value });
+	};
 
-  const handleQuestionChange = (event) => {
-    setCurrentQuestion({
-      ...currentQuestion,
-      [event.target.name]: event.target.value,
-    });
-  };
+	const handleConversationChange = (event) => {
+		setCurrentConversation({
+			...currentConversation,
+			[event.target.name]: event.target.value,
+		});
+	};
 
-  const handleChoiceChange = (event, index) => {
-    const newChoices = [...currentQuestion.choices];
-    newChoices[index] = event.target.value;
-    setCurrentQuestion({ ...currentQuestion, choices: newChoices });
-  };
+	const addConversation = () => {
+		if (currentConversation.speaker && currentConversation.message) {
+			setFormData({
+				...formData,
+				conversations: [...formData.conversations, currentConversation],
+			});
+			setCurrentConversation({ speaker: "", message: "" });
+		}
+	};
 
-  const handleExplanationChange = (event) => {
-    setCurrentQuestion({
-      ...currentQuestion,
-      explanation: event.target.value,
-    });
-  };
+	const deleteConversation = (index) => {
+		setFormData({
+			...formData,
+			conversations: formData.conversations.filter((_, i) => i !== index),
+		});
+	};
 
-  const handleAnswerChange = (event) => {
-    setCurrentQuestion({ ...currentQuestion, answer: event.target.value });
-  };
+	const onDragEnd = (result) => {
+		if (!result.destination) return;
+		const { source, destination } = result;
+		const newConversations = [...formData.conversations];
+		const [removed] = newConversations.splice(source.index, 1);
+		newConversations.splice(destination.index, 0, removed);
+		setFormData({ ...formData, conversations: newConversations });
+	};
 
-  const addQuestion = () => {
-    if (
-      currentQuestion.question &&
-      currentQuestion.choices.every((choice) => choice) &&
-      currentQuestion.answer &&
-      currentQuestion.explanation
-    ) {
-      setFormData({
-        ...formData,
-        questions: [...formData.questions, currentQuestion],
-      });
-      setCurrentQuestion({
-        question: "",
-        choices: [""],
-        answer: "",
-        explanation: "",
-      });
-    }
-  };
+	const [currentQuestion, setCurrentQuestion] = useState({
+		question: "",
+		choices: [""],
+		answer: "",
+		explanation: "", // Add explanation field
+	});
 
-  const addChoice = () => {
-    setCurrentQuestion({
-      ...currentQuestion,
-      choices: [...currentQuestion.choices, ""],
-    });
-  };
+	const handleQuestionChange = (event) => {
+		setCurrentQuestion({
+			...currentQuestion,
+			[event.target.name]: event.target.value,
+		});
+	};
 
-  const deleteQuestion = (index) => {
-    setFormData({
-      ...formData,
-      questions: formData.questions.filter((_, i) => i !== index),
-    });
-  };
+	const handleChoiceChange = (event, index) => {
+		const newChoices = [...currentQuestion.choices];
+		newChoices[index] = event.target.value;
+		setCurrentQuestion({ ...currentQuestion, choices: newChoices });
+	};
 
-  const handleSubmit = async (event) => {
-    console.log("Sending form data:", formData);
+	const handleExplanationChange = (event) => {
+		setCurrentQuestion({
+			...currentQuestion,
+			explanation: event.target.value,
+		});
+	};
 
-    event.preventDefault();
-    // Send the form data to your backend API
-    const response = await fetch(
-      "https://rootgroot-ht6a.onrender.com/api/stories",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      }
-    );
+	const handleAnswerChange = (event) => {
+		setCurrentQuestion({ ...currentQuestion, answer: event.target.value });
+	};
 
-    if (response.ok) {
-      alert("Story uploaded successfully!");
-    } else {
-      alert("Error uploading the story.");
-    }
-  };
+	const addQuestion = () => {
+		if (
+			currentQuestion.question &&
+			currentQuestion.choices.every((choice) => choice) &&
+			currentQuestion.answer &&
+			currentQuestion.explanation
+		) {
+			setFormData({
+				...formData,
+				questions: [...formData.questions, currentQuestion],
+			});
+			setCurrentQuestion({
+				question: "",
+				choices: [""],
+				answer: "",
+				explanation: "",
+			});
+		}
+	};
 
-  return {
-    formData,
-    handleChange,
-    currentConversation,
-    handleConversationChange,
-    addConversation,
-    deleteConversation,
-    onDragEnd,
-    handleSubmit,
-    currentQuestion,
-    handleQuestionChange,
-    handleChoiceChange,
-    handleAnswerChange,
-    handleExplanationChange,
-    addQuestion,
-    addChoice,
-    deleteQuestion,
-  };
+	const addChoice = () => {
+		setCurrentQuestion({
+			...currentQuestion,
+			choices: [...currentQuestion.choices, ""],
+		});
+	};
+
+	const deleteQuestion = (index) => {
+		setFormData({
+			...formData,
+			questions: formData.questions.filter((_, i) => i !== index),
+		});
+	};
+
+	const handleSubmit = async (event) => {
+		console.log("Sending form data:", formData);
+
+		event.preventDefault();
+		// Send the form data to your backend API
+		const response = await fetch(
+			"https://rootgroot-ht6a.onrender.com/api/stories",
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(formData),
+			}
+		);
+
+		if (response.ok) {
+			alert("Story uploaded successfully!");
+		} else {
+			alert("Error uploading the story.");
+		}
+	};
+
+	return {
+		formData,
+		handleChange,
+		currentConversation,
+		handleConversationChange,
+		addConversation,
+		deleteConversation,
+		onDragEnd,
+		handleSubmit,
+		currentQuestion,
+		handleQuestionChange,
+		handleChoiceChange,
+		handleAnswerChange,
+		handleExplanationChange,
+		addQuestion,
+		addChoice,
+		deleteQuestion,
+		isFormValid,
+	};
 };
