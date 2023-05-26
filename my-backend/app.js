@@ -428,6 +428,7 @@ app.get("/api/stories", authMiddleware, async (req, res) => {
     SELECT * FROM stories
     WHERE country = ? AND purpose = ? AND theme = ? AND subtheme = ?
     LIMIT 1;
+    
     `;
 		queryParams = [country, purpose, theme, subtheme];
 	}
