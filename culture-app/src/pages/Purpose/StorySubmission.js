@@ -9,8 +9,20 @@ const StorySubmission = () => {
 	const [contactPreference, setContactPreference] = useState(false);
 	const navigate = useNavigate();
 
-	const handleChange = (e) => {
+	const handleChangeStory = (e) => {
 		setStory(e.target.value);
+	};
+
+	const handleChangeFirstName = (e) => {
+		setFirstName(e.target.value);
+	};
+
+	const handleChangeEmail = (e) => {
+		setEmail(e.target.value);
+	};
+
+	const handleChangeContactPreference = (e) => {
+		setContactPreference(e.target.value);
 	};
 
 	const handleSubmit = async (e) => {
@@ -23,8 +35,6 @@ const StorySubmission = () => {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
-						// Add the required authorization header, e.g.:
-						// "Authorization": `Bearer ${yourAuthToken}`,
 					},
 					body: JSON.stringify({ story, firstName, email, contactPreference }),
 				}
@@ -34,7 +44,6 @@ const StorySubmission = () => {
 				const error = await response.json();
 				console.error(error);
 			} else {
-				// Navigate back to the world map after saving the story
 				navigate("/world-map");
 			}
 		} catch (error) {
@@ -52,40 +61,49 @@ const StorySubmission = () => {
 				alignItems: "center",
 				justifyContent: "center",
 				minHeight: "100vh",
+				p: 2,
 			}}
 		>
 			<Typography
 				variant="h3"
 				fontWeight="bold"
-				style={{
+				sx={{
 					fontFamily: "Lobster",
 					textAlign: "center",
-					display: "block",
-					margin: "auto",
+					marginBottom: 2,
 				}}
 			>
 				Submit your own story
 			</Typography>
+
+			<TextField
+				label="First Name"
+				variant="outlined"
+				value={firstName}
+				onChange={handleChangeFirstName}
+				sx={{ width: "80%", marginBottom: 2 }}
+			/>
 			<TextField
 				label="Email"
+				variant="outlined"
 				value={email}
-				onChange={(e) => setEmail(e.target.value)}
-				// ... other props ...
+				onChange={handleChangeEmail}
+				sx={{ width: "80%", marginBottom: 2 }}
 			/>
 			<TextField
 				label="Contact Preference"
+				variant="outlined"
 				value={contactPreference}
-				onChange={(e) => setContactPreference(e.target.value)}
-				// ... other props ...
+				onChange={handleChangeContactPreference}
+				sx={{ width: "80%", marginBottom: 2 }}
 			/>
-
 			<TextField
 				label="Your Story"
 				multiline
 				rows={6}
 				variant="outlined"
 				value={story}
-				onChange={handleChange}
+				onChange={handleChangeStory}
 				sx={{
 					width: "80%",
 					marginBottom: 2,
@@ -98,7 +116,7 @@ const StorySubmission = () => {
 						},
 				}}
 			/>
-			<Button type="submit" variant="contained">
+			<Button type="submit" variant="contained" sx={{ marginBottom: 2 }}>
 				Submit
 			</Button>
 		</Box>
