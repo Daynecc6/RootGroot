@@ -427,11 +427,9 @@ app.get("/api/stories", authMiddleware, async (req, res) => {
 		query = `
     SELECT * FROM stories
     WHERE country = ? AND purpose = ? AND theme = ? AND subtheme = ?
-    AND id NOT IN (SELECT id FROM stories WHERE FIND_IN_SET(id, (SELECT completed_stories FROM users WHERE username = ?)) > 0)
     LIMIT 1;
-    
     `;
-		queryParams = [country, purpose, theme, subtheme, userId];
+		queryParams = [country, purpose, theme, subtheme];
 	}
 
 	try {
