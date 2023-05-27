@@ -11,17 +11,14 @@ export const useStoryUploadForm = () => {
 		freeresp: "",
 		conversations: [],
 		questions: [],
-		// Add other fields as needed
 	});
 
 	const [isFormValid, setIsFormValid] = useState(false);
 
-	// This function checks if the conversation object is valid
 	const isValidConversation = (conversation) => {
 		return conversation.speaker && conversation.message;
 	};
 
-	// This function checks if the question object is valid
 	const isValidQuestion = (question) => {
 		return (
 			question.question &&
@@ -31,7 +28,6 @@ export const useStoryUploadForm = () => {
 		);
 	};
 
-	// Check form validity whenever formData changes
 	useEffect(() => {
 		const formValues = [
 			"country",

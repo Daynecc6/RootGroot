@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, TextField, Button, Typography } from "@mui/material";
+import { Select, MenuItem } from "@mui/material";
 
 const StorySubmission = () => {
 	const [story, setStory] = useState("");
@@ -82,22 +83,73 @@ const StorySubmission = () => {
 				variant="outlined"
 				value={firstName}
 				onChange={handleChangeFirstName}
-				sx={{ width: "80%", marginBottom: 2 }}
+				InputLabelProps={{
+					style: { color: "black" },
+				}}
+				sx={{
+					width: "80%",
+					marginBottom: 2,
+					"& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+						borderColor: "black",
+					},
+					"&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+						borderColor: "black",
+					},
+					"& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+						{
+							borderColor: "black",
+						},
+				}}
 			/>
 			<TextField
 				label="Email"
 				variant="outlined"
 				value={email}
 				onChange={handleChangeEmail}
-				sx={{ width: "80%", marginBottom: 2 }}
+				InputLabelProps={{
+					style: { color: "black" },
+				}}
+				sx={{
+					width: "80%",
+					marginBottom: 2,
+					"& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+						borderColor: "black",
+					},
+					"&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+						borderColor: "black",
+					},
+					"& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+						{
+							borderColor: "black",
+						},
+				}}
 			/>
-			<TextField
+			<Select
 				label="Contact Preference"
 				variant="outlined"
 				value={contactPreference}
 				onChange={handleChangeContactPreference}
-				sx={{ width: "80%", marginBottom: 2 }}
-			/>
+				InputLabelProps={{
+					style: { color: "black" },
+				}}
+				sx={{
+					width: "80%",
+					marginBottom: 2,
+					"& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+						borderColor: "black",
+					},
+					"&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+						borderColor: "black",
+					},
+					"& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+						{
+							borderColor: "black",
+						},
+				}}
+			>
+				<MenuItem value="yes">Yes</MenuItem>
+				<MenuItem value="no">No</MenuItem>
+			</Select>
 			<TextField
 				label="Your Story"
 				multiline
@@ -105,11 +157,17 @@ const StorySubmission = () => {
 				variant="outlined"
 				value={story}
 				onChange={handleChangeStory}
+				InputLabelProps={{
+					style: { color: "black" },
+				}}
 				sx={{
 					width: "80%",
 					marginBottom: 2,
-					"& .Mui-focused": {
-						color: "black",
+					"& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+						borderColor: "black",
+					},
+					"&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+						borderColor: "black",
 					},
 					"& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
 						{
