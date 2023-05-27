@@ -141,6 +141,12 @@ const StorySubmission = () => {
 							{
 								borderColor: "black",
 							},
+						"& .Mui-focused": {
+							color: "black",
+						},
+						"& .MuiOutlinedInput-input": {
+							color: "black",
+						},
 					}}
 				>
 					<MenuItem value="yes">Yes</MenuItem>
