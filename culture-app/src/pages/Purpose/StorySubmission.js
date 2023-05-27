@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, TextField, Button, Typography } from "@mui/material";
-import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import {
+	FormControl,
+	InputLabel,
+	Select,
+	MenuItem,
+	OutlinedInput,
+} from "@mui/material";
 
 const StorySubmission = () => {
 	const [story, setStory] = useState("");
@@ -125,29 +131,27 @@ const StorySubmission = () => {
 				}}
 			/>
 			<FormControl variant="outlined" sx={{ width: "80%", marginBottom: 2 }}>
-				<InputLabel style={{ color: "black" }}>Contact Preference</InputLabel>
+				<InputLabel id="contact-preference-label" style={{ color: "black" }}>
+					Contact Preference
+				</InputLabel>
 				<Select
+					labelId="contact-preference-label"
 					label="Contact Preference"
 					value={contactPreference}
 					onChange={handleChangeContactPreference}
-					sx={{
-						"& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-							borderColor: "black",
-						},
-						"&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-							borderColor: "black",
-						},
-						"& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-							{
-								borderColor: "black",
-							},
-						"& .Mui-focused": {
-							color: "black",
-						},
-						"& .MuiOutlinedInput-input": {
-							color: "black",
-						},
-					}}
+					input={
+						<OutlinedInput
+							label="Contact Preference"
+							sx={{
+								"& .MuiOutlinedInput-notchedOutline": {
+									borderColor: "black",
+								},
+								"&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+									borderColor: "black",
+								},
+							}}
+						/>
+					}
 				>
 					<MenuItem value="yes">Yes</MenuItem>
 					<MenuItem value="no">No</MenuItem>
