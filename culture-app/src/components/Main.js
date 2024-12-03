@@ -95,11 +95,7 @@ const Main = (mapData) => {
         <Route path="/register" element={<RegisterForm />} />
         <Route
           path="/world-map"
-          element={
-            <ProtectedRoute token={token} fallback={<LoginForm />}>
-              <WorldMap mapData={mapData} />
-            </ProtectedRoute>
-          }
+          element={<WorldMap mapData={mapData} />}
         />
         <Route path="/purpose" element={<PurposePage />} />
         <Route path="/user-profile" element={<UserProfile />} />
